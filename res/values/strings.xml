@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MyCalendar</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_add_event">Add Event</string>
+    <string name="title_activity_main">MyCalendar</string>
+    <string name="title_activity_event_editor">Create Event</string>
+    <string name="text_save_button">Save</string>
+    <string name="text_date_from">From</string>
+    <string name="text_date_to">To</string>
+    <string name="text_event_name">Name</string>
+    <string name="text_calendar_choice">Choose a calendar</string>
+    <string name="title_activity_event_show">Event Details</string>
+    <string name="text_modify_button">Modify</string>
+    <string name="hint_calendar_name">Name</string>
+    <string name="menu_add_calendar">Add Calendar</string>
+    <string name="title_activity_calendar_editor">Create Calendar</string>
+    <string name="title_activity_calendar_show">Calendar Details</string>
+    <string-array name="calendar_colors">
+        <item >Black</item>
+        <item >Blue</item>
+        <item >Cyan</item>
+        <item >Dark Gray</item>
+        <item >Gray</item>
+        <item >Green</item>
+        <item >Light Gray</item>
+        <item >Magenta</item>
+        <item >Red</item>
+        <item >White</item>
+        <item >Yellow</item>
+    </string-array>
+    <string name="title_activity_all_calendar_list">All Calendar</string>
+    <string name="text_view_all_button">View All</string>
+    <string name="title_edit_dialog">Choose an action</string>
+    <string-array name="edit_actions">
+        <item >Delete</item>
+        <item >Modify</item>
+    </string-array>
+    <string name="title_activity_all_event_list">All Events</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

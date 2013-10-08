@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:onClick="viewAllCalendars" >
+
+    <EditText
+        android:id="@+id/CalendarName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="@string/hint_calendar_name"
+        android:inputType="textCapSentences" >
+
+        <requestFocus />
+    </EditText>
+
+    <Spinner
+        android:id="@+id/CalendarColor"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/CalendarName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/Create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="saveModification"
+        android:text="@string/text_save_button" />
+
+    <Button
+        android:id="@+id/ViewAll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Create"
+        android:layout_centerHorizontal="true"
+        android:onClick="viewAllCalendars"
+        android:text="@string/text_view_all_button" />
+
+</RelativeLayout>
