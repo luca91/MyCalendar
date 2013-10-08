@@ -51,6 +51,8 @@ public final class R {
         public static final int ViewAllEvents=0x7f09000e;
         public static final int ViewChoice=0x7f090014;
         public static final int action_settings=0x7f090016;
+        public static final int new_calendar=0x7f090018;
+        public static final int new_event=0x7f090017;
     }
     public static final class layout {
         public static final int activity_all_calendar_list=0x7f030000;
