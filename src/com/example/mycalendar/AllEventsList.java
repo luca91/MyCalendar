@@ -1,11 +1,9 @@
 package com.example.mycalendar;
 
-import com.example.auxiliary.AppCalendar;
-import com.example.auxiliary.Event;
+
+import com.example.auxiliary.AppItem;
 import com.example.auxiliary.MyCalendarDB;
 
-import android.app.ListActivity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class AllEventsList extends ListActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
+public class AllEventsList extends ItemList {
 	
 
 	@Override
@@ -21,11 +19,11 @@ public class AllEventsList extends ListActivity implements AdapterView.OnItemLon
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_all_events_list);
 		db = new MyCalendarDB(this);
-		eventsList = (ListView) findViewById(android.R.id.list);
-		eventsList.setOnItemLongClickListener(this);
-		eventsList.setOnItemClickListener(this);
+		itemList = (ListView) findViewById(android.R.id.list);
+		itemList.setOnItemLongClickListener(this);
+		itemList.setOnItemClickListener(this);
 		ArrayAdapter<String> allCalendars = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, db.getEventList());
-		eventsList.setAdapter(allCalendars);
+		itemList.setAdapter(allCalendars);
 	}
 
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -48,15 +46,14 @@ public class AllEventsList extends ListActivity implements AdapterView.OnItemLon
 			if(actionResutl != 0){
 				Toast.makeText(this, "Event removed successfully.", Toast.LENGTH_LONG).show();
 				ArrayAdapter<String> allCalendars = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, db.getCalendarList());
-				eventsList.setAdapter(allCalendars);
+				itemList.setAdapter(allCalendars);
 			}
 			break;
 		
-		}
-		
-		}
+		}	
+	}
 	
-	public String getCurrentSelectedEvent(){
-		return this.currentSelectedEvent;
+	public AppItem getCurrentSelectedEvent(){
+		return currentItem;
 	}
 }
