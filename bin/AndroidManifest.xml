@@ -39,7 +39,7 @@
             android:label="@string/title_activity_calendar_editor" >
         </activity>
         <activity
-            android:name="com.example.mycalendar.AllEventList"
+            android:name="com.example.mycalendar.AllEventsList"
             android:label="@string/title_activity_all_event_list" >
         </activity>
         <activity

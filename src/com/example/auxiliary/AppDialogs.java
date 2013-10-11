@@ -1,7 +1,6 @@
 package com.example.auxiliary;
 
-import com.example.mycalendar.AllCalendarList;
-import com.example.mycalendar.AllEventsList;
+import com.example.mycalendar.ItemList;
 import com.example.mycalendar.R;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -9,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -24,8 +24,7 @@ public class AppDialogs extends DialogFragment {
 	
 	private Context context;
 	private int itemClicked;
-	private AllCalendarList acl;
-	private AllEventsList ael;
+	private ItemList itm;
 	AlertDialog.Builder builder;
 	
 	/**
@@ -34,37 +33,24 @@ public class AppDialogs extends DialogFragment {
 	 * @param acl the instance of the AllCalendarList class associated
 	 */
 	@SuppressLint("ValidFragment")
-	public AppDialogs(Context ctx, AllCalendarList acl){
+	public AppDialogs(Context ctx, ItemList itm){
 		this.context = ctx;
-		this.acl = acl;
+		this.itm = itm;
 		builder = new AlertDialog.Builder(context);
 		builder.setTitle(R.string.title_edit_dialog);
 		builder.setItems(R.array.edit_actions, new DialogInterface.OnClickListener() {
 
-			@SuppressLint("ValidFragment")
 			public void onClick(DialogInterface dialog, int which) {
 				itemClicked = which;
 				Toast.makeText(context, "You clicked:  "+itemClicked, Toast.LENGTH_LONG).show();
-				getParentACL().performClickedAction(getParentACL().getCurrentSelectedCalendar(), itemClicked);
+				getItemList().performClickedAction(getItemList().getItemName(), itemClicked);
         	}
         });
 		builder.create();
 	}
 	
-	public AppDialogs(Context ctx, AllEventsList ael){
+	public AppDialogs(Context ctx){
 		this.context = ctx;
-		this.ael = ael;
-		builder = new AlertDialog.Builder(context);
-		builder.setTitle(R.string.title_edit_dialog);
-		builder.setItems(R.array.edit_actions, new DialogInterface.OnClickListener() {
-
-			public void onClick(DialogInterface dialog, int which) {
-				itemClicked = which;
-				Toast.makeText(context, "You clicked:  "+itemClicked, Toast.LENGTH_LONG).show();
-				getParentAEL().performClickedAction(getParentAEL().getCurrentSelectedEvent(), itemClicked);
-        	}
-        });
-		builder.create();
 	}
 	
 	/**
@@ -83,11 +69,26 @@ public class AppDialogs extends DialogFragment {
 		return this.itemClicked;
 	}
 	
-	public AllCalendarList getParentACL(){
-		return acl;
+	public void noEventDialog(String message, final Intent intent){
+		builder = new AlertDialog.Builder(context);
+		builder.setTitle(R.string.title_no_calendar_dialog);
+		builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int which) {
+				Toast.makeText(context, "You clicked:  "+which, Toast.LENGTH_LONG).show();
+				startActivity(intent);
+        	}
+        });
+		builder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int which) {
+				Toast.makeText(context, "You clicked:  "+which, Toast.LENGTH_LONG).show();
+        	}
+        });
+		builder.create();
 	}
 	
-	public AllEventsList getParentAEL(){
-		return ael;
+	public ItemList getItemList(){
+		return this.itm;
 	}
 }

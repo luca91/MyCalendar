@@ -3,6 +3,7 @@ package com.example.auxiliary;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.StringTokenizer;
 
 import com.example.auxiliary.AppCalendar;
 
@@ -35,10 +36,10 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public static final String EVENTS_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS event " +
 			"(event_name VARCHAR(40), " +
-			"event_date_start VARCHAR(10), " +
-			"event_time_start VARCHAR(5), " +
-			"event_date_end VARCHAR(10)," +
-			"event_time_end VARCHAR(5)," +
+			"event_date_start DATE, " +
+			"event_time_start TIME, " +
+			"event_date_end DATE," +
+			"event_time_end TIME," +
 			"event_calendar VARCHAR(30));";
 	public static final String CALENDAR_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS calendar " +
@@ -58,8 +59,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("DROP TABLE IF EXISTS event;");
-		db.execSQL("DROP TABLE IF EXISTS calendar;");
+//		db.execSQL("DROP TABLE IF EXISTS event;");
+//		db.execSQL("DROP TABLE IF EXISTS calendar;");
 		db.execSQL(EVENTS_TABLE_CREATE);
 		db.execSQL(CALENDAR_TABLE_CREATE);
 	}
@@ -71,8 +72,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	
 	@Override
 	public void onOpen(SQLiteDatabase db){
-		db.execSQL("DROP TABLE IF EXISTS event;");
-		db.execSQL("DROP TABLE IF EXISTS calendar;");
+//		db.execSQL("DROP TABLE IF EXISTS event;");
+//		db.execSQL("DROP TABLE IF EXISTS calendar;");
 		db.execSQL(EVENTS_TABLE_CREATE);
 		db.execSQL(CALENDAR_TABLE_CREATE);
 	}
@@ -90,8 +91,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public long addEvent(Event anEvent){
 		ContentValues toInsert = new ContentValues();
 		toInsert.put("event_name", anEvent.getName());
-		toInsert.put("event_date_start", anEvent.getStartDate());
-		toInsert.put("event_date_end", anEvent.getEndDate());
+		toInsert.put("event_date_start", convertDateFromStringToDB(anEvent.getStartDate()));
+		toInsert.put("event_date_end", convertDateFromStringToDB(anEvent.getEndDate()));
 		toInsert.put("event_time_start", anEvent.getStartTime());
 		toInsert.put("event_time_end", anEvent.getEndTime());
 		toInsert.put("event_calendar", anEvent.getCalendar());
@@ -146,6 +147,12 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public int removeCalendar(String calendarName){
 		AppCalendar toDelete = getSingleCalendar(calendarName);
 		String[] queryArgs = {toDelete.getName(), toDelete.getColor()};
+		String[] columns = {"event_name"};
+		String[] selArgs = {calendarName};
+		Cursor eventList = this.getWritableDatabase().query("event", columns, "event_calendar=?", selArgs, null, null, null);
+		for(int i = 0; i < eventList.getCount(); i++){
+			this.getWritableDatabase().delete("event", "event_calendar=?", selArgs);
+		}
 		return this.getWritableDatabase().delete("calendar", "calendar_name=? AND calendar_color=?", queryArgs); 
 	}
 	
@@ -158,23 +165,23 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	}
 	
 	public String[] getEventList(){
-		Cursor result = this.getReadableDatabase().query("event", null, null, null, null, null, null);
+		Cursor result = this.getReadableDatabase().query("event", null, null, null, null, null, "event_date_start");
 		result.moveToFirst();
 		Event[] listNormal = new Event[result.getCount()];  
 		String[] list = new String[result.getCount()];
 		for(int i=0; i<result.getCount(); i++){
 			if(!result.isAfterLast()){
 				Event toInsert = new Event(result.getString(0), 
-						result.getString(1), 
+						convertDateFromDBToString(result.getString(1)), 
+						convertDateFromDBToString(result.getString(3)), 
 						result.getString(2), 
-						result.getString(3), 
 						result.getString(4), 
 						result.getString(5));
 				listNormal[i] = toInsert;
 				result.moveToNext();
 			}
 		}
-		listNormal = sort(listNormal);
+//		listNormal = sort(listNormal);
 		for(int i=0; i<result.getCount(); i++){
 			list[i] = Array.get(listNormal, i).toString();
 		}
@@ -185,21 +192,21 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		Arrays.sort(toSort, new Comparator<Event>() {
 			
 			public int compare(Event t1, Event t2){
-				if(Array.getInt(t1.getDateToken("start"), 2) > Array.getInt(t2.getDateToken("start"), 2))
+				if(Array.getInt(t1.getDateToken("start"), 0) > Array.getInt(t2.getDateToken("start"), 0))
 					return 1;
-				else if(Array.getInt(t1.getDateToken("start"), 2) < Array.getInt(t2.getDateToken("start"), 2))
+				else if(Array.getInt(t1.getDateToken("start"), 0) < Array.getInt(t2.getDateToken("start"), 0))
 					return -1;
-				else if(Array.getInt(t1.getDateToken("start"), 2) == Array.getInt(t2.getDateToken("start"), 2)){
+				else if(Array.getInt(t1.getDateToken("start"), 0) == Array.getInt(t2.getDateToken("start"), 0)){
 					if(Array.getInt(t1.getDateToken("start"), 1) > Array.getInt(t2.getDateToken("start"), 1))
 						return 1;
 					else if(Array.getInt(t1.getDateToken("start"), 1) < Array.getInt(t2.getDateToken("start"), 1))
 						return -1;
 					else if(Array.getInt(t1.getDateToken("start"), 1) == Array.getInt(t2.getDateToken("start"), 1)){
-						if(Array.getInt(t1.getDateToken("start"), 0) > Array.getInt(t2.getDateToken("start"), 0))
+						if(Array.getInt(t1.getDateToken("start"), 2) > Array.getInt(t2.getDateToken("start"), 2))
 							return 1;
-						else if(Array.getInt(t1.getDateToken("start"), 0) < Array.getInt(t2.getDateToken("start"), 0))
+						else if(Array.getInt(t1.getDateToken("start"), 2) < Array.getInt(t2.getDateToken("start"), 2))
 							return -1;
-						else if(Array.getInt(t1.getDateToken("start"), 0) == Array.getInt(t2.getDateToken("start"), 0)){
+						else if(Array.getInt(t1.getDateToken("start"), 2) == Array.getInt(t2.getDateToken("start"), 2)){
 							if(Array.getInt(t1.getTimeToken("start"), 0) > Array.getInt(t2.getDateToken("start"), 1))
 								return 1;
 							else if(Array.getInt(t1.getTimeToken("start"), 0) < Array.getInt(t2.getTimeToken("start"), 0))
@@ -224,8 +231,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	
 	public Event getSingleEvent(Event toSearch){
 		String[] values = {toSearch.getName(), 
-				toSearch.getStartDate(), 
-				toSearch.getEndDate(), 
+				convertDateFromStringToDB(toSearch.getStartDate()), 
+				convertDateFromStringToDB(toSearch.getEndDate()), 
 				toSearch.getStartTime(), 
 				toSearch.getEndTime(), 
 				toSearch.getCalendar()};
@@ -238,10 +245,30 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 				null);
 		result.moveToFirst();
 		return new Event(result.getString(0), 
-				result.getString(1),
-				result.getString(2),
+				convertDateFromDBToString(result.getString(1)),
+				convertDateFromDBToString(result.getString(2)),
 				result.getString(3),
 				result.getString(4),
 				result.getString(5));
+	}
+	
+	public String convertDateFromDBToString(String inputDate){
+		String outputDate = "";
+		StringTokenizer tz = new StringTokenizer(inputDate, "-");
+		String day = tz.nextToken();
+		String month = tz.nextToken();
+		String year = tz.nextToken();
+		outputDate = day+"/"+month+"/"+year;
+		return outputDate;
+	}
+	
+	public String convertDateFromStringToDB(String inputDate){
+		String outputDate = "";
+		StringTokenizer tz = new StringTokenizer(inputDate, "/");
+		String day = tz.nextToken();
+		String month = tz.nextToken();
+		String year = tz.nextToken();
+		outputDate = year+"-"+month+"-"+day;
+		return outputDate;
 	}
 }

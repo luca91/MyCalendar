@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
  * @author Luca Bellettati
  *
  */
-public class Event {
+public class Event extends AppItem {
 	
 	/**
 	 * String constant for the event name.
@@ -38,9 +38,7 @@ public class Event {
 	 * String constant for the event calendar.
 	 */
 	public static final String CALENDAR = "com.example.mycalendar.CALENDAR";
-	@SuppressWarnings("unused")
 	private String name, calendar;
-	@SuppressWarnings("unused")
 	private String startDate, endDate, startTime, endTime;
 	
 	/**
@@ -59,6 +57,7 @@ public class Event {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.calendar = calendar;
+		super.setName(name);
 	}
 	
 	/**
@@ -116,5 +115,18 @@ public class Event {
 	
 	public String toString(){
 		return name + "(" + calendar + ")" + "\n" + "from " + startDate + " at " + startTime + "\n" + "to " + endDate + " to " + endTime + "\n";
+	}
+	
+	public int[] getDateTokenAsDB(String tag){
+		StringTokenizer tokenizer; 
+		if(tag.equals("start"))
+			tokenizer = new StringTokenizer(startDate, "-");
+		else
+			tokenizer = new StringTokenizer(endDate, "-");
+		int[] dateToken = new int[3];
+		dateToken[0] = Integer.parseInt(tokenizer.nextToken());
+		dateToken[1] = Integer.parseInt(tokenizer.nextToken());
+		dateToken[2] = Integer.parseInt(tokenizer.nextToken());
+		return dateToken;
 	}
 }

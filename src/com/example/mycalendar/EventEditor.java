@@ -2,15 +2,20 @@ package com.example.mycalendar;
 
 import java.util.Calendar;
 import java.util.StringTokenizer;
+
+import com.example.auxiliary.AppDialogs;
 import com.example.auxiliary.DatePickerFragment;
 import com.example.auxiliary.Event;
 import com.example.auxiliary.MyCalendarDB;
 import com.example.auxiliary.TimePickerFragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +27,7 @@ import android.widget.Toast;
  * @author Luca Bellettati
  *
  */
-public class EventEditor extends Activity {
+public class EventEditor extends Activity implements AdapterView.OnItemSelectedListener {
 	
 	private Spinner calendar;
 	private EditText eventName;
@@ -41,6 +46,8 @@ public class EventEditor extends Activity {
 	private Calendar current;
 	private ArrayAdapter<String> calendarAdapter;
 	private static boolean isModify;
+	private String[] calendars;
+	private AppDialogs dialog;
 	
 	/**
 	 * It sets the layout of the activity used to add an event to the agenda
@@ -82,7 +89,7 @@ public class EventEditor extends Activity {
 					currentEndDate, 
 					currentStartTime, 
 					currentEndTime, 
-					"");
+					currentCalendar);
 			long result = db.addEvent(anEvent);
 			if (result != -1){
 				Intent showEvent = new Intent(this, EventShow.class);
@@ -360,13 +367,22 @@ public class EventEditor extends Activity {
 		}
 		setTimeButtonText(currentStartTime, "start");
 		setTimeButtonText(currentEndTime, "end");
-		currentCalendar = "default";
+		calendars = db.getCalendarList();
+		if(calendars.length < 1){
+			Intent toCalendarEditor = new Intent(this, CalendarEditor.class);
+			dialog = new AppDialogs(this);
+			dialog.noEventDialog("No calendar exists. Create one before adding events.", toCalendarEditor);
+			startActivity(toCalendarEditor);
+		}
+		else
+			currentCalendar = calendars[0];
 	}
 	
 	/**
 	 * It set the environment for the modification of an event.
 	 */
 	public void setModifyEnvironment(Intent received){
+		current = Calendar.getInstance();
 		currentStartDate = received.getStringExtra(Event.S_DATE);
 		currentEndDate = received.getStringExtra(Event.E_DATE);
 		currentStartTime = received.getStringExtra(Event.S_TIME);
@@ -377,7 +393,7 @@ public class EventEditor extends Activity {
 		setDateButtonText(currentStartDate, "start");
 		setDateButtonText(currentEndDate, "end");
 		setTimeButtonText(currentStartTime, "start");
-		setDateButtonText(currentEndTime, "end");
+		setTimeButtonText(currentEndTime, "end");
 	}
 
 	public static void setIsModify(boolean b) {
@@ -391,6 +407,19 @@ public class EventEditor extends Activity {
 	public void viewAllEvents(View v){
 		Intent eventsList = new Intent(this, AllEventsList.class);
 		startActivity(eventsList);
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+			long arg3) {
+		currentCalendar = (String) arg0.getItemAtPosition(arg2);
+		
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

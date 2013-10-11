@@ -70,4 +70,14 @@ public class MainActivity extends Activity {
     	startActivity(addCalendar);
     }
     
+    public void allCalendars(MenuItem m){
+    	Intent allCalendar = new Intent(this, AllCalendarList.class);
+    	startActivity(allCalendar);
+    }
+    
+    public void allEvents(MenuItem m){
+    	Intent allEvent = new Intent(this, AllEventsList.class);
+    	startActivity(allEvent);
+    }
+    
 }

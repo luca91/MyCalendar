@@ -39,5 +39,8 @@
     </string-array>
     <string name="title_activity_all_event_list">All Events</string>
     <string name="action_settings">Settings</string>
+    <string name="title_no_calendar_dialog">No existing calendar!</string>
+    <string name="positive_button">Ok</string>
+    <string name="negative_button">Cancel</string>
 
 </resources>

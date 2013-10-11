@@ -28,31 +28,31 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int AllEventLayout=0x7f090013;
-        public static final int Calendar=0x7f090006;
+        public static final int AllEventLayout=0x7f090011;
+        public static final int Calendar=0x7f090005;
         public static final int CalendarColor=0x7f090001;
-        public static final int CalendarContainer=0x7f090015;
+        public static final int CalendarContainer=0x7f090013;
         public static final int CalendarName=0x7f090000;
         public static final int Create=0x7f090002;
-        public static final int Date=0x7f090010;
-        public static final int Editor=0x7f090005;
-        public static final int EndDate=0x7f09000c;
-        public static final int EndTime=0x7f09000d;
-        public static final int EventInfoContainer=0x7f09000f;
-        public static final int EventName=0x7f090007;
-        public static final int From=0x7f090009;
-        public static final int Modify=0x7f090012;
-        public static final int Name=0x7f090004;
-        public static final int StartDate=0x7f090008;
-        public static final int StartTime=0x7f09000a;
-        public static final int Time=0x7f090011;
-        public static final int To=0x7f09000b;
-        public static final int ViewAll=0x7f090003;
-        public static final int ViewAllEvents=0x7f09000e;
-        public static final int ViewChoice=0x7f090014;
-        public static final int action_settings=0x7f090016;
-        public static final int new_calendar=0x7f090018;
-        public static final int new_event=0x7f090017;
+        public static final int Date=0x7f09000e;
+        public static final int Editor=0x7f090004;
+        public static final int EndDate=0x7f09000b;
+        public static final int EndTime=0x7f09000c;
+        public static final int EventInfoContainer=0x7f09000d;
+        public static final int EventName=0x7f090006;
+        public static final int From=0x7f090008;
+        public static final int Modify=0x7f090010;
+        public static final int Name=0x7f090003;
+        public static final int StartDate=0x7f090007;
+        public static final int StartTime=0x7f090009;
+        public static final int Time=0x7f09000f;
+        public static final int To=0x7f09000a;
+        public static final int ViewChoice=0x7f090012;
+        public static final int action_settings=0x7f090014;
+        public static final int all_calendar=0x7f090017;
+        public static final int all_events=0x7f090018;
+        public static final int new_calendar=0x7f090016;
+        public static final int new_event=0x7f090015;
     }
     public static final class layout {
         public static final int activity_all_calendar_list=0x7f030000;
@@ -79,6 +79,8 @@ public final class R {
         public static final int hint_calendar_name=0x7f05000c;
         public static final int menu_add_calendar=0x7f05000d;
         public static final int menu_add_event=0x7f050002;
+        public static final int negative_button=0x7f050017;
+        public static final int positive_button=0x7f050016;
         public static final int text_calendar_choice=0x7f050009;
         public static final int text_date_from=0x7f050006;
         public static final int text_date_to=0x7f050007;
@@ -94,6 +96,7 @@ public final class R {
         public static final int title_activity_event_show=0x7f05000a;
         public static final int title_activity_main=0x7f050003;
         public static final int title_edit_dialog=0x7f050012;
+        public static final int title_no_calendar_dialog=0x7f050015;
     }
     public static final class style {
         /** 

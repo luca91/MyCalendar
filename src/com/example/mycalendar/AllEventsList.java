@@ -15,10 +15,6 @@ import android.widget.Toast;
 
 public class AllEventsList extends ListActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 	
-	private ListView eventsList;
-	private MyCalendarDB db;
-	private Bundle current;
-	private String currentSelectedEvent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -56,14 +52,6 @@ public class AllEventsList extends ListActivity implements AdapterView.OnItemLon
 			}
 			break;
 		
-		//Modify
-		/*case 1:
-			modifyCalendar = new Intent(this, CalendarEditor.class);
-			Event anEvent = db.getSingleEvent();
-			modifyCalendar.putExtra(Event.NAME, anEvent.getName());
-			modifyCalendar.putExtra(AppCalendar.C_COLOR, aCalendar.getColor());
-			CalendarEditor.setIsModify(true);
-			startActivity(modifyCalendar); */
 		}
 		
 		}

@@ -7,7 +7,7 @@ import android.graphics.Color;
  * @author Luca Bellettati
  *
  */
-public class AppCalendar {
+public class AppCalendar extends AppItem{
 	
 	/**
 	 * Constant for the name field.
@@ -29,6 +29,7 @@ public class AppCalendar {
 	public AppCalendar(String name, String color){
 		this.name = name;
 		this.color = color;
+		super.setName(name);
 	}
 	
 	/**
