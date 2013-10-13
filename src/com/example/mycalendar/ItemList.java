@@ -9,10 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.auxiliary.AppCalendar;
-import com.example.auxiliary.AppDialogs;
-import com.example.auxiliary.AppItem;
-import com.example.auxiliary.MyCalendarDB;
+import com.example.components.AppCalendar;
+import com.example.components.AppDialogs;
+import com.example.components.AppItem;
+import com.example.database.MyCalendarDB;
 
 public abstract class ItemList extends ListActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 

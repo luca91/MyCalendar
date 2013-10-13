@@ -1,11 +1,12 @@
-package com.example.auxiliary;
+package com.example.database;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
-import com.example.auxiliary.AppCalendar;
+import com.example.components.AppCalendar;
+import com.example.components.Event;
 
 import android.content.ContentValues;
 import android.content.Context;

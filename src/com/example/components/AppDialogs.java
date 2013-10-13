@@ -1,4 +1,4 @@
-package com.example.auxiliary;
+package com.example.components;
 
 import com.example.mycalendar.ItemList;
 import com.example.mycalendar.R;

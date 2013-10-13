@@ -1,7 +1,7 @@
 package com.example.mycalendar;
 
-import com.example.auxiliary.AppCalendar;
-import com.example.auxiliary.MyCalendarDB;
+import com.example.components.AppCalendar;
+import com.example.database.MyCalendarDB;
 
 import android.app.Activity;
 import android.content.Intent;

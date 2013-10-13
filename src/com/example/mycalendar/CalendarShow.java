@@ -1,6 +1,7 @@
 package com.example.mycalendar;
 
-import com.example.auxiliary.AppCalendar;
+import com.example.components.AppCalendar;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;

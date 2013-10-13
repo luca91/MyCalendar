@@ -1,8 +1,8 @@
 package com.example.mycalendar;
 
 
-import com.example.auxiliary.AppItem;
-import com.example.auxiliary.MyCalendarDB;
+import com.example.components.AppItem;
+import com.example.database.MyCalendarDB;
 
 import android.os.Bundle;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.example.auxiliary;
+package com.example.components;
 
 import android.graphics.Color;
 

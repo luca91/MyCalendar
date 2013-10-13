@@ -1,6 +1,7 @@
 package com.example.mycalendar;
 
-import com.example.auxiliary.MyCalendarDB;
+import com.example.database.MyCalendarDB;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;

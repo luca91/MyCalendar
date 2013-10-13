@@ -1,4 +1,4 @@
-package com.example.auxiliary;
+package com.example.time_and_date;
 
 import java.lang.reflect.Array;
 import java.util.Calendar;

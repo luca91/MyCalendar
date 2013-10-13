@@ -1,6 +1,6 @@
 package com.example.mycalendar;
 
-import com.example.auxiliary.Event;
+import com.example.components.Event;
 
 import android.app.Activity;
 import android.content.Intent;

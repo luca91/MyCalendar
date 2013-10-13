@@ -3,11 +3,11 @@ package com.example.mycalendar;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
-import com.example.auxiliary.AppDialogs;
-import com.example.auxiliary.DatePickerFragment;
-import com.example.auxiliary.Event;
-import com.example.auxiliary.MyCalendarDB;
-import com.example.auxiliary.TimePickerFragment;
+import com.example.components.AppDialogs;
+import com.example.components.Event;
+import com.example.database.MyCalendarDB;
+import com.example.time_and_date.DatePickerFragment;
+import com.example.time_and_date.TimePickerFragment;
 
 import android.app.Activity;
 import android.app.Dialog;
