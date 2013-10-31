@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical"
+    tools:ignore="DuplicateIds" >
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="0dp"
+        android:minHeight="50dp"
+        android:paddingBottom="5dp" >
+
+        <TextView
+            android:id="@+id/day"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:text="@string/day"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignTop="@id/day"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/day"
+            android:src="@drawable/triangle_left" />
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignTop="@id/day"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/day"
+            android:clickable="true"
+            android:src="@drawable/triangle_right" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/daysComponentsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="180dp"
+        android:layout_above="@+id/viewType"
+        android:layout_below="@id/title"
+        android:minHeight="180dp" >
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true"
+            android:scrollbars="vertical|none" >
+        </ListView>
+
+        <RelativeLayout
+            android:id="@+id/eventsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp" >
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/viewType"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:minHeight="60dp" />
+
+</RelativeLayout>
