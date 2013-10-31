@@ -41,11 +41,14 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			"event_time_start TIME, " +
 			"event_date_end DATE," +
 			"event_time_end TIME," +
-			"event_calendar VARCHAR(30));";
+			"event_calendar VARCHAR(30),"
+			+ "event_id VARCHAR(50),"
+			+ "event_tag VARCHAR(20));";
 	public static final String CALENDAR_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS calendar " +
 					"(calendar_name VARCHAR(40), " +
-					"calendar_color VARCHAR(15));"; 
+					"calendar_color VARCHAR(15),"
+					+ "calendar_id VARCHAR(50));"; 
 
 	/**
 	 * It calls the upper constructor to create or open the app database.
@@ -177,7 +180,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 						convertDateFromDBToString(result.getString(3)), 
 						result.getString(2), 
 						result.getString(4), 
-						result.getString(5));
+						result.getString(5),
+						result.getString(7));
+				toInsert.setID(result.getString(6));
 				listNormal[i] = toInsert;
 				result.moveToNext();
 			}
@@ -245,12 +250,15 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 				null, 
 				null);
 		result.moveToFirst();
-		return new Event(result.getString(0), 
+		Event toReturn = new Event(result.getString(0), 
 				convertDateFromDBToString(result.getString(1)),
 				convertDateFromDBToString(result.getString(2)),
 				result.getString(3),
 				result.getString(4),
-				result.getString(5));
+				result.getString(5), 
+				result.getString(7));
+		toReturn.setID(result.getString(6));
+		return toReturn;
 	}
 	
 	public String convertDateFromDBToString(String inputDate){

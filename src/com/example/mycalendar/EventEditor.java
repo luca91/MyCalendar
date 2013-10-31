@@ -10,9 +10,7 @@ import com.example.time_and_date.DatePickerFragment;
 import com.example.time_and_date.TimePickerFragment;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,6 +42,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private String currentEndDate;
 	private String currentEndTime;
 	private Calendar current;
+	private String tag;
 	private ArrayAdapter<String> calendarAdapter;
 	private static boolean isModify;
 	private String[] calendars;
@@ -89,7 +88,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					currentEndDate, 
 					currentStartTime, 
 					currentEndTime, 
-					currentCalendar);
+					currentCalendar,
+					tag);
 			long result = db.addEvent(anEvent);
 			if (result != -1){
 				Intent showEvent = new Intent(this, EventShow.class);

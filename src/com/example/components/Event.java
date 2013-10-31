@@ -1,6 +1,7 @@
 package com.example.components;
 
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 /**
  *This class manage the information about an event. 
@@ -39,7 +40,9 @@ public class Event extends AppItem {
 	 */
 	public static final String CALENDAR = "com.example.mycalendar.CALENDAR";
 	private String name, calendar;
-	private String startDate, endDate, startTime, endTime;
+	private String startDate, endDate, startTime, endTime, tag;
+	private String id;
+	private UUID events_id;
 	
 	/**
 	 * 
@@ -50,13 +53,15 @@ public class Event extends AppItem {
 	 * @param endTime event end time
 	 * @param calendar event calendar
 	 */
-	public Event(String name, String startDate, String endDate, String startTime, String endTime, String calendar) {
+	public Event(String name, String startDate, String endDate, String startTime, String endTime, String calendar, String tag) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.calendar = calendar;
+		this.tag = tag;
+		id = getUUIDEvent();
 		super.setName(name);
 	}
 	
@@ -128,5 +133,22 @@ public class Event extends AppItem {
 		dateToken[1] = Integer.parseInt(tokenizer.nextToken());
 		dateToken[2] = Integer.parseInt(tokenizer.nextToken());
 		return dateToken;
+	}
+	
+	public String getUUIDEvent(){
+		events_id = UUID.randomUUID();
+		return events_id.toString();
+	}
+	
+	public String getId(){
+		return this.id;
+	}
+	
+	public String getTag(){
+		return this.tag;
+	}
+	
+	public void setID(String id){
+		this.id = id;
 	}
 }

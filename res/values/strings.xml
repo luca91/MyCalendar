@@ -3,7 +3,7 @@
 
     <string name="app_name">MyCalendar</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu_add_event">Add Event</string>
+    <string name="add_event">New Event</string>
     <string name="title_activity_main">MyCalendar</string>
     <string name="title_activity_event_editor">Create Event</string>
     <string name="text_save_button">Save</string>
@@ -14,33 +14,68 @@
     <string name="title_activity_event_show">Event Details</string>
     <string name="text_modify_button">Modify</string>
     <string name="hint_calendar_name">Name</string>
-    <string name="menu_add_calendar">Add Calendar</string>
+    <string name="add_calendar">New Calendar</string>
     <string name="title_activity_calendar_editor">Create Calendar</string>
     <string name="title_activity_calendar_show">Calendar Details</string>
+
     <string-array name="calendar_colors">
-        <item >Black</item>
-        <item >Blue</item>
-        <item >Cyan</item>
-        <item >Dark Gray</item>
-        <item >Gray</item>
-        <item >Green</item>
-        <item >Light Gray</item>
-        <item >Magenta</item>
-        <item >Red</item>
-        <item >White</item>
-        <item >Yellow</item>
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Cyan</item>
+        <item>Dark Gray</item>
+        <item>Gray</item>
+        <item>Green</item>
+        <item>Light Gray</item>
+        <item>Magenta</item>
+        <item>Red</item>
+        <item>White</item>
+        <item>Yellow</item>
     </string-array>
+
     <string name="title_activity_all_calendar_list">All Calendar</string>
     <string name="text_view_all_button">View All</string>
     <string name="title_edit_dialog">Choose an action</string>
+
     <string-array name="edit_actions">
-        <item >Delete</item>
-        <item >Modify</item>
+        <item>Delete</item>
+        <item>Modify</item>
     </string-array>
+
     <string name="title_activity_all_event_list">All Events</string>
     <string name="action_settings">Settings</string>
     <string name="title_no_calendar_dialog">No existing calendar!</string>
     <string name="positive_button">Ok</string>
     <string name="negative_button">Cancel</string>
+    <string name="month">Month</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="calendars">Calendars</string>
+    <string name="events">Events</string>
+    <string name="import_calendar">Import Calendar</string>
+    <string name="export_calendar">Export Calendar</string>
+    <string name="new_event_description">Create a new event</string>
+    <string name="new_calendar_description">Create e new local calendar</string>
+    <string name="calendars_description">Show all calendar saved locally</string>
+    <string name="events_description">Show all events of all calendars</string>
+    <string name="import_calendar_desription">Import locally an external calendar</string>
+    <string name="export_calendar_description">Export a local calendar to some standard format</string>
+    <string name="title_activity_import_calendar">ImportCalendar</string>
+    <string name="title_activity_export_calendar">ExportCalendar</string>
+    <string name="title_activity_calendar_view">Explore</string>
+
+    <string-array name="view_types">
+        <item>Day</item>
+        <item>Week</item>
+        <item>Year</item>
+        <item>Month</item>
+    </string-array>
+
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="year">Year</string>
+    <string name="title_activity_calendar_view_day">Day</string>
+    <string name="title_activity_calendar_view_week">Week</string>
+    <string name="title_activity_calendar_view_year">Year</string>
+    <string name="title_activity_calendar_view_month">Month</string>
 
 </resources>

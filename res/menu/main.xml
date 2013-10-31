@@ -5,9 +5,5 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
-    <item android:id="@+id/new_event" android:onClick="addEvent" android:title="New Event"></item>
-    <item android:id="@+id/new_calendar" android:onClick="addCalendar" android:title="New Calendar"></item>
-    <item android:id="@+id/all_calendar" android:onClick="allCalendars" android:title="Calendars"></item>
-    <item android:id="@+id/all_events" android:onClick="allEvents" android:title="Events"></item>
 
 </menu>

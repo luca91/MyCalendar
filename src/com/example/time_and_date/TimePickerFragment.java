@@ -4,7 +4,6 @@ import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import com.example.mycalendar.EventEditor;
-import com.example.mycalendar.MainActivity;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.DialogFragment;

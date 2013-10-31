@@ -1,5 +1,7 @@
 package com.example.components;
 
+import java.util.UUID;
+
 import android.graphics.Color;
 
 /**
@@ -20,6 +22,8 @@ public class AppCalendar extends AppItem{
 	public static final String C_COLOR = "com.example.aux.C_COLOR";
 	private String name;
 	private String color;
+	private String id;
+	private UUID calendar_id;
 	
 	/**
 	 * 
@@ -29,6 +33,7 @@ public class AppCalendar extends AppItem{
 	public AppCalendar(String name, String color){
 		this.name = name;
 		this.color = color;
+		id = getUUIDCalendar();
 		super.setName(name);
 	}
 	
@@ -77,6 +82,15 @@ public class AppCalendar extends AppItem{
 		if(color.equals("Yellow"))
 			return Color.YELLOW;
 		return -1;
+	}
+	
+	public String getUUIDCalendar(){
+		calendar_id = UUID.randomUUID();
+		return calendar_id.toString();
+	}
+	
+	public String getId(){
+		return this.id;
 	}
 
 }

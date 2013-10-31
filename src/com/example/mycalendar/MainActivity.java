@@ -5,12 +5,10 @@ import com.example.database.MyCalendarDB;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CalendarView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
+import android.view.View;
+
 
 /**
  * This is the class of the main activity, called at the application start. 
@@ -19,12 +17,10 @@ import android.widget.Spinner;
  */
 public class MainActivity extends Activity {
 	
+	@SuppressWarnings("unused")
 	private MyCalendarDB applicationDB;
-	private CalendarView calendar; 
-	private Spinner viewChoice; 
-	private RelativeLayout outer; 
-	private String currentCalendarLayout;
-	private Resources appResources;
+	
+	public static String defaultView;
 	
 	/**
 	 * The main activity is created.
@@ -35,11 +31,10 @@ public class MainActivity extends Activity {
         
         //The UI environment is set
         setContentView(R.layout.activity_main);
-        outer = (RelativeLayout) findViewById(R.id.CalendarContainer);
-        viewChoice = (Spinner) findViewById(R.id.ViewChoice);
 
         //At the very first time, the database is created; then this only connect the app to it.
         applicationDB = new MyCalendarDB(this); 
+        defaultView = "Month";
     }
 
     /**
@@ -55,7 +50,7 @@ public class MainActivity extends Activity {
      * It start the activity where an event is created.
      * @param m the item clicked in the menu window
      */
-    public void addEvent(MenuItem m){
+    public void addEvent(View v){
     	Intent addEvent = new Intent(this, EventEditor.class);
     	EventEditor.setIsModify(false);
     	startActivity(addEvent);
@@ -65,20 +60,50 @@ public class MainActivity extends Activity {
      * It start the activity where a calendar is created.
      * @param m the item clicked in the menu window
      */
-    public void addCalendar(MenuItem m){
+    public void addCalendar(View v){
     	Intent addCalendar = new Intent(this, CalendarEditor.class);
     	CalendarEditor.setIsModify(false);
     	startActivity(addCalendar);
     }
     
-    public void allCalendars(MenuItem m){
+    public void allCalendars(View v){
     	Intent allCalendar = new Intent(this, AllCalendarList.class);
     	startActivity(allCalendar);
     }
     
-    public void allEvents(MenuItem m){
-    	Intent allEvent = new Intent(this, AllEventsList.class);
-    	startActivity(allEvent);
+    public void allEvents(View v){
+    	Intent allEvent;
+    	if(defaultView.equals("Day")){
+    		allEvent = new Intent(this, CalendarViewDay.class);
+    		startActivity(allEvent);
+    	}
+    	if(defaultView.equals("Week")){
+    		allEvent = new Intent(this, CalendarViewWeek.class);
+			startActivity(allEvent);
+    	}
+    	if(defaultView.equals("Month")){
+    		allEvent = new Intent(this, CalendarViewMonth.class);
+			startActivity(allEvent);
+    	}
+    	if(defaultView.equals("Year")){
+    		allEvent = new Intent(this, CalendarViewYear.class);
+			startActivity(allEvent);
+    	}
+    }
+    
+    public void importCalendar(View v){
+    	Intent importCalendar = new Intent(this, ImportCalendar.class);
+    	startActivity(importCalendar);
+    }
+    
+    public void exportCalendar(View v){
+    	Intent exportCalendar = new Intent(this, ExportCalendar.class);
+    	startActivity(exportCalendar);
+    }
+    
+    public void setting(MenuItem m){
+    	Intent settings = new Intent(this, Settings.class);
+    	startActivity(settings);
     }
     
 }

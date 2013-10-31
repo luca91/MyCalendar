@@ -8,6 +8,9 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -24,27 +27,99 @@
         </activity>
         <activity
             android:name="com.example.mycalendar.EventEditor"
-            android:label="@string/title_activity_event_editor" >
+            android:label="@string/title_activity_event_editor"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.example.mycalendar.EventShow"
-            android:label="@string/title_activity_event_show" >
+            android:label="@string/title_activity_event_show"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.example.mycalendar.CalendarShow"
-            android:label="@string/title_activity_calendar_show" >
+            android:label="@string/title_activity_calendar_show"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.example.mycalendar.CalendarEditor"
-            android:label="@string/title_activity_calendar_editor" >
+            android:label="@string/title_activity_calendar_editor"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.example.mycalendar.AllEventsList"
-            android:label="@string/title_activity_all_event_list" >
+            android:label="@string/title_activity_all_event_list"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.example.mycalendar.AllCalendarList"
-            android:label="@string/title_activity_all_calendar_list" >
+            android:label="@string/title_activity_all_calendar_list"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.Settings"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.ImportCalendar"
+            android:label="@string/title_activity_import_calendar"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.ExportCalendar"
+            android:label="@string/title_activity_export_calendar"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.CalendarViews"
+            android:label="@string/title_activity_calendar_view"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.CalendarViewDay"
+            android:label="@string/title_activity_calendar_view_day" >
+        </activity>
+          <activity
+            android:name="com.example.mycalendar.CalendarViewMonth"
+            android:label="@string/title_activity_calendar_view_month" >
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.CalendarViewWeek"
+            android:label="@string/title_activity_calendar_view_week" >
+        </activity>
+        <activity
+            android:name="com.example.mycalendar.CalendarViewYear"
+            android:label="@string/title_activity_calendar_view_year" >
         </activity>
     </application>
 
