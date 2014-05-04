@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/list"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/eventsListObjectContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-</ListView>
+    <Spinner
+        android:id="@+id/viewTypeAllEvents"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewTypeAllEvents"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" >
+
+    </ListView>
+
+</RelativeLayout>

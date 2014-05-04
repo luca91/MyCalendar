@@ -6,7 +6,7 @@
     <RelativeLayout
         android:id="@+id/EventInfoContainer"
         android:layout_width="fill_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" >
 
         <TextView
@@ -14,12 +14,16 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/Name"
+            android:layout_alignRight="@id/Name"
             android:layout_below="@+id/Name"
             android:layout_centerHorizontal="true"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -29,18 +33,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/Date"
+            android:layout_alignRight="@+id/Date"
             android:layout_below="@+id/Date"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </RelativeLayout>
 
     <Button
-        android:id="@+id/Modify"
-        android:layout_width="fill_parent"
+        android:id="@+id/removeEnventButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBaseline="@+id/Modify"
+        android:layout_alignLeft="@+id/fakeView"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/EventInfoContainer"
+        android:layout_toEndOf="@id/Modify"
+        android:text="@string/text_remove_button" />
+
+    <Button
+        android:id="@+id/Modify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/fakeView"
+        android:layout_below="@+id/EventInfoContainer"
+        android:layout_marginTop="5dp"
         android:onClick="modifyEvent"
         android:text="@string/text_modify_button" />
+    
+     <View
+         android:id="@+id/fakeView"
+         android:layout_width="0dp"
+         android:layout_height="0dp"
+         android:layout_centerInParent="true"
+         android:visibility="invisible" />
 
 </RelativeLayout>

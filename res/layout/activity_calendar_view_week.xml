@@ -1,80 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/containerWeek"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:clickable="true"
     android:orientation="vertical"
+    android:paddingBottom="1dp"
+    android:paddingLeft="1dp"
     tools:ignore="DuplicateIds" >
 
-    <RelativeLayout
-        android:id="@+id/title"
+    <View
+        android:id="@+id/fakeView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="false"
+        android:layout_marginLeft="100dp"
+        android:visibility="invisible" />
+
+    <Spinner
+        android:id="@+id/viewTypeWeek"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="5dp"
-        android:paddingBottom="5dp" >
-
-        <TextView
-            android:id="@+id/day"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_horizontal"
-            android:text="@string/week"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_alignTop="@id/day"
-            android:layout_marginLeft="5dp"
-            android:layout_toLeftOf="@+id/day"
-            android:src="@drawable/triangle_left" />
-
-        <ImageView
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_alignTop="@id/day"
-            android:layout_marginRight="5dp"
-            android:layout_toRightOf="@+id/day"
-            android:clickable="true"
-            android:src="@drawable/triangle_right" />
-
-    </RelativeLayout>
-
-    <GridView
-        android:id="@+id/gridview"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/viewType"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/title"
-        android:horizontalSpacing="1dp"
-        android:numColumns="7"
-        android:paddingBottom="1dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
-        android:paddingTop="1dp"
-        android:verticalSpacing="1dp" >
-
-    </GridView>
-
-    <Spinner
-        android:id="@+id/viewType"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@id/fakeView"
         android:minHeight="60dp" />
+
+    <TextView
+        android:id="@+id/selectedWeek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/fakeView"
+        android:layout_centerHorizontal="false"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/viewTypeWeek"
+        android:gravity="center_horizontal"
+        android:text="@string/week"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/weekDaysContainer"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/viewTypeWeek"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/eventsObjectContainerWeek"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/weekDaysContainer"
+        android:fillViewport="true"
+        android:overScrollMode="ifContentScrolls" >
+
+        <RelativeLayout
+            android:id="@+id/gridContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/hoursContainerWeek"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical"
+                android:overScrollMode="ifContentScrolls"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp"
+                android:scrollbars="vertical" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/backgroundAsGridWeek"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="1dp"
+                android:layout_toRightOf="@id/hoursContainerWeek"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@id/hoursContainerWeek"
+                android:layout_toRightOf="@id/hoursContainerWeek" >
+
+                <RelativeLayout
+                    android:id="@+id/eventsContainerWeek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp" >
+                </RelativeLayout>
+            </FrameLayout>
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

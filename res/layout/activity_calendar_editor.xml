@@ -19,14 +19,6 @@
         <requestFocus />
     </EditText>
 
-    <Spinner
-        android:id="@+id/CalendarColor"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/CalendarName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
-
     <Button
         android:id="@+id/Create"
         android:layout_width="match_parent"
@@ -35,5 +27,26 @@
         android:layout_alignParentRight="true"
         android:onClick="createModifyCalendar"
         android:text="@string/text_save_button" />
+
+    <Spinner
+        android:id="@+id/CalendarColor"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/calendarEmail"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/calendarEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/CalendarName"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="@string/hint_calendar_email"
+        android:inputType="textEmailAddress" />
 
 </RelativeLayout>

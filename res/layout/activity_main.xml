@@ -39,7 +39,6 @@
             android:text="@string/add_event"
             android:textSize="20sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -137,35 +136,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/import_calendars"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="importCalendar"
-        android:paddingTop="0dp" >
-
-        <ImageView
-            android:id="@+id/icon_import_calendar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/import_calendar_desription"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_launcher" />
-
-        <TextView
-            android:id="@+id/import_calendars_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
-            android:fontFamily="@android:string/cancel"
-            android:text="@string/import_calendar"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/export_calendars"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -189,6 +159,64 @@
             android:layout_marginTop="3dp"
             android:fontFamily="@android:string/cancel"
             android:text="@string/export_calendar"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/time_finder"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="timeFinder"
+        android:paddingTop="0dp" >
+
+        <ImageView
+            android:id="@+id/icon_time_finders"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/export_calendar_description"
+            android:scaleType="fitStart"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/time_finder_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="3dp"
+            android:fontFamily="@android:string/cancel"
+            android:text="@string/time_finder"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    
+       <LinearLayout
+        android:id="@+id/settings"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="settings"
+        android:paddingTop="0dp" >
+
+        <ImageView
+            android:id="@+id/icon_settings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/export_calendar_description"
+            android:scaleType="fitStart"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/settings_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="3dp"
+            android:fontFamily="@android:string/cancel"
+            android:text="@string/settings_text"
             android:textSize="20sp"
             android:textStyle="bold" />
 
