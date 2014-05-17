@@ -8,12 +8,17 @@ import java.util.StringTokenizer;
 
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
+import com.mycalendar.tools.AppDialogs;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Calendars;
 import android.widget.Toast;
 
 /**
@@ -46,6 +51,10 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			"event_end_time TIME," +
 			"event_calendar_id INTEGER,"
 			+ "event_all_day INTEGER DEFAULT 0,"
+			+ "event_parent_id INTEGER,"
+			+ "event_flexibility VARCHAR DEFAULT None,"
+			+ "event_flexibility_range INTEGER DEFAULT 0,"
+			+ "event_repetition_id INTEGER 15,"
 			+ "event_notes VARCHAR(255) DEFAULT NULL,"
 			+ "UNIQUE(event_name, event_start_date, event_start_time, event_calendar_id));";
 	
@@ -54,20 +63,26 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 					"(calendar_id INTEGER PRIMARY KEY ,"
 					+ "calendar_name VARCHAR(40), " +
 					"calendar_color VARCHAR(15),"
-					+ "calendar_email VARCHAR(70) DEFAULT NULL,"
-					+ "UNIQUE(calendar_name, calendar_color, calendar_email));"; 
-	
-	public static final String SYNCH_CALENDAR_TABLE_CREATE = 
-			"CREATE TABLE IF NOT EXISTS synch_calendars " +
-					"(synch_calendar_id INTEGER AUTO INCREMENT,"
-					+ "synch_calendar_name VARCHAR(40));"; 
+					+ "calendar_export INTEGER DEFAULT 0,"
+					+ "calendar_local INTEGER DEFAULT 1,"
+					+ "calendar_google_id INTEGER DEFAULT NULL,"
+					+ "UNIQUE(calendar_name, calendar_color));";
 	
 	public static final String REMINDER_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS reminders " +
 					"(reminder_id INTEGER,"
 					+ "reminder_event_id INTEGER "
 					+ "reminder_date_time VARCHAR(30),"
-					+ "reminder_time_chosen VARCHAR(10));";  
+					+ "reminder_time_chosen VARCHAR(10));";
+	
+	public static final String[] EVENT_PROJECTION = new String[] {
+		CalendarContract.Calendars._ID,                           // 0
+		CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
+		CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
+		CalendarContract.Calendars.NAME,							 // 3
+		CalendarContract.Calendars.OWNER_ACCOUNT,                 // 4
+		CalendarContract.Calendars.CALENDAR_COLOR				 // 5
+	};
 	
 	private Context ctx;
 
@@ -87,11 +102,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 //		db.execSQL("DROP TABLE IF EXISTS events;");
 //		db.execSQL("DROP TABLE IF EXISTS calendars;");
-//		db.execSQL("DROP TABLE IF EXISTS synch_calendars;");
 //		db.execSQL("DROP TABLE IF EXISTS reminders;");
 		db.execSQL(EVENTS_TABLE_CREATE);
 		db.execSQL(CALENDAR_TABLE_CREATE);
-		db.execSQL(SYNCH_CALENDAR_TABLE_CREATE);
 		db.execSQL(REMINDER_TABLE_CREATE);
 	}
 
@@ -104,12 +117,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public void onOpen(SQLiteDatabase db){
 //		db.execSQL("DROP TABLE IF EXISTS events;");
 //		db.execSQL("DROP TABLE IF EXISTS calendars;");
-//		db.execSQL("DROP TABLE IF EXISTS synch_calendars;");
 //		db.execSQL("DROP TABLE IF EXISTS reminders;");
 		db.execSQL(EVENTS_TABLE_CREATE);
 		db.execSQL(CALENDAR_TABLE_CREATE);
-		db.execSQL(SYNCH_CALENDAR_TABLE_CREATE);
 		db.execSQL(REMINDER_TABLE_CREATE);
+		
 	}
 	
 	/**
@@ -156,23 +168,28 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		ContentValues toInsert = new ContentValues();
 		toInsert.put("calendar_name", aCalendar.getName());
 		toInsert.put("calendar_color", aCalendar.getColor());
+		toInsert.put("calendar_local", AppCalendar.parseBooleanToInt(aCalendar.getIsLocal()));
+		toInsert.put("calendar_google_id", aCalendar.getServerID());
+		toInsert.put("calendar_local", AppCalendar.parseBooleanToInt(aCalendar.getIsLocal()));
+		toInsert.put("calendar_export", AppCalendar.parseBooleanToInt(aCalendar.getIsSync()));
 		return this.getWritableDatabase().insert("calendars", null, toInsert);
 	}
 	
-	public AppCalendar[] getCompleteCalendarList(SQLiteDatabase db){
-		String[] columns = {"calendar_name", "calendar_color"};
-		Cursor result = db.query("calendars", columns, null, null, null, null, null);
-		AppCalendar[] calendarList = new AppCalendar[result.getCount()];
+	public ArrayList<AppCalendar> getCompleteCalendarList(){
+		Cursor result = this.getReadableDatabase().query("calendars", null, null, null, null, null, null);
+		ArrayList<AppCalendar> calendarList = new ArrayList<AppCalendar>();
+		Toast.makeText(ctx, "Calendar count: " + result.getCount(), Toast.LENGTH_SHORT).show();
 		result.moveToFirst();
-		for(int i = 0; i < result.getCount(); i++){
-			if(!result.isAfterLast()){
-				String name = result.getString(1);
-				String color = result.getString(2);
-				String email = result.getString(3); 
-				AppCalendar aCalendar = new AppCalendar(name, color, email);
-				calendarList[i] = aCalendar;
-				result.moveToNext();
-			}
+		int rows = result.getCount();
+		boolean count = result.moveToFirst();
+		for(int i = 0; count && (i < rows); i++){
+			String name = result.getString(1);
+			String color = result.getString(2);
+			AppCalendar aCalendar = new AppCalendar(name, color);
+			aCalendar.setID(result.getInt(0));
+			aCalendar.setIsSync(Boolean.valueOf(result.getString(3)));
+			calendarList.add(aCalendar);
+			result.moveToNext();
 		}
 		return calendarList;
 	} 
@@ -195,7 +212,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		String[] values = {calendarName};
 		Cursor result = this.getReadableDatabase().query("calendars", null, "calendar_name=?", values, null, null, null);
 		result.moveToFirst();
-		return new AppCalendar(result.getString(1), result.getString(2), result.getString(3));
+		return new AppCalendar(result.getString(1), result.getString(2));
 	}
 	
 	public AppCalendar getCalendarByID(int id){
@@ -203,7 +220,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		Cursor result = this.getReadableDatabase().query("calendars", null, "ROWID=?", values, null, null, null);
 		boolean check = result.moveToFirst();
 		if(check){
-			AppCalendar ac = new AppCalendar(result.getString(1), result.getString(2), result.getString(3));
+			AppCalendar ac = new AppCalendar(result.getString(1), result.getString(2));
 			ac.setID(Integer.parseInt(result.getString(0)));
 			return ac;
 		}
@@ -215,8 +232,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		String[] values = {name};
 		Cursor result = this.getReadableDatabase().query("calendars", null, "calendar_name=?", values, null, null, null);
 		result.moveToFirst();
-		AppCalendar ac = new AppCalendar(result.getString(1), result.getString(2), result.getString(3));
+		AppCalendar ac = new AppCalendar(result.getString(1), result.getString(2));
 		ac.setID(result.getInt(0));
+		ac.setIsSync(Boolean.valueOf(result.getString(3)));
 		return ac;
 	}
 	
@@ -276,7 +294,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			e.add(ev);
 			result.moveToNext();
 		}
-		
 		return e;
 	}
 	
@@ -349,9 +366,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public String convertDateFromDBToString(String inputDate){
 		String outputDate = "";
 		StringTokenizer tz = new StringTokenizer(inputDate, "-");
-		String day = tz.nextToken();
-		String month = tz.nextToken();
 		String year = tz.nextToken();
+		String month = tz.nextToken();
+		String day = tz.nextToken();
 		outputDate = day+"/"+month+"/"+year;
 		return outputDate;
 	}
@@ -419,5 +436,51 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		}
 		else
 		return null;
+	}
+	
+	public void importGoogleAccountCalendars(){
+		Cursor cur = null;
+		ContentResolver cr = ctx.getContentResolver();
+		Uri uri = CalendarContract.Calendars.CONTENT_URI;   
+		String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND (" 
+		                        + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
+		                        + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+		String[] selectionArgs = new String[] {"lucabelles@gmail.com", "com.google",
+		        "lucabelles@gmail.com"}; 
+		// Submit the query and get a Cursor object back. 
+		cur = cr.query(uri, null, null, null, null);
+		while (cur.moveToNext()) {
+		    long calID = 0;
+		    String displayName = null;
+		    String accountName = null;
+		    String ownerName = null;
+		    String color = null;
+		    String name = null;
+		      
+		    // Get the field values
+		    calID = cur.getLong(0);
+		    displayName = cur.getString(2);
+		    accountName = cur.getString(1);
+		    ownerName = cur.getString(4);
+		    color = cur.getString(5);
+		    name = cur.getString(3);
+		    AppCalendar fromServer = new AppCalendar(name, AppCalendar.parseHexStringColor(color));
+		    fromServer.setServerID((int) calID);
+		    fromServer.setIsLocal(false);
+		    fromServer.setIsSync(true);
+		    if(!checkImportCalendar(fromServer.getServerID()))
+		    	addCalendar(fromServer);
+		    else
+		    	continue;
+		}
+		AppDialogs d = new AppDialogs(ctx);
+		d.setMessage("Sync with Google completed.");
+		d.setPositiveButton();
+	}
+	
+	public boolean checkImportCalendar(int serverID){
+		String[] selArgs = {String.valueOf(serverID)};
+		Cursor res = this.getReadableDatabase().query("calendars", null, "calendar_google_id=?", selArgs, null, null, null);
+		return res.moveToFirst();
 	}
 }

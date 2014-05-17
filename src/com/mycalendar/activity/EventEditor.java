@@ -39,7 +39,13 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private Button startTime;
 	private Button endDate;
 	private Button endTime;
-	private MyCalendarDB db = new MyCalendarDB(this); 
+	private CheckBox allDay;
+	private Spinner flexibility;
+	private EditText flexibilityRange;
+	private Spinner reminder;
+	private Spinner repetition;
+	private EditText notesArea;
+	private MyCalendarDB db;
 	private boolean dateAlreadySet = false;
 	private boolean timeAlreadySet = false;
 	private String currentCalendar;
@@ -47,6 +53,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private String currentStartTime;
 	private String currentEndDate;
 	private String currentEndTime;
+	private int flexRange;
+	private String flexPref;
 	private Calendar current;
 	private ArrayAdapter<String> calendarAdapter;
 	private ArrayAdapter<CharSequence> reminderAdapter;
@@ -54,13 +62,9 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private static boolean isModify;
 	private String[] calendars;
 	private AppDialogs dialog;
-	private CheckBox allDay;
 	private RelativeLayout elemsContainer;
-	private EditText notesArea;
 	private String timeChosen;
 	private Event anEvent;
-	private Spinner reminder;
-	private Spinner repetition;
 	private String repetitionChosen;
 	private int id;
 	
@@ -71,18 +75,20 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_editor);
-		
+		db = MainActivity.getAppDB();
 		
 		
 		//The button of the layout are connected to an object in the class
 		elemsContainer = (RelativeLayout) findViewById(R.id.Editor);
+		calendar = (Spinner) findViewById(R.id.Calendar);
 		eventName = (EditText) findViewById(R.id.EventName);
 		startDate = (Button) findViewById(R.id.StartDate);
 		startTime = (Button) findViewById(R.id.StartTime);
 		endDate = (Button) findViewById(R.id.EndDate);
 		endTime = (Button) findViewById(R.id.EndTime);
-		calendar = (Spinner) findViewById(R.id.Calendar);
 		allDay = (CheckBox) findViewById(R.id.allDay);
+		flexibility = (Spinner) findViewById(R.id.flexible);
+		flexibilityRange = (EditText) findViewById(R.id.flexibility_range);
 		notesArea = (EditText) findViewById(R.id.notesArea);
 		reminder = (Spinner) findViewById(R.id.reminderSpinner);
 		repetition = (Spinner) findViewById(R.id.repeatSpinner);
@@ -93,6 +99,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		calendar.setAdapter(calendarAdapter);
 		setReminderOptionsAdapter();
 		setRepetitionOptionsAdapter();
+		setFlexibilityPreferenceAdapter();
 		
 		//checks if an event has to be create or modify
 		if(!getIsModify())
@@ -131,6 +138,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 				if(allDay.isChecked()){
 					anEvent.setAllDay(true);
 					currentEndTime = currentStartTime = "00:00";
+				}
+				if(!flexPref.equals("None")){
+					anEvent.setFlexibility(flexPref);
+					anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
 				}
 				long result;
 				if(!isModify)
@@ -466,8 +477,15 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			currentCalendar = (String) arg0.getItemAtPosition(arg2);
 		else if(arg1.getId() == R.id.reminderSpinner)
 			timeChosen = (String) arg0.getItemAtPosition(arg2);
-		else
+		else if(arg1.getId() == R.id.repeatSpinner)
 			repetitionChosen = (String) arg0.getItemAtPosition(arg2);
+		else{
+			flexPref = (String) arg0.getItemAtPosition(arg2);
+			if(flexPref.equals("None"))
+				flexibilityRange.setVisibility(View.INVISIBLE);
+			else
+				flexibilityRange.setVisibility(View.VISIBLE);
+		}
 		
 	}
 
@@ -595,5 +613,12 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		repetitionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		repetition.setOnItemSelectedListener(this);
 		repetition.setAdapter(repetitionAdapter);
+	}
+	
+	public void setFlexibilityPreferenceAdapter(){
+		ArrayAdapter<CharSequence> flexibilityAdapter = ArrayAdapter.createFromResource(this, R.array.flexibility_option, android.R.layout.simple_spinner_item);
+		flexibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		flexibility.setOnItemSelectedListener(this);
+		flexibility.setAdapter(flexibilityAdapter);
 	}
 }

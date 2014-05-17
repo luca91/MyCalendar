@@ -3,13 +3,15 @@ package com.mycalendar.activity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 import com.example.mycalendar.R;
 import com.mycalendar.calendar.CalendarAdapter;
-import com.mycalendar.calendar.EventsListAdapter;
 import com.mycalendar.calendar.Utility;
+import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
+import com.mycalendar.database.MyCalendarDB;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -47,11 +49,13 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	private LinearLayout weekDayGrid;
 	private LinearLayout daysContainer;
 	ArrayAdapter<CharSequence> adapterViewTypes;
+	private MyCalendarDB db;
+	private RelativeLayout eventsObjectContainer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		calendar = (GregorianCalendar) new GregorianCalendar(TimeZone.getTimeZone("Europe/Rome"));
+		setCalendar(Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome")));
 		setInitialState(actualView);
 	}
 	
@@ -63,6 +67,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			selectedTimePeriod = (TextView) findViewById(R.id.selectedDay);
 			hours = (LinearLayout) findViewById(R.id.hoursContainerDay);
 			weekDayGrid = (LinearLayout) findViewById(R.id.backgroundAsGridDay);
+			eventsObjectContainer = (RelativeLayout) findViewById(R.id.eventsContainerDay);
+			list = db.getEventsByDay(calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)-1)+"-"+calendar.get(Calendar.DAY_OF_MONTH));
 			setDayLayoutObjects();
 			break;
 		case "Week":
@@ -291,5 +297,36 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setEventsObjectShape(){
+		for(int i = 0; i < list.size(); i++){
+			Event current = list.get(i);
+			TextView object = new TextView(this);
+			object.setText(current.getName());
+			RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, calculateObejctHeight(current)));
+			rp.setMargins(2, calculateObjectPosition(current), 2, 0);
+			AppCalendar ac = db.getCalendarByName(current.getName());
+			object.setBackgroundColor(AppCalendar.colorFromStringToInt(ac.getColor()));
+			eventsObjectContainer.addView(object, rp);
+		}
+	}
+	
+	public int calculateObejctHeight(Event e){
+		int[] timeStart = e.getTimeToken("start");
+		int[] timeEnd = e.getTimeToken("End");
+		int hourInterval = timeEnd[0]-timeStart[0];
+		int addHeight = 100/(60/(timeEnd[1]-timeStart[1]));
+		int height = (100 * hourInterval) + (100 * addHeight) + (2 * hourInterval);
+		return height;
+	}
+	
+	public int calculateObjectPosition(Event e){
+		int[] timeStart = e.getTimeToken("start");
+		int[] timeEnd = e.getTimeToken("End");
+		int hourInterval = timeEnd[0]-timeStart[0];
+		int addMargin = 100/(60/timeStart[1]);
+		int height = (100 * hourInterval) + (100 * addMargin) + (2 * timeStart[0]);
+		return height;
 	}
 }

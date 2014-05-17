@@ -35,7 +35,7 @@ public class CalendarShow extends Activity {
 			calendar.setTextColor(Color.BLACK);
 		else
 			calendar.setTextColor(Color.WHITE);
-		calendar.setBackgroundColor(AppCalendar.colorFromStringToInt(color));
+		calendar.setBackgroundColor(Color.parseColor(color));
 	}
 	
 	/**

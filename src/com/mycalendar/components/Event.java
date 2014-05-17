@@ -47,6 +47,10 @@ public class Event extends AppItem {
 	private boolean allDay;
 	private String notes;
 	private String calendar;
+	private String flexibility;
+	private int flexibilityRange;
+	private Reminder reminder;
+	private String repetition;
 	
 	/**
 	 * 
@@ -165,5 +169,29 @@ public class Event extends AppItem {
 			return 1;
 		else
 			return 0;
+	}
+	
+	public void setReminder(Reminder r){
+		reminder = r;
+	}
+	
+	public Reminder getReminder(){
+		return reminder;
+	}
+	
+	public void setFlexibility(String f){
+		flexibility = f;
+	}
+	
+	public String getFlexibility(){
+		return flexibility;
+	}
+	
+	public void setFlexibilityRange(int fr){
+		flexibilityRange = fr;
+	}
+	
+	public int getFlexibilityRange(){
+		return flexibilityRange;
 	}
 }

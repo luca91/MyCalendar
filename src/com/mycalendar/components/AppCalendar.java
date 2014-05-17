@@ -23,19 +23,20 @@ public class AppCalendar{
 	public static final String CAL_EMAIL = "com.example.aux.C_EMAIL";
 	private String name;
 	private String color;
-	private String email;
 	private int id;
+	private int serverID;
+	private boolean isSync;
+	private boolean isLocal;
 	
 	/**
 	 * 
 	 * @param name the calendar name
 	 * @param color the color associated to this calendar
 	 */
-	public AppCalendar(String name, String color, String calendarEmail){
+	public AppCalendar(String name, String color){
 		this.name = name;
 		this.color = color;
-		email = calendarEmail;
-		id = -1;
+		isLocal = true;
 	}
 	
 	/**
@@ -62,20 +63,36 @@ public class AppCalendar{
 		this.color = color;
 	}
 	
-	public void setEmail(String email){
-		this.email = email;
-	}
-	
-	public String getEmail(){
-		return email;
-	}
-	
 	public void setID(int id){
 		this.id = id;
 	}
 	
 	public int getID(){
 		return id;
+	}
+	
+	public void setIsSync(boolean sync){
+		isSync = sync;
+	}
+	
+	public boolean getIsSync(){
+		return isSync;
+	}
+	
+	public void setIsLocal(boolean isLocal){
+		this.isLocal = isLocal;
+	}
+	
+	public boolean getIsLocal(){
+		return isLocal;
+	}
+	
+	public void setServerID(int id){
+		serverID = id;
+	}
+	
+	public int getServerID(){
+		return serverID;
 	}
 	
 	/**
@@ -107,5 +124,17 @@ public class AppCalendar{
 		if(color.equals("Yellow"))
 			return Color.YELLOW;
 		return -1;
+	}
+	
+	public static int parseBooleanToInt(boolean b){
+		if(b)
+			return 1;
+		else 
+			return 0;
+	}
+	
+	public static String parseHexStringColor(String c){
+		int i = Integer.parseInt(c, 16);
+		return String.valueOf(i);
 	}
 }

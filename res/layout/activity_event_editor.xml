@@ -102,17 +102,8 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_below="@id/EndDate"
-	            android:layout_marginTop="20dp"
-	            android:text="@string/ text_all_day" />
-
-	        <TextView
-	            android:id="@+id/reminder"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_below="@+id/repeatSpinner"
 	            android:layout_marginTop="15dp"
-	            android:text="@string/text_reminder"
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            android:text="@string/ text_all_day" />
 
 	        <EditText
 	            android:id="@+id/notesArea"
@@ -130,25 +121,23 @@
 	            android:lines="1"
 	            android:maxLines="5" />
 
-	        <TextView
-	            android:id="@+id/repeat"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_below="@id/allDay"
-	            android:layout_marginRight="5dp"
-	            android:layout_marginTop="15dp"
-	            android:text="@string/text_repeat"
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	        <View
+	            android:id="@+id/fakeView"
+	            android:layout_width="0dp"
+	            android:layout_height="0dp"
+	            android:layout_centerHorizontal="true"
+	            android:layout_centerInParent="false"
+	            android:layout_marginLeft="100dp"
+	            android:visibility="invisible" />
 
 	        <Spinner
 	            android:id="@+id/repeatSpinner"
-	            android:layout_width="wrap_content"
+	            android:layout_width="match_parent"
 	            android:layout_height="40dp"
-	            android:layout_alignParentRight="true"
-	            android:layout_alignRight="@id/EventName"
-	            android:layout_below="@id/allDay"
-	            android:layout_marginTop="5dp"
-	            android:layout_toRightOf="@id/repeat" />
+	            android:layout_alignLeft="@id/fakeView"
+	            android:layout_alignParentRight="false"
+	            android:layout_below="@+id/flexible"
+	            android:layout_marginTop="5dp" />
 
 	        <Button
 	            android:id="@+id/Create"
@@ -161,14 +150,44 @@
 
 	        <Spinner
 	            android:id="@+id/reminderSpinner"
+	            android:layout_width="match_parent"
+	            android:layout_height="40dp"
+	            android:layout_alignRight="@id/fakeView"
+	            android:layout_below="@id/flexible"
+	            android:layout_centerHorizontal="true"
+	            android:layout_marginTop="5dp" />
+
+	        <Spinner
+	            android:id="@+id/flexible"
 	            android:layout_width="wrap_content"
 	            android:layout_height="40dp"
-	            android:layout_alignLeft="@id/repeatSpinner"
-	            android:layout_alignRight="@id/EventName"
-	            android:layout_below="@+id/repeatSpinner"
-	            android:layout_centerHorizontal="true"
-	            android:layout_marginTop="5dp"
-	            android:layout_toRightOf="@id/reminder" />
+	            android:layout_alignRight="@id/EndDate"
+	            android:layout_below="@id/allDay"
+	            android:layout_marginLeft="7dp"
+	            android:layout_marginRight="0dp"
+	            android:layout_toRightOf="@+id/flexibility_text" />
+
+	        <EditText
+	            android:id="@+id/flexibility_range"
+	            android:layout_width="40dp"
+	            android:layout_height="wrap_content"
+	            android:layout_alignBottom="@+id/flexible"
+	            android:layout_alignParentLeft="false"
+	            android:layout_toRightOf="@id/flexible"
+	            android:ems="10"
+	            android:inputType="number"
+	            android:text="1"
+	            android:textAlignment="center" />
+
+	        <TextView
+	            android:id="@+id/flexibility_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="false"
+	            android:layout_alignTop="@id/flexible"
+	            android:layout_marginTop="6dp"
+	            android:text="@string/text_flexibility"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	    </RelativeLayout>
 

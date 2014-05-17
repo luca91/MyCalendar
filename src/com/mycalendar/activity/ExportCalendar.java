@@ -1,21 +1,69 @@
 package com.mycalendar.activity;
 
-import com.example.mycalendar.R;
+import java.io.IOException;
 
+import com.example.mycalendar.R;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.calendar.CalendarRequest;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Calendar;
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract.Calendars;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class ExportCalendar extends Activity {
+	
+	private static final String AUTHORITY = "com.mycalendar.android.datasync.provider";
+	private static final String ACCOUNT_TYPE = "gmail.com";
+	private static final String ACCOUNT = "lucabelles";
+	private Account account;
+	private ContentResolver resolver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_export_calendar);
 		setupActionBar();
+		account = createSyncAccount(this);
+		resolver = getContentResolver();
+		ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
 	}
+	
+	public static Account createSyncAccount(Context context) {
+        // Create the account type and default account
+        Account fakeAccount = new Account(
+                ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(
+                        ACCOUNT_SERVICE);
+      
+        if (accountManager.addAccountExplicitly(fakeAccount, null, null)) {
+           
+        } else {
+           
+        }
+        return fakeAccount;
+    }
+	
+	static Uri asSyncAdapter(Uri uri, String account, String accountType) {
+	    return uri.buildUpon()
+	        .appendQueryParameter(android.provider.CalendarContract.CALLER_IS_SYNCADAPTER,"true")
+	        .appendQueryParameter(Calendars.ACCOUNT_NAME, account)
+	        .appendQueryParameter(Calendars.ACCOUNT_TYPE, accountType).build();
+	 }
 	
 	/**
 	 * Set up the {@link android.app.ActionBar}.
@@ -48,6 +96,25 @@ public class ExportCalendar extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void addCalendarOnGoogleAccount() throws IOException{
+		Calendar calendar = new Calendar();
+		calendar.setSummary("calendarSummary");
+		calendar.setTimeZone("Europe/Rome");
+		
+		HttpTransport httpTransport = new NetHttpTransport();
+		JacksonFactory jsonFactory = new JacksonFactory();
+		
+//		 GoogleAccessProtectedResource accessProtectedResource = new GoogleAccessProtectedResource(
+//			        response.accessToken, httpTransport, jsonFactory, clientId, clientSecret,
+//			        response.refreshToken);
+		
+		com.google.api.services.calendar.Calendar service = new com.google.api.services.calendar.Calendar(new NetHttpTransport(), jsonFactory, null);
+
+		com.google.api.services.calendar.model.Calendar createdCalendar = service.calendars().insert(calendar).execute();
+
+		System.out.println(createdCalendar.getId());
 	}
 
 }

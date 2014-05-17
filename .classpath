@@ -6,5 +6,9 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="/home/luca/android-sdk-linux/platforms/android-19/android.jar"/>
+	<classpathentry kind="lib" path="/home/luca/Packages/calendar/google-api-services-calendar-v3-rev82-1.18.0-rc.jar"/>
+	<classpathentry kind="lib" path="/home/luca/Packages/google-api-java-client/libs/google-http-client-1.17.0-rc.jar"/>
+	<classpathentry kind="lib" path="/home/luca/Packages/google-api-java-client/libs/google-http-client-jackson-1.17.0-rc.jar"/>
+	<classpathentry kind="lib" path="/home/luca/Packages/google-api-java-client/libs/google-api-client-1.17.0-rc.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

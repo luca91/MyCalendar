@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.example.mycalendar.R;
 import com.mycalendar.calendar.CalendarAdapter;
-import com.mycalendar.calendar.EventsListAdapter;
 import com.mycalendar.components.AppItem;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;

@@ -34,19 +34,7 @@
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/calendarEmail"
-        android:layout_marginTop="20dp" />
-
-    <EditText
-        android:id="@+id/calendarEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/CalendarName"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="@string/hint_calendar_email"
-        android:inputType="textEmailAddress" />
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

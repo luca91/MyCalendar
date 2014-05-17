@@ -101,5 +101,16 @@
     </string-array>
     <string name="text_remove_button">Remove</string>
     <string name="title_activity_events_view">Events</string>
+    <string name="text_import_calendar_button">Import</string>
+    <string name="text_export_calendar_button">Export</string>
+    <string name="text_flexible">Flexible</string>
+    <string-array name="flexibility_option"><item>None</item>
+        <item >Morning</item>
+        <item >Afternoon</item>
+        <item >Evening</item>
+        <item >Night</item>
+        
+    </string-array>
+    <string name="text_flexibility">Flexible/Range</string>
 
 </resources>

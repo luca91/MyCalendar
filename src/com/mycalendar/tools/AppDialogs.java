@@ -24,7 +24,6 @@ import android.widget.Toast;
  *
  */
 @SuppressLint("ValidFragment")
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AppDialogs extends DialogFragment implements DialogInterface.OnClickListener {
 	
 	private Context context;
@@ -48,6 +47,7 @@ public class AppDialogs extends DialogFragment implements DialogInterface.OnClic
 	
 	public AppDialogs(Context ctx){
 		this.context = ctx;
+		builder = new AlertDialog.Builder(context);
 	}
 	
 	/**
@@ -67,11 +67,13 @@ public class AppDialogs extends DialogFragment implements DialogInterface.OnClic
 	}
 	
 	public void setMessage(String message){
-		this.message = message;
+//		this.message = message;
+		builder.setMessage(message);
 	}
 	
 	public void setTitle(String title){
-		this.title = title;
+//		this.title = title;
+		builder.setTitle(title);
 	}
 	
 	public void createAndShowDialog(){

@@ -1,7 +1,6 @@
 package com.mycalendar.activity;
 
 import com.example.mycalendar.R;
-import com.mycalendar.calendar.EventsListAdapter;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
 
@@ -21,10 +20,11 @@ import android.view.View;
 public class MainActivity extends Activity {
 	
 	@SuppressWarnings("unused")
-	private MyCalendarDB applicationDB;
+	private static MyCalendarDB applicationDB;
 	
 	public static String defaultView;
 	public static String actualView;
+	private AppDialogs d;
 	
 	/**
 	 * The main activity is created.
@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
         //At the very first time, the database is created; then this only connect the app to it.
         applicationDB = new MyCalendarDB(this); 
         defaultView = "List";
+        applicationDB.importGoogleAccountCalendars();
     }
 
     /**
@@ -77,29 +78,47 @@ public class MainActivity extends Activity {
     }
     
     public void allCalendars(View v){
-    	Intent allCalendar = new Intent(this, AllCalendarList.class);
-    	startActivity(allCalendar);
+    	if(applicationDB.getCompleteCalendarList().size() > 0){
+	    	Intent allCalendar = new Intent(this, AllCalendarList.class);
+	    	startActivity(allCalendar);
+    	}
+    	else{
+    		d = new AppDialogs(this);
+    		d.setTitle("Warning!");
+    		d.setMessage("No calendar to display.");
+    		d.setPositiveButton();
+    		d.createAndShowDialog();
+    	}
     }
     
     public void allEvents(View v){
-    	Intent allEvent;
-    	EventsView.setActualView(defaultView);
-    	if(defaultView.equals("Day")){
-    		allEvent = new Intent(this, EventsView.class);
-    		startActivity(allEvent);
+    	if(applicationDB.getEventList().size() > 0){
+    		Intent allEvent;
+	    	EventsView.setActualView(defaultView);
+	    	if(defaultView.equals("Day")){
+	    		allEvent = new Intent(this, EventsView.class);
+	    		startActivity(allEvent);
+	    	}
+	    	if(defaultView.equals("Week")){
+	    		allEvent = new Intent(this, EventsView.class);
+				startActivity(allEvent);
+	    	}
+	    	if(defaultView.equals("Month")){
+	    		allEvent = new Intent(this, EventsView.class);
+				startActivity(allEvent);
+	    	}
+	    	if(defaultView.equals("List")){
+	    		allEvent = new Intent(this, AllEventsList.class);
+				startActivity(allEvent);
+	    	}
     	}
-    	if(defaultView.equals("Week")){
-    		allEvent = new Intent(this, EventsView.class);
-			startActivity(allEvent);
-    	}
-    	if(defaultView.equals("Month")){
-    		allEvent = new Intent(this, EventsView.class);
-			startActivity(allEvent);
-    	}
-    	if(defaultView.equals("List")){
-    		allEvent = new Intent(this, AllEventsList.class);
-			startActivity(allEvent);
-    	}
+    	else{
+    		d = new AppDialogs(this);
+    		d.setTitle("Warning!");
+    		d.setMessage("No events to show.");
+    		d.setPositiveButton();
+    		d.createAndShowDialog();
+	    	}
     }
     
     public void exportCalendar(View v){
@@ -122,6 +141,10 @@ public class MainActivity extends Activity {
     
     public static String getActualView(){
     	return actualView;
+    }
+    
+    public static MyCalendarDB getAppDB(){
+    	return applicationDB;
     }
     
 }

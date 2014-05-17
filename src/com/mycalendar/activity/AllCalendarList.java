@@ -1,9 +1,13 @@
 package com.mycalendar.activity;
 
+import java.util.ArrayList;
+
 import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.AppItem;
 import com.mycalendar.database.MyCalendarDB;
+import com.mycalendar.tools.AppDialogs;
+import com.mycalendar.tools.CalendarListAdapter;
 import com.mycalendar.tools.SwipeDetector;
 
 import android.content.Intent;
@@ -34,8 +38,10 @@ public class AllCalendarList extends ItemList implements OnTouchListener {
 		itemList = (ListView) findViewById(android.R.id.list);
 		itemList.setOnItemLongClickListener(this);
 		itemList.setOnItemClickListener(this);
-		ArrayAdapter<String> allCalendars = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, db.getCalendarList());
-		itemList.setAdapter(allCalendars);
+//		ArrayAdapter<String> allCalendars = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, db.getCalendarList());
+		ArrayList<AppCalendar> calendars = db.getCompleteCalendarList();
+		CalendarListAdapter adapter = new CalendarListAdapter(this, R.layout.calendar_item, calendars);
+		itemList.setAdapter(adapter);
 		SwipeDetector sd = new SwipeDetector();
 //		sd.setActions("Edit", "Delete");
 		itemList.setOnTouchListener(sd);
@@ -82,5 +88,8 @@ switch (action){
 	public boolean onTouch(View v, MotionEvent event) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public void onSyncPressed(View v){
 	}
 }
