@@ -31,6 +31,7 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 	private String[] colors;
 	private static boolean isModify = false;
 	private Intent received;
+	private ArrayAdapter<CharSequence> adapter;
 	
 	/**
 	 * It is called when the activity is created and set the layout.
@@ -43,7 +44,7 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 		db = new MyCalendarDB(this);
 		name = (EditText) findViewById(R.id.CalendarName);
 		color = (Spinner) findViewById(R.id.CalendarColor);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.calendar_colors, android.R.layout.simple_spinner_item);
+		adapter = ArrayAdapter.createFromResource(this, R.array.calendar_colors, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		color.setOnItemSelectedListener(this);
 		color.setAdapter(adapter);
@@ -136,7 +137,7 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 		received = getIntent();
 		Toast.makeText(this, received.getStringExtra(AppCalendar.CAL_NAME)+", "+received.getStringExtra(AppCalendar.CAL_COLOR), Toast.LENGTH_LONG).show();
 		name.setText(received.getStringExtra(AppCalendar.CAL_NAME));
-		color.setPrompt(received.getStringExtra(AppCalendar.CAL_COLOR));
+		color.setSelection(getColorsAdapterIndex(received.getStringExtra(AppCalendar.CAL_COLOR)), false);
 	}
 	
 	public void createCalendar(){
@@ -147,10 +148,9 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 			Toast.makeText(this, "Calendar added.", Toast.LENGTH_LONG).show();
 			Intent showCalendar = new Intent(this, CalendarShow.class);
 			showCalendar.putExtra(AppCalendar.CAL_NAME, currentName);
-			int colorAsInt = AppCalendar.colorFromStringToInt(currentColor);
-			showCalendar.putExtra(AppCalendar.CAL_COLOR, String.valueOf(Integer.toHexString(colorAsInt)));
-			Toast.makeText(this, db.getCalendarByID((int) result).getID(), Toast.LENGTH_SHORT).show();
-			Toast.makeText(this, "ID: " + (int) result, Toast.LENGTH_SHORT).show();
+			showCalendar.putExtra(AppCalendar.CAL_COLOR, currentColor);
+//			Toast.makeText(this, db.getCalendarByID((int) result).getID(), Toast.LENGTH_SHORT).show();
+//			Toast.makeText(this, "ID: " + (int) result, Toast.LENGTH_SHORT).show();
 			startActivity(showCalendar);
 		}
 		else
@@ -159,9 +159,8 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 	
 	public void modifyCalendar(){
 		currentName = name.getText().toString();
-		AppCalendar oldCalendar = new AppCalendar(received.getStringExtra(AppCalendar.CAL_NAME), AppCalendar.CAL_COLOR);
 		AppCalendar updatedCalendar = new AppCalendar(currentName, currentColor);
-		long result = db.updateCalendar(oldCalendar, updatedCalendar);
+		long result = db.updateCalendar(received.getIntExtra(AppCalendar.CAL_ID, -1), updatedCalendar);
 		if(result != -1){
 			Toast.makeText(this, "Calendar modified.", Toast.LENGTH_LONG).show();
 			Intent showUpdates = new Intent(this, CalendarShow.class);
@@ -172,5 +171,13 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 		}
 		else
 			Toast.makeText(this, "Calendar not updated.", Toast.LENGTH_LONG).show();
+	}
+	
+	public int getColorsAdapterIndex(String color){
+		for(int i = 0; i < adapter.getCount(); i++){
+			if(adapter.getItem(i).toString().equals(color))
+				return i;
+		}
+		return -1;
 	}
 }

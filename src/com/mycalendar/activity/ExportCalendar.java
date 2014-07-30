@@ -3,13 +3,6 @@ package com.mycalendar.activity;
 import java.io.IOException;
 
 import com.example.mycalendar.R;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson.JacksonFactory;
-import com.google.api.services.calendar.CalendarRequest;
-import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.Calendar;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -96,25 +89,6 @@ public class ExportCalendar extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	public void addCalendarOnGoogleAccount() throws IOException{
-		Calendar calendar = new Calendar();
-		calendar.setSummary("calendarSummary");
-		calendar.setTimeZone("Europe/Rome");
-		
-		HttpTransport httpTransport = new NetHttpTransport();
-		JacksonFactory jsonFactory = new JacksonFactory();
-		
-//		 GoogleAccessProtectedResource accessProtectedResource = new GoogleAccessProtectedResource(
-//			        response.accessToken, httpTransport, jsonFactory, clientId, clientSecret,
-//			        response.refreshToken);
-		
-		com.google.api.services.calendar.Calendar service = new com.google.api.services.calendar.Calendar(new NetHttpTransport(), jsonFactory, null);
-
-		com.google.api.services.calendar.model.Calendar createdCalendar = service.calendars().insert(calendar).execute();
-
-		System.out.println(createdCalendar.getId());
 	}
 
 }

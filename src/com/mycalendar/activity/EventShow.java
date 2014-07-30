@@ -4,14 +4,14 @@ import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
-import com.mycalendar.tools.AppDialogs;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,8 +28,6 @@ public class EventShow extends Activity {
 	private Intent received;
 	private RelativeLayout infoContainer;
 	private MyCalendarDB db;
-	private Button modifyButton;
-	private Button removeButton;
 
 	/**
 	 * It sets the field with the received values to show at the activity creation.
@@ -43,11 +41,9 @@ public class EventShow extends Activity {
 		name = (TextView) findViewById(R.id.Name);
 		date = (TextView) findViewById(R.id.Date);
 		infoContainer = (RelativeLayout) findViewById(R.id.EventInfoContainer);
-		modifyButton = (Button) findViewById(R.id.Modify);
-		removeButton = (Button) findViewById(R.id.removeEnventButton);
 		time = (TextView) findViewById(R.id.Time);
 		name.setText(received.getStringExtra(Event.NAME));
-		if(received.getBooleanExtra(Event.ALL_DAY, false)){
+		if(received.getIntExtra(Event.ALL_DAY, -1) == 1){
 			date.setText(received.getStringExtra(Event.S_DATE) + "-" + received.getStringExtra(Event.E_DATE));
 			time.setText("All Day");
 		}
@@ -84,11 +80,48 @@ public class EventShow extends Activity {
 		modifyEvent.putExtra(Event.E_TIME, received.getStringExtra(Event.E_TIME));
 		modifyEvent.putExtra(Event.CALENDAR, received.getStringExtra(Event.CALENDAR));
 		modifyEvent.putExtra(Event.ID, received.getIntExtra(Event.ID, -1));
+		modifyEvent.putExtra(Event.ALL_DAY, received.getBooleanExtra(Event.ALL_DAY, false));
 		startActivity(modifyEvent);
 	}
 	
 	public void removeEvent(View v){
-		AppDialogs confirm = new AppDialogs(this);
-		
+//		confirm.confirmDelete(received.getIntExtra(Event.ID, -1));
+		final Context ctx = this;
+		final int eventID = received.getIntExtra(Event.ID, -1);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Warning!");
+		builder.setMessage("Are you sure you want to delete this event?");
+//		setPositiveButton();
+		builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MyCalendarDB db = MainActivity.getAppDB();
+				db.removeEvent(eventID);
+				db.removeReminder(eventID);
+				Intent toHome = new Intent(ctx, MainActivity.class);
+				startActivity(toHome);
+			}
+		});
+//		setNegativeButton();
+		builder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.create();
+		builder.show();
+	}
+	
+	public void allEvents(View v){
+		Intent toAllEvents = new Intent(this, AllEventsList.class);
+		startActivity(toAllEvents);
+	}
+	
+	public void createEvent(View v){
+		Intent toEventEditor = new Intent(this, EventEditor.class);
+		startActivity(toEventEditor);
 	}
 }

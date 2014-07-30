@@ -1,20 +1,17 @@
 package com.mycalendar.tools;
 
 import com.example.mycalendar.R;
-import com.mycalendar.activity.AllEventsList;
-import com.mycalendar.activity.EventEditor;
 import com.mycalendar.activity.ItemList;
+import com.mycalendar.activity.MainActivity;
 import com.mycalendar.database.MyCalendarDB;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -30,8 +27,6 @@ public class AppDialogs extends DialogFragment implements DialogInterface.OnClic
 	private int itemClicked;
 	private ItemList itm;
 	AlertDialog.Builder builder;
-	private String message;
-	private String title;
 	
 	/**
 	 * Construct an instance of this class.
@@ -144,10 +139,44 @@ public class AppDialogs extends DialogFragment implements DialogInterface.OnClic
 		builder.create();
 		builder.show();
 	}
+	
+	public void wrongDateAlert(){
+		builder = new AlertDialog.Builder(context);
+		builder.setTitle("Wrong date!");
+		builder.setMessage("The selected date are not valid. Please edit your choice.");
+		builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int which) {
+				Toast.makeText(context, "You clicked:  "+which, Toast.LENGTH_LONG).show();
+        	}
+        });
+		builder.create();
+		builder.show();
+	}
+	
+	public void confirmDelete(final int eventID){
+		builder = new AlertDialog.Builder(context);
+		builder.setTitle("Warning!");
+		builder.setMessage("Are you sure you want to delete this event?");
+//		setPositiveButton();
+		builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MyCalendarDB db = MainActivity.getAppDB();
+				db.removeEvent(eventID);
+				db.removeReminder(eventID);
+			}
+		});
+		setNegativeButton();
+		builder.create();
+		builder.show();
+	}
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		itemClicked = which;
+		Toast.makeText(context, "You clicked dialog: " + itemClicked, Toast.LENGTH_LONG).show();
 	}
 
 }

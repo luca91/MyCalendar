@@ -5,16 +5,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.mycalendar.activity.EventEditor;
+import com.mycalendar.tools.TimeButtonManager;
 
 import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
-import android.widget.Toast;
 import android.os.Bundle;
 import android.app.Dialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.content.Context;
 
 /**
  * This class create and manage the date picker dialog for an event.
@@ -24,8 +23,7 @@ import android.content.Context;
 @TargetApi(11)
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 	
-	private EventEditor parent;
-	private Context context;
+	private TimeButtonManager manager;
 	private Calendar current;
 	
 	/**
@@ -34,27 +32,28 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		
+		current = Calendar.getInstance();
+		
 		//Checks if the initial value has been already change, according to a flag previously set.
-		if(!parent.getDateAlreadySet() && !EventEditor.getIsModify()){
-			Calendar c = Calendar.getInstance();
+		if(!manager.getDateAlreadySet() && !EventEditor.getIsModify()){
 			return new DatePickerDialog(getActivity(), (OnDateSetListener) this, 
-					c.get(Calendar.YEAR), 
-					c.get(Calendar.MONTH), 
-					c.get(Calendar.DAY_OF_MONTH));
+					current.get(Calendar.YEAR), 
+					current.get(Calendar.MONTH), 
+					current.get(Calendar.DAY_OF_MONTH));
 		}
 		else{
 			
 			//Checks which picker has to be created.
 			if(this.getTag().equals("startDatePicker"))
 				return new DatePickerDialog(getActivity(), (OnDateSetListener) this, 
-						Array.getInt(parent.getDateToken("start"), 2), 
-						Array.getInt(parent.getDateToken("start"), 1)-1, 
-						Array.getInt(parent.getDateToken("start"), 0));
+						Array.getInt(manager.getDateToken("start"), 2), 
+						Array.getInt(manager.getDateToken("start"), 1)-1, 
+						Array.getInt(manager.getDateToken("start"), 0));
 			else
 				return new DatePickerDialog(getActivity(), (OnDateSetListener) this, 
-						Array.getInt(parent.getDateToken("end"), 2), 
-						Array.getInt(parent.getDateToken("end"), 1)-1, 
-						Array.getInt(parent.getDateToken("end"), 0));
+						Array.getInt(manager.getDateToken("end"), 2), 
+						Array.getInt(manager.getDateToken("end"), 1)-1, 
+						Array.getInt(manager.getDateToken("end"), 0));
 		}
 	}
 	
@@ -65,60 +64,66 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 	 */
 	public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 		
-		//calendar with the values just set
-		current = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+//		current = Calendar.getInstance();
 		
-		//comparison the verify if the values set are valid
-		int result = parent.getCurrent().compareTo(current);
-		if(result <= 0){
-			parent.setDateAlreadySetFlag(true);
-			if((this.getTag()).equals("startDatePicker")){
-				parent.setDate(year, monthOfYear+1, dayOfMonth, "start");
-				parent.setDate(year, monthOfYear+1, dayOfMonth, "end");
-				parent.setDateButtonText(parent.getCurrentStartDate(), "start");
-				parent.setDateButtonText(parent.getCurrentEndDate(), "end");
-			}
-			else {
-				
-				//Actions to update the date values
-				parent.setDate(year, monthOfYear+1, dayOfMonth, "end");
-				Calendar c1 = new GregorianCalendar(Array.getInt(parent.getDateToken("start"), 2), 
-						Array.getInt(parent.getDateToken("start"), 1)-1, 
-						Array.getInt(parent.getDateToken("start"), 0));
-				Calendar c2 = new GregorianCalendar(Array.getInt(parent.getDateToken("end"), 2), 
-						Array.getInt(parent.getDateToken("end"), 1)-1, 
-						Array.getInt(parent.getDateToken("end"), 0));
-				int compareResult = c1.compareTo(c2);
-				switch (compareResult) {
-				case -1: 
-					parent.setDateButtonText(parent.getCurrentStartDate(), "start");
-					parent.setDateButtonText(parent.getCurrentEndDate(), "end");
-					break;
-				case 0:
-					break;				
-				case 1:
-					parent.setDate(year, monthOfYear+1, dayOfMonth, "start");
-					parent.setDateButtonText(parent.getCurrentEndDate(), "start");
-					parent.setDateButtonText(parent.getCurrentEndDate(), "end");
-					break;
-				}
-			}
+//		manager.setCurrentCalendar(current);
+//		Calendar set;
+//		boolean result = false;
+		manager.setDateAlreadySetFlag(true);
+		if(this.getTag().equals("startDatePicker")){
+//			set = new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("start"), manager.getMinutes("start"));
+			manager.setStartCalendar(new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("start"), manager.getMinutes("start")));
+			manager.setDateButtonText("start");
+//			result = manager.checkDateStartValidity();
 		}
-		else if(result > 0)
-			
-			//Warning toast
-			Toast.makeText(context, "No date before today can be set!", Toast.LENGTH_LONG).show();
+		
+		else{
+//			set = new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("end"), manager.getMinutes("end"));
+			manager.setEndCalendar(new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("end"), manager.getMinutes("end")));
+			manager.setDateButtonText("end");
+//			result = manager.checkDateEndValidity();
+		}
+//		
+//		if(result){
+//			manager.setDateAlreadySetFlag(true);
+//			
+//			//start date picker
+//			if((this.getTag()).equals("startDatePicker")){
+//				manager.setStartDateValues();
+//				manager.setDateButtonText("start");
+//				
+//				if(manager.checkCalendarPrecedence() > 0){
+//					manager.setEndCalendar(new GregorianCalendar(year, monthOfYear, dayOfMonth, manager.getHours("end"), manager.getMinutes("end")));
+//					manager.setEndDateValues();
+//					manager.setDateButtonText("end");
+//				}
+//			}
+//			
+//			//end date picker
+//			else {
+//				
+//				//Actions to update the date values
+//				manager.setEndDateValues();
+//				int compareResult = manager.checkCalendarPrecedence();
+//
+//				//start date is after currently set end date
+//				if(compareResult > 0){
+//					manager.setStartCalendar(set);
+//					manager.setStartDateValues();
+//					manager.setEndDateValues();
+//					manager.setDateButtonText("start");
+//				}
+//				manager.setDateButtonText("end");
+//			}
+//		}
+//		else {
+//			
+//			//Warning toast
+//			Toast.makeText(context, "No date before today can be set!", Toast.LENGTH_SHORT).show();
+//		}
+ 	}
+	
+	public void setButtonManager(TimeButtonManager manager){
+		this.manager = manager;
 	}
-	
-	/**
-	 * It sets some parents objects used during the dialog work flow.
-	 * @param parent the current EventCreate instance where the dialog is used
-	 * @param ctx the current context
-	 */
-	public void setParent(EventEditor parent, Context ctx){
-		this.parent = parent;
-		this.context =  ctx;
-	}
-	
-	
 }

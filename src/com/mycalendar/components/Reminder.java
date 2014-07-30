@@ -6,6 +6,7 @@ public class Reminder {
 	private int eventID;
 	private String reminderDate;
 	private String reminderTime;
+	private int remTimeChosen;
 	
 	public Reminder(String date, String time, int eventID){
 		reminderDate = date;
@@ -39,6 +40,17 @@ public class Reminder {
 	
 	public int getID(){
 		return id;
+	}
+	
+	public String dateAndTimeToString(){
+		return reminderDate + " " + reminderTime;
+	}
+	public void setRemTimeChosen(int time){
+		remTimeChosen = time;
+	}
+	
+	public int getRemTimChosen(){
+		return remTimeChosen;
 	}
 
 }

@@ -40,23 +40,13 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/removeEnventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/Modify"
-        android:layout_alignLeft="@+id/fakeView"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/EventInfoContainer"
-        android:layout_toEndOf="@id/Modify"
-        android:text="@string/text_remove_button" />
-
-    <Button
         android:id="@+id/Modify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/fakeView"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="false"
         android:layout_below="@+id/EventInfoContainer"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
         android:layout_marginTop="5dp"
         android:onClick="modifyEvent"
         android:text="@string/text_modify_button" />
@@ -67,5 +57,40 @@
          android:layout_height="0dp"
          android:layout_centerInParent="true"
          android:visibility="invisible" />
+
+     <Button
+         android:id="@+id/removeEventButton"
+         android:layout_width="200dp"
+         android:layout_height="50dp"
+         android:layout_alignLeft="@id/Modify"
+         android:layout_alignParentLeft="false"
+         android:layout_below="@+id/Modify"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="15dp"
+         android:layout_toEndOf="@id/Modify"
+         android:onClick="removeEvent"
+         android:text="@string/text_remove_button" />
+     
+     <Button
+        android:id="@+id/allEventEvtShow"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@id/removeEventButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:onClick="allEvents"
+        android:text="@string/events" />
+    
+    <Button
+        android:id="@+id/newEventEvtShow"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@id/allEventEvtShow"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:onClick="createEvent"
+        android:text="@string/add_event" />
 
 </RelativeLayout>

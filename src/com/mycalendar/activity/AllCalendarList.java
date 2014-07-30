@@ -24,7 +24,7 @@ import android.widget.Toast;
  * @author Luca Bellettati
  *
  */
-public class AllCalendarList extends ItemList implements OnTouchListener {
+public class AllCalendarList extends ItemList {
 	
 	/**
 	 * It creates a list with all the calendar.
@@ -42,10 +42,6 @@ public class AllCalendarList extends ItemList implements OnTouchListener {
 		ArrayList<AppCalendar> calendars = db.getCompleteCalendarList();
 		CalendarListAdapter adapter = new CalendarListAdapter(this, R.layout.calendar_item, calendars);
 		itemList.setAdapter(adapter);
-		SwipeDetector sd = new SwipeDetector();
-//		sd.setActions("Edit", "Delete");
-		itemList.setOnTouchListener(sd);
-		
 	}
 	
 	@Override
@@ -68,6 +64,7 @@ switch (action){
 			AppCalendar aCalendar = db.getSingleCalendarByName("itemName");
 			modifyCalendar.putExtra(AppCalendar.CAL_NAME, aCalendar.getName());
 			modifyCalendar.putExtra(AppCalendar.CAL_COLOR, aCalendar.getColor());
+			modifyCalendar.putExtra(AppCalendar.CAL_ID, aCalendar.getID());
 			CalendarEditor.setIsModify(true);
 			startActivity(modifyCalendar);
 		}
@@ -84,12 +81,4 @@ switch (action){
 		return currentItem;
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public void onSyncPressed(View v){
-	}
 }

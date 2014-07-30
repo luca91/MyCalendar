@@ -1,9 +1,17 @@
 package com.mycalendar.activity;
 
+import java.util.Locale;
+
 import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
+import com.mycalendar.components.Event;
+import com.mycalendar.database.MyCalendarDB;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,6 +23,7 @@ import android.view.View;
  * @author Luca Bellettati
  *
  */
+@SuppressLint("DefaultLocale")
 public class CalendarShow extends Activity {
 	
 	private TextView calendar;
@@ -30,12 +39,12 @@ public class CalendarShow extends Activity {
 		received = getIntent();
 		calendar = (TextView) findViewById(R.id.Name);
 		calendar.setText(received.getStringExtra(AppCalendar.CAL_NAME));
-		String color = received.getStringExtra(AppCalendar.CAL_COLOR);
-		if(color.equals("White") || color.equals("Cyan") || color.equals("Yellow"))
+		int color = AppCalendar.colorFromStringToInt(received.getStringExtra(AppCalendar.CAL_COLOR));
+		if(color == Color.WHITE || color == Color.CYAN || color == Color.YELLOW)
 			calendar.setTextColor(Color.BLACK);
 		else
 			calendar.setTextColor(Color.WHITE);
-		calendar.setBackgroundColor(Color.parseColor(color));
+		calendar.setBackgroundColor(color);
 	}
 	
 	/**
@@ -51,7 +60,7 @@ public class CalendarShow extends Activity {
 		Intent toEditor = new Intent(this, CalendarEditor.class);
 		toEditor.putExtra(AppCalendar.CAL_NAME, received.getStringExtra(AppCalendar.CAL_NAME));
 		toEditor.putExtra(AppCalendar.CAL_COLOR, received.getStringExtra(AppCalendar.CAL_COLOR));
-		toEditor.putExtra(AppCalendar.CAL_EMAIL, received.getStringExtra(AppCalendar.CAL_EMAIL));
+		toEditor.putExtra(AppCalendar.CAL_ID, received.getIntExtra(AppCalendar.CAL_ID, -1));
 		CalendarEditor.setIsModify(true);
 		startActivity(toEditor);
 	}
@@ -59,6 +68,41 @@ public class CalendarShow extends Activity {
 	public void viewCalendars(View v){
 		Intent toAllCalendars = new Intent(this, AllCalendarList.class);
 		startActivity(toAllCalendars);
+	}
+	
+	public void createCalendar(View v){
+		Intent toEditor = new Intent(this, CalendarEditor.class);
+		startActivity(toEditor);
+	}
+	
+	public void removeCalendar(View v){
+		final Context ctx = this;
+		final int eventID = received.getIntExtra(Event.ID, -1);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Warning!");
+		builder.setMessage("Are you sure you want to delete this calendar?");
+//		setPositiveButton();
+		builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MyCalendarDB db = MainActivity.getAppDB();
+				db.removeEvent(eventID);
+				db.removeReminder(eventID);
+				Intent toHome = new Intent(ctx, MainActivity.class);
+				startActivity(toHome);
+			}
+		});
+//		setNegativeButton();
+		builder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.create();
+		builder.show();
 	}
 
 }

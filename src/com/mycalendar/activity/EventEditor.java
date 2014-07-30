@@ -1,15 +1,15 @@
 package com.mycalendar.activity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
 
 import com.example.mycalendar.R;
 import com.mycalendar.components.Event;
+import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
-import com.mycalendar.time_and_date.DatePickerFragment;
-import com.mycalendar.time_and_date.TimePickerFragment;
 import com.mycalendar.tools.AppDialogs;
+import com.mycalendar.tools.TimeButtonManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -46,27 +47,26 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private Spinner repetition;
 	private EditText notesArea;
 	private MyCalendarDB db;
-	private boolean dateAlreadySet = false;
-	private boolean timeAlreadySet = false;
 	private String currentCalendar;
-	private String currentStartDate;
-	private String currentStartTime;
-	private String currentEndDate;
-	private String currentEndTime;
 	private int flexRange;
 	private String flexPref;
 	private Calendar current;
 	private ArrayAdapter<String> calendarAdapter;
 	private ArrayAdapter<CharSequence> reminderAdapter;
 	private ArrayAdapter<CharSequence> repetitionAdapter;
+	private ArrayAdapter<CharSequence> flexibilityAdapter;
 	private static boolean isModify;
-	private String[] calendars;
+	private static boolean isFromFinder;
+	private ArrayList<String> calendars;
 	private AppDialogs dialog;
 	private RelativeLayout elemsContainer;
 	private String timeChosen;
 	private Event anEvent;
-	private String repetitionChosen;
+	private int repetitionChosen;
 	private int id;
+	private TextView flexText;
+	private TimeButtonManager manager;
+	private TextView rangeMinText;
 	
 	/**
 	 * It sets the layout of the activity used to add an event to the agenda
@@ -97,16 +97,24 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		calendarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		calendar.setOnItemSelectedListener(this);
 		calendar.setAdapter(calendarAdapter);
+		flexText = (TextView) findViewById(R.id.flexibility_text);
+		rangeMinText = (TextView) findViewById(R.id.flexibility_min);
 		setReminderOptionsAdapter();
 		setRepetitionOptionsAdapter();
 		setFlexibilityPreferenceAdapter();
 		
 		//checks if an event has to be create or modify
-		if(!getIsModify())
+		if(!getIsModify()){
 			setCreateEnvironment();
+		}
+		else if(isFromFinder){
+			Intent received = getIntent();
+			setEventFromFinderEnvironment(received);
+		}
 		else {
 			Intent received = getIntent();
-			setModifyEnvironment(received);
+			anEvent = db.getEventByID(received.getIntExtra(Event.ID, -1));
+			setModifyEnvironment();
 		}
 	}
 	
@@ -115,298 +123,106 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	 * @param v the current view
 	 */
 	public void createEvent(View v){
-		String name = "";
-		if(eventName.getText().toString().isEmpty()){
-			dialog = new AppDialogs(this);
-			dialog.emptyEventNameAlert();
-		}	 
-		else{
-			name = eventName.getText().toString();
-			if(db.checkEventUnique(name, currentStartDate, currentStartTime, db.getCalendarByName(currentCalendar).getID())){
+		Toast.makeText(this, manager.calendarToString("start") + "\n" + manager.calendarToString("end") + "\n" + manager.calendarToString("current"), Toast.LENGTH_LONG).show();
+		if(manager.validateSelectedDate()){
+			String name = "";
+			if(eventName.getText().toString().isEmpty()){
 				dialog = new AppDialogs(this);
-				dialog.alreadyExistingEventAlert();
-			}
+				dialog.emptyEventNameAlert();
+			}	 
 			else{
-				anEvent = new Event(name, 
-						currentStartDate, 
-						currentEndDate, 
-						currentStartTime, 
-						currentEndTime, 
-						currentCalendar);
-				if(!notesArea.getText().toString().isEmpty())
-					anEvent.setNotes(notesArea.getText().toString());
-				if(allDay.isChecked()){
-					anEvent.setAllDay(true);
-					currentEndTime = currentStartTime = "00:00";
+				name = eventName.getText().toString();
+				if(db.checkEventUnique(name, manager.getCurrentStartDate(), manager.getCurrentStartTime(), db.getCalendarByName(currentCalendar).getID())){
+					dialog = new AppDialogs(this);
+					dialog.alreadyExistingEventAlert();
 				}
-				if(!flexPref.equals("None")){
+				else{
+					anEvent = new Event(name, 
+							manager.getCurrentStartDate(), 
+							manager.getCurrentEndDate(), 
+							manager.getCurrentStartTime(), 
+							manager.getCurrentEndTime(), 
+							currentCalendar);
+					if(!notesArea.getText().toString().isEmpty())
+						anEvent.setNotes(notesArea.getText().toString());
+					if(allDay.isChecked()){
+						anEvent.setAllDay(1);
+						manager.setTime("00:00", "end");
+						manager.setTime("00:00", "start");
+					}
 					anEvent.setFlexibility(flexPref);
-					anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
-				}
-				long result;
-				if(!isModify)
-					result = db.addEvent(anEvent);
-				else{
-					anEvent.setId(id);
-					result = db.updateEvent(anEvent);
-				}
-				if (result != -1){
-	//				db.addReminder(db.getSingleEvent(anEvent).getId(), calculateReminder(calculateMinutesForReminder()), "");
-					Intent showEvent = new Intent(this, EventShow.class);
-					showEvent.putExtra(Event.NAME, anEvent.getName());
-					showEvent.putExtra(Event.S_DATE, currentStartDate);
-					showEvent.putExtra(Event.E_DATE, currentEndDate);
-					showEvent.putExtra(Event.S_TIME, currentStartTime);
-					showEvent.putExtra(Event.E_TIME, currentEndTime);
-					showEvent.putExtra(Event.CALENDAR, currentCalendar);
-					showEvent.putExtra(Event.ID, (int) result);
-					showEvent.putExtra(Event.ALL_DAY, anEvent.getAllDay());
-					startActivity(showEvent);
-				}
-				else{
-	//				dialog = new AppDialogs(this);
-	//				dialog.alreadyExistingEventAlert();
+					if(!flexPref.equals("None"))
+						anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
+					anEvent.setRepetition(repetitionChosen);
+					Reminder rem = getReminderObject();
+					rem.setRemTimeChosen(parseReminderTime());
+					anEvent.setReminder(rem);
+					db.addReminder(rem);
+					long result;
+					if(!isModify)
+						result = db.addEvent(anEvent);
+					else{
+						anEvent.setId(id);
+						result = db.updateEvent(anEvent);
+					}
+					if (result != -1){
+		//				db.addReminder(db.getSingleEvent(anEvent).getId(), calculateReminder(calculateMinutesForReminder()), "");
+						Intent showEvent = new Intent(this, EventShow.class);
+						showEvent.putExtra(Event.NAME, anEvent.getName());
+						showEvent.putExtra(Event.S_DATE, manager.getCurrentStartDate());
+						showEvent.putExtra(Event.E_DATE, manager.getCurrentEndDate());
+						showEvent.putExtra(Event.S_TIME, manager.getCurrentStartTime());
+						showEvent.putExtra(Event.E_TIME, manager.getCurrentEndTime());
+						showEvent.putExtra(Event.CALENDAR, currentCalendar);
+						showEvent.putExtra(Event.ID, (int) result);
+						showEvent.putExtra(Event.ALL_DAY, anEvent.getAllDay());
+						startActivity(showEvent);
+					}
+					else{
+		//				dialog = new AppDialogs(this);
+		//				dialog.alreadyExistingEventAlert();
+					}
 				}
 			}
-		}
-	}
-	
-	/**
-	 * It transform the three components of the date (year, month and day) into a string with the form "dd/mm/yyyy and stores it in the respective String variable, depending on the tag value.
-	 * @param year the year to set
-	 * @param month the month to set
-	 * @param day the day to set
-	 * @param tag which date to set
-	 */
-	public void setDate(int year, int month, int day, String tag){
-		String date = "";
-		if(day<10 && month>=10){
-			date = "0"+day+"/"+(month)+"/"+year;
-		 }
-		 else if(day<10 && month<10){
-			 date = "0"+day+"/"+"0"+month+"/"+year;
-		 }
-		 else if(day>=10 && month<10){
-			 date = day+"/"+"0"+month+"/"+year;
-		 }
-		 else{
-			 date = day+"/"+month+"/"+year;
-		 }
-		if(tag.equals("start"))
-			currentStartDate = date;
-		else
-			currentEndDate = date;
-	}
-	
-	/**
-	 * It updates the text shown in the date buttons, depending on the tag value.
-	 * @param text the text to set
-	 * @param tag which date button to set
-	 */
-	public void setDateButtonText(String text, String tag){
-		if(tag.equals("start"))
-			startDate.setText(text);
-		else
-			endDate.setText(text);
-	}
-	
-	/**
-	 * It transform the two components of the time (hours and minutes) into a string of the form "hh:mm" and stores it in the respective String variable, depending on the tag value.
-	 * @param hours the hours to set 
-	 * @param minutes the minute to set
-	 * @param tag which time to set
-	 */
-	public void setTime(int hours, int minutes, String tag){
-		String time;
-		if(hours<10 && minutes>=10){
-			time = "0"+hours+":"+minutes;
-		}
-		else if(hours >= 10 && minutes < 10){
-			time = hours+":"+"0"+minutes;
-		}
-		else if(hours < 10 && minutes < 10){
-			time = "0"+hours+":"+"0"+minutes;
-		}
-		else if(hours == 0 && minutes < 10){
-			time = "00"+":"+"0"+minutes;
-		}
-		else if(hours == 0 && minutes >= 10){
-			time = "00"+":"+"0"+minutes;
-		}
-		else if(hours < 10 && minutes == 10){
-			time = "0"+hours+":"+"00";
-		}
-		else if(hours >= 0 && minutes >= 10){
-			time = hours+":"+"00";
-		}
-		else if(hours == 0 && minutes == 0){
-			time = "00"+":"+"00";
 		}
 		else{
-			time = hours+":"+minutes;
+			AppDialogs invalidDate = new AppDialogs(this);
+			invalidDate.wrongDateAlert();
 		}
-		if(tag.equals("start"))
-			currentStartTime = time;
-		else
-			currentEndTime = time;
 	}
 	
-	/**
-	 * It updates the text shown in the time buttons, depending on the tag value.
-	 * @param text the text to set
-	 * @param tag which time button to set
-	 */
-	public void setTimeButtonText(String text, String tag){
-		if(tag.equals("start"))
-			startTime.setText(currentStartTime);
-		else
-			endTime.setText(currentEndTime);
-	}
+	
 	
 	/**
 	 * Create and show the picker for the start date.
 	 * @param v the current view
 	 */
-	public void showStartDatePicker(View v){
-		DatePickerFragment date = new DatePickerFragment();
-		date.setParent(this, this.getBaseContext());
-		date.show(getFragmentManager(), "startDatePicker");
+	public void startDatePicker(View v){
+		manager.showStartDatePicker();
 	}
 	
 	/**
 	 * Create and show the picker for the start time.
 	 * @param v the current view
 	 */
-	public void showStartTimePicker(View v){
-		TimePickerFragment time = new TimePickerFragment();
-		time.setParent(this, this.getBaseContext());
-		time.show(getFragmentManager(), "startTimePicker");
+	public void startTimePicker(View v){
+		manager.showStartTimePicker();
 	}
 	
 	/**
 	 * Create and show the picker for the end date.
 	 * @param v the current view
 	 */
-	public void showEndDatePicker(View v){
-		DatePickerFragment date = new DatePickerFragment();
-		date.setParent(this, this.getBaseContext());
-		date.show(getFragmentManager(), "endDatePicker");
+	public void endDatePicker(View v){
+		manager.showEndDatePicker();
 	}
 	
 	/**
 	 * Create and show the picker for the end time.
 	 * @param v the current view
 	 */
-	public void showEndTimePicker(View v){
-		TimePickerFragment time = new TimePickerFragment();
-		time.setParent(this, this.getBaseContext());
-		time.show(getFragmentManager(), "endTimePicker");
-	}
-	
-	/**
-	 * It sets the flag which control the change of the date.
-	 * @param value
-	 */
-	public void setDateAlreadySetFlag(boolean value){
-		this.dateAlreadySet = value;
-	}
-	
-	/**
-	 * It get the flag which control the change of the date.
-	 */
-	public boolean getDateAlreadySet(){
-		return this.dateAlreadySet;
-	}
-	
-	/**
-	 * It sets the flag which control the change of the time.
-	 * @param value the value to set
-	 */
-	public void setTimeAlreadySetFlag(boolean value){
-		this.timeAlreadySet = value;
-	}
-	
-	/**
-	 * It gets the flag which control the change of the time.
-	 * @param value the value to set
-	 */
-	public boolean getTimeAlreadySet(){
-		return this.timeAlreadySet;
-	}
-	
-	/**
-	 * The string value of the date is split in the three components, which are stored in an array.
-	 * @param tag which time has to be parse into the array 
-	 * @return int []
-	 */
-	public int[] getDateToken(String tag){
-		StringTokenizer tokenizer; 
-		if(tag.equals("start"))
-			tokenizer = new StringTokenizer(currentStartDate, "/");
-		else
-			tokenizer = new StringTokenizer(currentEndDate, "/");
-		int[] dateToken = new int[3];
-		dateToken[0] = Integer.parseInt(tokenizer.nextToken());
-		dateToken[1] = Integer.parseInt(tokenizer.nextToken());
-		dateToken[2] = Integer.parseInt(tokenizer.nextToken());
-		return dateToken;
-	}
-	
-	/**
-	 * The string value of the time is splitted in the two components, which are stored in an array.
-	 * @param tag which time has to be parse into the array
-	 * @return int[]
-	 */
-	public int[] getTimeToken(String tag){
-		StringTokenizer tokenizer;
-		if(tag.equals("start"))
-			tokenizer = new StringTokenizer(currentStartTime, ":");
-		else
-			tokenizer = new StringTokenizer(currentEndTime, ":");
-		int[] dateToken = new int[2];
-		dateToken[0] = Integer.parseInt(tokenizer.nextToken());
-		dateToken[1] = Integer.parseInt(tokenizer.nextToken());
-		return dateToken;
-	}
-	
-	/**
-	 * It get the current value of the start date.
-	 * @return String
-	 */
-	public String getCurrentStartDate(){
-		return this.currentStartDate;
-	}
-	
-	/**
-	 * It get the current value of the end date.
-	 * @return String
-	 */
-	public String getCurrentEndDate(){
-		return this.currentEndDate;
-	}
-	
-	/**
-	 * It get the current value of the start time.
-	 * @return String
-	 */
-	public String getCurrentStartTime(){
-		return this.currentStartTime;
-	}
-	
-	/**
-	 * It get the current value of the end time.
-	 * @return String
-	 */
-	public String getCurrentEndTime(){
-		return this.currentEndTime;
-	}
-	
-	/**
-	 * It get the current instance of the calendar.
-	 * @return String
-	 */
-	public Calendar getCurrent(){
-		return this.current;
+	public void endTimePicker(View v){
+		manager.showEndTimePicker();
 	}
 	
 	/**
@@ -415,54 +231,105 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	public void setCreateEnvironment(){
 		//A instance of the current time is stored in the local Calendar object
 		current = Calendar.getInstance();
-				
-		//The texts of the various buttons are set with the current date and time
-		setDate(current.get(Calendar.YEAR), current.get(Calendar.MONTH)+1, current.get(Calendar.DAY_OF_MONTH), "start");
-		setDate(current.get(Calendar.YEAR), current.get(Calendar.MONTH)+1, current.get(Calendar.DAY_OF_MONTH), "end");
-		setDateButtonText(getCurrentStartDate(), "start");
-		setDateButtonText(getCurrentEndDate(), "end");
-		if(current.get(Calendar.HOUR_OF_DAY) == 23){
-			setTime(0, 0, "start");
-			setTime(1, 0,"end");
-		}
-		else{
-			//The hour for a new event is always the next round one
-			setTime(current.get(Calendar.HOUR_OF_DAY)+1, 0, "start"); 
-			setTime(current.get(Calendar.HOUR_OF_DAY)+2, 0, "end");
-		}
-		setTimeButtonText(currentStartTime, "start");
-		setTimeButtonText(currentEndTime, "end");
+		manager = new TimeButtonManager(getFragmentManager(), this);
+		
+		//setting calendar
+		manager.setCurrentCalendar((Calendar) current.clone());
+//		manager.setStartCalendar(new GregorianCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH)+1, current.get(Calendar.HOUR_OF_DAY), 0));
+//		manager.setEndCalendar(new GregorianCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH)+1, current.get(Calendar.HOUR_OF_DAY), 0));
+		manager.setStartCalendar((Calendar) current.clone());
+		manager.setEndCalendar((Calendar) current.clone());
+		
+		Toast.makeText(this, manager.calendarToString("start") + "\n" + manager.calendarToString("end") + "\n" + manager.calendarToString("current"), Toast.LENGTH_LONG).show();
+		
+		//setting the button
+		manager.setButtons(startDate, endDate, startTime, endTime);
+		
+		//Sets all the buttons
+		manager.setButtonState();
+		
 		calendars = db.getCalendarList();
-		currentCalendar = calendars[0];
+		currentCalendar = calendars.get(0);
+		Toast.makeText(this, "Repetition: " + repetitionChosen, Toast.LENGTH_SHORT).show();
+		timeChosen = (String) reminder.getItemAtPosition(0);
+		repetitionChosen = 0;
+		flexPref = (String) flexibility.getItemAtPosition(0);
+		flexibilityRange.setVisibility(View.INVISIBLE);
+		flexRange = 30;
 	}
 	
 	/**
 	 * It set the environment for the modification of an event.
 	 */
-	public void setModifyEnvironment(Intent received){
-		current = Calendar.getInstance();
-		currentStartDate = received.getStringExtra(Event.S_DATE);
-		currentEndDate = received.getStringExtra(Event.E_DATE);
-		currentStartTime = received.getStringExtra(Event.S_TIME);
-		currentEndTime = received.getStringExtra(Event.E_TIME);
-		currentCalendar = received.getStringExtra(Event.CALENDAR);
-		calendar.setPrompt(currentCalendar);
-		eventName.setText(received.getStringExtra(Event.NAME));
+	public void setModifyEnvironment(){
+		Intent received = getIntent();
 		id = received.getIntExtra(Event.ID, -1);
-		if(received.getBooleanExtra(Event.ALL_DAY, false))
+		Event anEvent = db.getEventByID(id);
+		current = Calendar.getInstance();
+		manager = new TimeButtonManager(getFragmentManager(), this);
+		manager.setCurrentCalendar((Calendar) current.clone());
+		manager.setButtons(startDate, endDate, startTime, endTime);
+		manager.setDate(anEvent.getStartDate(), "start");
+		manager.setDate(anEvent.getEndDate(), "end");
+		manager.setTime(anEvent.getStartTime(), "start");
+		manager.setTime(anEvent.getEndTime(), "end");
+		int[] startDate = manager.getDateToken("start");
+		int[] endDate = manager.getDateToken("end");
+		int[] startTime = manager.getTimeToken("start");
+		int[] endTime = manager.getTimeToken("end");
+		manager.setStartCalendar(new GregorianCalendar(startDate[2],startDate[1]-1, startDate[0], startTime[0], startTime[1]));
+		manager.setEndCalendar(new GregorianCalendar(endDate[2],startDate[1]-1, endDate[0], endTime[0], endTime[1]));
+		manager.setButtonState();
+		currentCalendar = anEvent.getCalendar();
+		calendar.setSelection(getItemSelectedPosition(currentCalendar, db.getCalendarList().toArray(new String[] {})), false);
+		eventName.setText(anEvent.getName());
+		flexPref = anEvent.getFlexibility();
+		repetitionChosen = anEvent.getRepetition();
+//		timeChosen = db.getReminder(anEvent.getReminderID()).getTimeChosen();
+		manager.setDateButtonText("start");
+		manager.setDateButtonText("end");
+		manager.setTimeButtonText("start");
+		manager.setTimeButtonText("end");
+		if(anEvent.getAllDay() == 1){
 			allDay.setChecked(true);
-		setDateButtonText(currentStartDate, "start");
-		setDateButtonText(currentEndDate, "end");
-		setTimeButtonText(currentStartTime, "start");
-		setTimeButtonText(currentEndTime, "end");
+			flexibility.setVisibility(View.INVISIBLE);
+			flexibilityRange.setVisibility(View.INVISIBLE);
+			flexText.setVisibility(View.INVISIBLE);
+			rangeMinText.setVisibility(View.INVISIBLE);
+		}
+		flexibility.setSelection(getItemSelectedPosition(flexPref, getResources().getStringArray(R.array.flexibility_option)), false);
+		flexRange = anEvent.getFlexibilityRange();
+		flexibilityRange.setText(String.valueOf(flexRange));
+		repetition.setSelection(repetitionChosen, false);
+		reminder.setSelection(getItemSelectedPosition(timeChosen, getResources().getStringArray(R.array.reminder_options)), false);
+		notesArea.setText("");
 	}
-
+	
+	public void setEventFromFinderEnvironment(Intent received){
+		current = Calendar.getInstance();
+//		manager = new TimeButtonManager(getFragmentManager(), this, current);
+		manager.setButtons(startDate, endDate, startTime, endTime);
+		manager.setDate(received.getStringExtra(Event.S_DATE), "start");
+		manager.setTime(received.getStringExtra(Event.S_TIME), "start");
+		manager.setDate(received.getStringExtra(Event.E_DATE), "end");
+		manager.setTime(received.getStringExtra(Event.E_TIME), "end");
+		
+	}
+ 
 	public static void setIsModify(boolean b) {
 		isModify = b;
 	}
 	
 	public static boolean getIsModify(){
 		return isModify;
+	}
+	
+	public static void setIsFromFinder(boolean b){
+		isFromFinder = b;
+	}
+	
+	public static boolean getIsFromFinder(){
+		return isFromFinder;
 	}
 	
 	public void viewAllEvents(View v){
@@ -473,20 +340,23 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		if(arg1.getId() == R.id.Calendar)
+		if(arg0.getId() == R.id.Calendar)
 			currentCalendar = (String) arg0.getItemAtPosition(arg2);
-		else if(arg1.getId() == R.id.reminderSpinner)
+		else if(arg0.getId() == R.id.reminderSpinner)
 			timeChosen = (String) arg0.getItemAtPosition(arg2);
-		else if(arg1.getId() == R.id.repeatSpinner)
-			repetitionChosen = (String) arg0.getItemAtPosition(arg2);
+		else if(arg0.getId() == R.id.repeatSpinner)
+			repetitionChosen = arg2;
 		else{
 			flexPref = (String) arg0.getItemAtPosition(arg2);
-			if(flexPref.equals("None"))
+			if(flexPref.equals("None")){
 				flexibilityRange.setVisibility(View.INVISIBLE);
-			else
+				rangeMinText.setVisibility(View.INVISIBLE);
+			}
+			else{
 				flexibilityRange.setVisibility(View.VISIBLE);
+				rangeMinText.setVisibility(View.VISIBLE);
+			}
 		}
-		
 	}
 
 	@Override
@@ -497,36 +367,47 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		elemsContainer.removeView(startDate);
-		elemsContainer.removeView(endDate);
-		elemsContainer.removeView(startTime);
-		elemsContainer.removeView(endTime);
+//		elemsContainer.removeView(startDate);
+//		elemsContainer.removeView(endDate);
+//		elemsContainer.removeView(startTime);
+//		elemsContainer.removeView(endTime);
 		if(isChecked){
-			setStartDateButtonAllDayChecked();
-			setEndDateButtonAllDayChecked();
+//			setStartDateButtonAllDayChecked();
+//			setEndDateButtonAllDayChecked();
+			startTime.setText("All day");
+			endTime.setText("All day");
+			rangeMinText.setVisibility(View.INVISIBLE);
+			flexibility.setVisibility(View.INVISIBLE);
+			flexibilityRange.setVisibility(View.INVISIBLE);
+			TextView flexText = (TextView) findViewById(R.id.flexibility_text);
+			flexText.setVisibility(View.INVISIBLE);
 		}
 		else{
-			setStartDateButtonAllDayNotChecked();
-			setEndDateButtonAllDayNotChecked();
-			setStartTimeButtonAllDayNotChecked();
-			setEndTimeButtonAllDayNotChecked();
+//			setStartDateButtonAllDayNotChecked();
+//			setEndDateButtonAllDayNotChecked();
+//			setStartTimeButtonAllDayNotChecked();
+//			setEndTimeButtonAllDayNotChecked();
+			manager.setTimeButtonText("start");
+			manager.setTimeButtonText("end");
+			flexibility.setVisibility(View.VISIBLE);
+			flexibility.setSelection(0, false);
+			flexibilityRange.setVisibility(View.INVISIBLE);
+			flexibilityRange.setText("0");
+			flexText.setVisibility(View.VISIBLE);
 		}
 	}
 
 	public void setStartDateButtonAllDayChecked(){
 		RelativeLayout.LayoutParams dateParams = new RelativeLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		dateParams.addRule(RelativeLayout.BELOW, R.id.EventName);
-		dateParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		dateParams.addRule(RelativeLayout.RIGHT_OF, R.id.From);
-		dateParams.setMargins(10, 40, 0, 0);
+		dateParams.setMargins(10, 20, 0, 0);
 		elemsContainer.addView(startDate, dateParams);
 	}
 	
 	public void setEndDateButtonAllDayChecked(){
 		RelativeLayout.LayoutParams dateParams = new RelativeLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		dateParams.addRule(RelativeLayout.BELOW, R.id.StartDate);
-		dateParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		dateParams.addRule(RelativeLayout.RIGHT_OF, R.id.To);
+		dateParams.addRule(RelativeLayout.BELOW, R.id.To);
 		dateParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.StartDate);
 		elemsContainer.addView(endDate, dateParams);
 	}
@@ -534,25 +415,24 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	public void setStartDateButtonAllDayNotChecked(){
 		RelativeLayout.LayoutParams dateParams = new RelativeLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		dateParams.addRule(RelativeLayout.BELOW, R.id.EventName);
-		dateParams.addRule(RelativeLayout.RIGHT_OF, R.id.From);
-		dateParams.setMargins(10, 40, 0, 0);
+		dateParams.setMargins(10, 20, 0, 0);
 		elemsContainer.addView(startDate, dateParams);
 	}
 	
 	public void setEndDateButtonAllDayNotChecked(){
 		RelativeLayout.LayoutParams dateParams = new RelativeLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		dateParams.addRule(RelativeLayout.BELOW, R.id.StartDate);
-		dateParams.addRule(RelativeLayout.RIGHT_OF, R.id.To);
+		dateParams.addRule(RelativeLayout.BELOW, R.id.To);
 		dateParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.StartDate);
 		elemsContainer.addView(endDate, dateParams);
 	}
 	
 	public void setStartTimeButtonAllDayNotChecked(){
 		RelativeLayout.LayoutParams dateParams = new RelativeLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		dateParams.addRule(RelativeLayout.BELOW, R.id.EventName);
+		dateParams.addRule(RelativeLayout.BELOW, R.id.From);
 		dateParams.addRule(RelativeLayout.RIGHT_OF, R.id.StartDate);
 		dateParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		dateParams.setMargins(0, 40, 0, 0);
+		dateParams.setMargins(0, 20, 0, 0);
 		elemsContainer.addView(startTime, dateParams);
 	}
 	
@@ -589,10 +469,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	}
 	
 	public void updateDateAllDayEvents(){
-		Calendar c = createCalendarFromDateTime();
-		setDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), "end");
-		setTime(0, 0, "start");
-		setTime(0, 0, "end");
+//		manager.setCurrentCalendar(c);
+		manager.setDate("end");
+//		manager.setTime(0, 0, "start");
+//		manager.setTime(0, 0, "end");
 	}
 	
 	public Calendar createCalendarFromDateTime(){
@@ -616,9 +496,49 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	}
 	
 	public void setFlexibilityPreferenceAdapter(){
-		ArrayAdapter<CharSequence> flexibilityAdapter = ArrayAdapter.createFromResource(this, R.array.flexibility_option, android.R.layout.simple_spinner_item);
+		flexibilityAdapter = ArrayAdapter.createFromResource(this, R.array.flexibility_option, android.R.layout.simple_spinner_item);
 		flexibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		flexibility.setOnItemSelectedListener(this);
 		flexibility.setAdapter(flexibilityAdapter);
+	}
+	
+	public int getItemSelectedPosition(String item, String[] array){
+		for(int i = 0; i < array.length; i++){
+			if(array[i].equals(item))
+				return i;
+		}
+		return -1;
+	}
+	
+	/**
+	 * 
+	 * @return the amount of minutes corresponding to the chosen value
+	 */
+	public int parseReminderTime(){
+		switch(timeChosen){
+		case "15 min":
+			return 15;
+		case "30 min":
+			return 30;
+		case "1 hour":
+			return 60;
+		case "1 day":
+			return 1440;
+		case "1 week":
+			return 10080;
+		case "No reminder":
+			return 0;
+		}
+		return -1;
+	}
+	
+	public Reminder getReminderObject(){
+		Reminder result = null;
+//		Calendar rem = (Calendar) manager.getCalendar("start").clone();
+		Calendar rem = manager.getCalendar("start");
+//		rem.add(Calendar.MINUTE, -parseReminderTime());
+		result = new Reminder(rem.get(Calendar.DAY_OF_MONTH)+"/"+rem.get(Calendar.MONTH)+"/"+rem.get(Calendar.YEAR), rem.get(Calendar.HOUR_OF_DAY)+":"+rem.get(Calendar.MINUTE), id);
+		Toast.makeText(this, "Reminder: " + result.toString(), Toast.LENGTH_LONG).show();
+		return result;
 	}
 }

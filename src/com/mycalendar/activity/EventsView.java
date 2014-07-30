@@ -51,11 +51,13 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	ArrayAdapter<CharSequence> adapterViewTypes;
 	private MyCalendarDB db;
 	private RelativeLayout eventsObjectContainer;
+	private int firstWeekOfMonthDayInYear;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		setCalendar(Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome")));
+		db = MainActivity.getAppDB();
+		calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"));
 		setInitialState(actualView);
 	}
 	
@@ -68,7 +70,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			hours = (LinearLayout) findViewById(R.id.hoursContainerDay);
 			weekDayGrid = (LinearLayout) findViewById(R.id.backgroundAsGridDay);
 			eventsObjectContainer = (RelativeLayout) findViewById(R.id.eventsContainerDay);
-			list = db.getEventsByDay(calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)-1)+"-"+calendar.get(Calendar.DAY_OF_MONTH));
+			list = db.getEventsByDay(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR));
 			setDayLayoutObjects();
 			break;
 		case "Week":
@@ -131,7 +133,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		calendar = Calendar.getInstance();
 		int startDay = calendar.get(Calendar.DAY_OF_MONTH);
 		calendar.add(Calendar.DAY_OF_MONTH, -startDay);
-			setGridItems();
+		setGridItems();
 	}
 	
 	public int setDayView(){
@@ -165,13 +167,19 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 				weekBegin.add(Calendar.DAY_OF_WEEK, 1);
 				lp = new LinearLayout.LayoutParams(new LayoutParams(getWeekGridItemWidth(spaceLeft), LayoutParams.MATCH_PARENT));
 				tv.setText(Utility.parseWeekDayToString(weekBegin.get(Calendar.DAY_OF_WEEK)) + " " + weekBegin.get(Calendar.DAY_OF_MONTH));
-				tv.setBackgroundColor(Color.GRAY);
+				if(weekBegin.get(Calendar.DAY_OF_YEAR) < firstWeekOfMonthDayInYear)
+					tv.setBackgroundColor(Color.WHITE);
+				else
+					tv.setBackgroundColor(Color.GRAY);
 				tv.setTextSize(12f);
 			}
 			lp.setMargins(0, 0, 2, 2);
 			tv.setLayoutParams(lp);
 			tv.setGravity(Gravity.CENTER);
-			tv.setTextColor(Color.WHITE);
+			if(weekBegin.get(Calendar.DAY_OF_YEAR) < firstWeekOfMonthDayInYear)
+				tv.setTextColor(Color.GRAY);
+			else
+				tv.setTextColor(Color.WHITE);
 			daysContainer.addView(tv);
 		}
 	}
@@ -215,7 +223,17 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			LinearLayout.LayoutParams daysLayoutParams = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 40));
 			weekLayoutParams.setMargins(0, 0, 2, 2);
 			weekDayLayoutParams.setMargins(2, 0, 0, 0);
-			for(int i = 0; i < 6; i++){
+			int weekCount = getWeekCountPerMonth();			
+			calendar = Calendar.getInstance();
+			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+			int monthStart = dayOfMonth-(dayOfMonth-1);
+			calendar.add(Calendar.DAY_OF_YEAR, -monthStart);
+			firstWeekOfMonthDayInYear = calendar.get(Calendar.DAY_OF_YEAR);
+			int monthStartWeekDay;
+			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+			monthStartWeekDay = dayOfWeek-(dayOfWeek-1);
+			calendar.add(Calendar.DAY_OF_WEEK, -monthStartWeekDay);
+			for(int i = 0; i < weekCount; i++){
 				daysContainer = new LinearLayout(this);
 				setDaysOfWeek(calendar, 0, 14);
 				LinearLayout week = new LinearLayout(this);
@@ -227,7 +245,6 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 				}
 				weekDayGrid.addView(daysContainer, daysLayoutParams);
 				weekDayGrid.addView(week, weekLayoutParams);
-				calendar.add(Calendar.DAY_OF_MONTH, 7);
 			}
 		}
 	}
@@ -328,5 +345,41 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		int addMargin = 100/(60/timeStart[1]);
 		int height = (100 * hourInterval) + (100 * addMargin) + (2 * timeStart[0]);
 		return height;
+	}
+	
+	//Return the number of weeks in the current month
+	public int getWeekCountPerMonth(){
+		Calendar c = Calendar.getInstance();
+		int currentDay = c.get(Calendar.DAY_OF_MONTH);
+		c.add(Calendar.DAY_OF_MONTH, -(currentDay-1));
+		int firstWeekOfMonth = calendar.get(Calendar.WEEK_OF_YEAR);
+		int lastDay = getLastDayOfMonth(c.get(Calendar.MONTH)+1);
+		int daysToEnd = lastDay-currentDay;
+		c.add(Calendar.DAY_OF_MONTH, daysToEnd);
+		int lastWeekOfMonth = c.get(Calendar.WEEK_OF_YEAR);
+		return lastWeekOfMonth - firstWeekOfMonth + 1;
+	}
+	
+	public int getLastDayOfMonth(int month){
+		switch(month){
+		case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+			return 31;
+		case 2:
+			if(((GregorianCalendar) calendar).isLeapYear(calendar.get(Calendar.YEAR)))
+				return 29;
+			else
+				return 28;
+		case 4: case 6: case 9: case 11:
+			return 30;
+		}
+		return -1;
+	}
+	
+	public int getWeekStartDayInYear(){
+		Calendar c = calendar;
+		int daysFromMonthStart = calendar.get(Calendar.DAY_OF_MONTH)-(calendar.get(Calendar.DAY_OF_MONTH)-1);
+		c.add(Calendar.DAY_OF_MONTH, -daysFromMonthStart);
+		int daysFromWeekStart = c.get(Calendar.DAY_OF_WEEK)-(c.get(Calendar.DAY_OF_WEEK)-1);
+		return daysFromWeekStart;
 	}
 }

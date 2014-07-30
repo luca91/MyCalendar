@@ -1,6 +1,8 @@
 package com.mycalendar.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import com.example.mycalendar.R;
 import com.mycalendar.calendar.CalendarAdapter;
@@ -8,14 +10,21 @@ import com.mycalendar.components.AppItem;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner; 
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.mycalendar.tools.AppDialogs;
 
@@ -26,6 +35,8 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 	private ArrayList<Event> eventsList;
 	private Event clicked;
 	private int actionResult;
+	private RelativeLayout container;
+	CalendarAdapter adapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -34,22 +45,31 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 		db = new MyCalendarDB(this);
 		viewSelection = (Spinner) findViewById(R.id.viewTypeAllEvents);
 		itemList = (ListView) findViewById(android.R.id.list);
+		container = (RelativeLayout) findViewById(R.id.eventsListObjectContainer);
 		itemList.setOnItemLongClickListener(this);
 		itemList.setOnItemClickListener(this);
-		eventsList = db.getEventList();
+		Calendar c = (GregorianCalendar) Calendar.getInstance();
+		eventsList = db.getEventsFromDay(c.get(Calendar.DAY_OF_MONTH), (c.get(Calendar.MONTH)+1), c.get(Calendar.YEAR));
+//		eventsList = db.getEventList();
 		ArrayAdapter<CharSequence> types = ArrayAdapter.createFromResource(this, R.array.view_types, android.R.layout.simple_spinner_item);
 		types.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		viewSelection.setOnItemSelectedListener(this);
 		viewSelection.setAdapter(types);
 		viewSelection.setSelection(3, false);
-		Toast.makeText(this, "Events number: " + db.getEventList().size(), Toast.LENGTH_LONG).show();
-		if(db.checkEvents()){
-			CalendarAdapter adapter = new CalendarAdapter(this, eventsList);
+		if(eventsList.size() > 0){
+			adapter = new CalendarAdapter(this, eventsList, false);
 			itemList.setAdapter(adapter);
 		}
-		else
-//			AppDialogs d = new AppDialogs(this, this);
-			Toast.makeText(this, "No Events", Toast.LENGTH_LONG).show();
+		else{
+			TextView noResult = new TextView(this);
+			RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+			rp.addRule(RelativeLayout.BELOW, R.id.find_time);
+			noResult.setText("No events.");
+			noResult.setTextAppearance(this, android.R.style.TextAppearance_Large);
+			noResult.setGravity(Gravity.CENTER);
+			itemList.setVisibility(View.INVISIBLE);
+			container.addView(noResult, rp);
+		}
 	}
 
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -60,11 +80,17 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		clicked = eventsList.get(arg2);
-		AppDialogs dialog = new AppDialogs(this, this);
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 		dialog.setTitle("Choose an action:");
-		dialog.setEditItems();
-		dialog.createAndShowDialog();
-		performClickedAction(dialog.getItemClicked());
+		dialog.setItems(R.array.edit_actions, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				performClickedAction(which);
+			}
+		});
+		dialog.create();
+		dialog.show();
 		return false;
 	}
 
@@ -74,11 +100,36 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 		
 		//Delete
 		case 0:
-			actionResult = (int) db.removeEvent(clicked.getId());
-			if(actionResult != 0){
-				ArrayAdapter<Event> allCalendars = new ArrayAdapter<Event>(getApplicationContext(), android.R.layout.simple_list_item_1, db.getEventList());
-				itemList.setAdapter(allCalendars);
-			}
+//			confirm.confirmDelete(clicked.getId());
+//			actionResult = (int) db.removeEvent(clicked.getId());
+//			if(actionResult != 0){
+			final int eventID = clicked.getId();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Warning!");
+			builder.setMessage("Are you sure you want to delete this calendar?");
+//			setPositiveButton();
+			builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					MyCalendarDB db = MainActivity.getAppDB();
+					db.removeEvent(eventID);
+					db.removeReminder(eventID);
+					adapter.setEventsList(db.getEventList());
+					itemList.setAdapter(adapter);
+				}
+			});
+//			setNegativeButton();
+			builder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.create();
+			builder.show();
+//			}
 			break;
 			
 			

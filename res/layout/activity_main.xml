@@ -9,6 +9,7 @@
         android:id="@+id/newEvent"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -45,6 +46,7 @@
         android:id="@+id/newCalendar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:clickable="true"
         android:duplicateParentState="false"
         android:longClickable="true"
@@ -81,6 +83,7 @@
         android:id="@+id/Events"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:onClick="allEvents"
         android:paddingTop="0dp" >
 
@@ -110,6 +113,7 @@
         android:id="@+id/Calendars"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:onClick="allCalendars"
         android:paddingTop="0dp" >
 
@@ -134,40 +138,12 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/export_calendars"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="exportCalendar"
-        android:paddingTop="0dp" >
-
-        <ImageView
-            android:id="@+id/icon_export_calendar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/export_calendar_description"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_launcher" />
-
-        <TextView
-            android:id="@+id/export_calendars_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
-            android:fontFamily="@android:string/cancel"
-            android:text="@string/export_calendar"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
     
     <LinearLayout
         android:id="@+id/time_finder"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:onClick="timeFinder"
         android:paddingTop="0dp" >
 
@@ -194,11 +170,12 @@
     </LinearLayout>
     
        <LinearLayout
-        android:id="@+id/settings"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="settings"
-        android:paddingTop="0dp" >
+           android:id="@+id/settings"
+           android:layout_width="match_parent"
+           android:layout_height="50dp"
+           android:layout_marginTop="10dp"
+           android:onClick="settings"
+           android:paddingTop="0dp" >
 
         <ImageView
             android:id="@+id/icon_settings"

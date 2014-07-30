@@ -15,9 +15,11 @@
 
 	        <Spinner
 	            android:id="@+id/Calendar"
-	            android:layout_width="match_parent"
+	            android:layout_width="wrap_content"
 	            android:layout_height="40dp"
-	            android:layout_marginTop="0dp" />
+	            android:layout_alignParentLeft="true"
+	            android:layout_alignRight="@id/fakeView"
+	            android:layout_marginTop="5dp" />
 
 	        <EditText
 	            android:id="@+id/EventName"
@@ -36,19 +38,20 @@
 	            android:id="@+id/StartDate"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_below="@id/EventName"
+	            android:layout_alignParentLeft="true"
+	            android:layout_alignRight="@id/fakeView"
+	            android:layout_below="@+id/From"
 	            android:layout_marginLeft="5dp"
-	            android:layout_marginTop="20dp"
-	            android:layout_toRightOf="@+id/From"
+	            android:layout_marginTop="5dp"
 	            android:minWidth="200dp"
-	            android:onClick="showStartDatePicker" />
+	            android:onClick="startDatePicker" />
 
 	        <TextView
 	            android:id="@+id/From"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_alignTop="@id/StartDate"
 	            android:layout_below="@id/EventName"
+	            android:layout_marginLeft="5dp"
 	            android:layout_marginTop="10dp"
 	            android:text="@string/text_date_from"
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -58,19 +61,19 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentRight="true"
-	            android:layout_below="@id/EventName"
-	            android:layout_marginTop="20dp"
+	            android:layout_below="@id/From"
+	            android:layout_marginTop="5dp"
 	            android:layout_toRightOf="@id/StartDate"
 	            android:minWidth="100dp"
-	            android:onClick="showStartTimePicker" />
+	            android:onClick="startTimePicker" />
 
 	        <TextView
 	            android:id="@+id/To"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_alignTop="@+id/EndDate"
-	            android:layout_below="@+id/From"
-	            android:layout_marginTop="10dp"
+	            android:layout_below="@+id/StartDate"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginTop="5dp"
 	            android:text="@string/text_date_to"
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -79,23 +82,24 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignLeft="@id/StartDate"
-	            android:layout_below="@id/StartDate"
-	            android:layout_marginLeft="0dp"
-	            android:layout_toRightOf="@id/To"
+	            android:layout_alignParentLeft="true"
+	            android:layout_alignRight="@id/fakeView"
+	            android:layout_below="@id/To"
+	            android:layout_marginLeft="5dp"
 	            android:minWidth="200dp"
-	            android:onClick="showEndDatePicker" />
+	            android:onClick="endDatePicker" />
 
 	        <Button
 	            android:id="@+id/EndTime"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentRight="true"
-	            android:layout_below="@id/StartTime"
+	            android:layout_below="@id/To"
 	            android:layout_marginLeft="0dp"
 	            android:layout_marginTop="0dp"
 	            android:layout_toRightOf="@id/EndDate"
 	            android:minWidth="100dp"
-	            android:onClick="showEndTimePicker" />
+	            android:onClick="endTimePicker" />
 
 	        <CheckBox
 	            android:id="@+id/allDay"
@@ -109,10 +113,11 @@
 	            android:id="@+id/notesArea"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_above="@id/Create"
+	            android:layout_alignBottom="@+id/reminderSpinner"
+	            android:layout_alignLeft="@id/fakeView"
 	            android:layout_alignParentBottom="false"
 	            android:layout_alignParentLeft="false"
-	            android:layout_below="@+id/reminderSpinner"
+	            android:layout_below="@id/EndDate"
 	            android:layout_marginTop="10dp"
 	            android:ems="10"
 	            android:gravity="center_vertical|top"
@@ -136,47 +141,57 @@
 	            android:layout_height="40dp"
 	            android:layout_alignLeft="@id/fakeView"
 	            android:layout_alignParentRight="false"
-	            android:layout_below="@+id/flexible"
+	            android:layout_alignParentTop="false"
+	            android:layout_alignRight="@id/fakeView"
+	            android:layout_below="@+id/reminderSpinner"
 	            android:layout_marginTop="5dp" />
 
 	        <Button
 	            android:id="@+id/Create"
-	            android:layout_width="fill_parent"
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_alignParentBottom="true"
+	            android:layout_alignBottom="@id/Calendar"
+	            android:layout_alignParentBottom="false"
+	            android:layout_alignParentRight="true"
+	            android:layout_marginLeft="50dp"
+	            android:layout_marginRight="50dp"
+	            android:layout_toRightOf="@id/Calendar"
 	            android:onClick="createEvent"
 	            android:text="@string/text_save_button"
 	            android:textColorLink="@android:color/holo_orange_light" />
 
 	        <Spinner
 	            android:id="@+id/reminderSpinner"
-	            android:layout_width="match_parent"
+	            android:layout_width="wrap_content"
 	            android:layout_height="40dp"
+	            android:layout_alignLeft="@+id/flexible"
 	            android:layout_alignRight="@id/fakeView"
-	            android:layout_below="@id/flexible"
-	            android:layout_centerHorizontal="true"
-	            android:layout_marginTop="5dp" />
+	            android:layout_below="@+id/reminder_text"
+	            android:layout_marginTop="5dp"
+	            android:layout_toRightOf="@+id/reminder_text" />
 
 	        <Spinner
 	            android:id="@+id/flexible"
 	            android:layout_width="wrap_content"
 	            android:layout_height="40dp"
-	            android:layout_alignRight="@id/EndDate"
-	            android:layout_below="@id/allDay"
-	            android:layout_marginLeft="7dp"
-	            android:layout_marginRight="0dp"
-	            android:layout_toRightOf="@+id/flexibility_text" />
+	            android:layout_alignParentLeft="true"
+	            android:layout_below="@+id/flexibility_text"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginTop="10dp"
+	            android:layout_toLeftOf="@+id/flexibility_range" />
 
 	        <EditText
 	            android:id="@+id/flexibility_range"
-	            android:layout_width="40dp"
+	            android:layout_width="50dp"
 	            android:layout_height="wrap_content"
-	            android:layout_alignBottom="@+id/flexible"
+	            android:layout_alignBottom="@id/flexible"
 	            android:layout_alignParentLeft="false"
-	            android:layout_toRightOf="@id/flexible"
+	            android:layout_alignRight="@id/fakeView"
+	            android:layout_below="@id/flexibility_text"
+	            android:layout_marginTop="10dp"
 	            android:ems="10"
 	            android:inputType="number"
-	            android:text="1"
+	            android:text="30"
 	            android:textAlignment="center" />
 
 	        <TextView
@@ -184,10 +199,34 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentLeft="false"
-	            android:layout_alignTop="@id/flexible"
-	            android:layout_marginTop="6dp"
+	            android:layout_below="@id/reminderSpinner"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginTop="15dp"
 	            android:text="@string/text_flexibility"
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	        <TextView
+	            android:id="@+id/reminder_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_below="@id/allDay"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginTop="10dp"
+	            android:text="@string/text_reminder"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	        <TextView
+	            android:id="@+id/flexibility_min"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignTop="@id/flexibility_range"
+	            android:layout_below="@id/flexibility_text"
+	            android:layout_marginTop="10dp"
+	            android:layout_toRightOf="@+id/flexibility_range"
+	            android:text="min"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:visibility="invisible" />
 
 	    </RelativeLayout>
 

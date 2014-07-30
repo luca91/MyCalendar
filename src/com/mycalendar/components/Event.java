@@ -1,7 +1,6 @@
 package com.mycalendar.components;
 
 import java.util.StringTokenizer;
-import java.util.UUID;
 
 /**
  *This class manage the information about an event. 
@@ -44,13 +43,13 @@ public class Event extends AppItem {
 	private String name;
 	private String startDate, endDate, startTime, endTime;
 	private int id;
-	private boolean allDay;
+	private int allDay;
 	private String notes;
 	private String calendar;
 	private String flexibility;
 	private int flexibilityRange;
 	private Reminder reminder;
-	private String repetition;
+	private int repetition;
 	
 	/**
 	 * 
@@ -149,30 +148,16 @@ public class Event extends AppItem {
 		this.id = id;
 	}
 	
-	public void setAllDay(boolean allDay){
+	public void setAllDay(int allDay){
 		this.allDay = allDay;
 	}
 	
-	public void setAllDay(int allDay){
-		if(allDay == 0)
-			this.allDay = false;
-		else
-			this.allDay = true;
-	}
-	
-	public boolean getAllDay(){
+	public int getAllDay(){
 		return allDay;
 	}
 	
-	public int getAllDayParsed(){
-		if(allDay)
-			return 1;
-		else
-			return 0;
-	}
-	
 	public void setReminder(Reminder r){
-		reminder = r;
+		this.reminder = r;
 	}
 	
 	public Reminder getReminder(){
@@ -193,5 +178,13 @@ public class Event extends AppItem {
 	
 	public int getFlexibilityRange(){
 		return flexibilityRange;
+	}
+	
+	public void setRepetition(int rep){
+		repetition = rep;
+	}
+	
+	public int getRepetition(){
+		return repetition;
 	}
 }

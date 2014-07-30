@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.mycalendar.components.AppCalendar;
@@ -28,10 +30,13 @@ public abstract class ItemList extends ListActivity implements AdapterView.OnIte
 	 */
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 		Intent showDetails = new Intent(this, CalendarShow.class);
-		String calendarName = (String) parent.getItemAtPosition(position);
+//		RelativeLayout item = (RelativeLayout) parent.getItemAtPosition(position);
+//		String calendarName = ((TextView) item.getChildAt(0)).getText().toString();
+		String calendarName = ((AppCalendar) parent.getItemAtPosition(position)).getName();
 		AppCalendar aCalendar = db.getSingleCalendarByName(calendarName);
 		showDetails.putExtra(AppCalendar.CAL_NAME, aCalendar.getName());
 		showDetails.putExtra(AppCalendar.CAL_COLOR, aCalendar.getColor());
+		showDetails.putExtra(AppCalendar.CAL_ID, aCalendar.getID());
 		startActivity(showDetails);
 	}
 

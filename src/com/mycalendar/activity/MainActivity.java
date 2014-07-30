@@ -39,7 +39,6 @@ public class MainActivity extends Activity {
         //At the very first time, the database is created; then this only connect the app to it.
         applicationDB = new MyCalendarDB(this); 
         defaultView = "List";
-        applicationDB.importGoogleAccountCalendars();
     }
 
     /**
@@ -56,7 +55,7 @@ public class MainActivity extends Activity {
      * @param m the item clicked in the menu window
      */
     public void addEvent(View v){
-		if(applicationDB.getCalendarList().length < 1){
+		if(applicationDB.getCalendarList().size() < 1){
 			Intent toCalendarEditor = new Intent(this, CalendarEditor.class);
 			new AppDialogs(this).noCalendarDialog("No calendar exists. Create one before adding events.", toCalendarEditor, this);
 		}
@@ -92,33 +91,24 @@ public class MainActivity extends Activity {
     }
     
     public void allEvents(View v){
-    	if(applicationDB.getEventList().size() > 0){
-    		Intent allEvent;
-	    	EventsView.setActualView(defaultView);
-	    	if(defaultView.equals("Day")){
-	    		allEvent = new Intent(this, EventsView.class);
-	    		startActivity(allEvent);
-	    	}
-	    	if(defaultView.equals("Week")){
-	    		allEvent = new Intent(this, EventsView.class);
-				startActivity(allEvent);
-	    	}
-	    	if(defaultView.equals("Month")){
-	    		allEvent = new Intent(this, EventsView.class);
-				startActivity(allEvent);
-	    	}
-	    	if(defaultView.equals("List")){
-	    		allEvent = new Intent(this, AllEventsList.class);
-				startActivity(allEvent);
-	    	}
+		Intent allEvent;
+    	EventsView.setActualView(defaultView);
+    	if(defaultView.equals("Day")){
+    		allEvent = new Intent(this, EventsView.class);
+    		startActivity(allEvent);
     	}
-    	else{
-    		d = new AppDialogs(this);
-    		d.setTitle("Warning!");
-    		d.setMessage("No events to show.");
-    		d.setPositiveButton();
-    		d.createAndShowDialog();
-	    	}
+    	if(defaultView.equals("Week")){
+    		allEvent = new Intent(this, EventsView.class);
+			startActivity(allEvent);
+    	}
+    	if(defaultView.equals("Month")){
+    		allEvent = new Intent(this, EventsView.class);
+			startActivity(allEvent);
+    	}
+    	if(defaultView.equals("List")){
+    		allEvent = new Intent(this, AllEventsList.class);
+			startActivity(allEvent);
+    	}
     }
     
     public void exportCalendar(View v){
@@ -127,7 +117,8 @@ public class MainActivity extends Activity {
     }
     
     public void timeFinder(View v){
-    	//TO DO;
+    	Intent toFinder = new Intent(this, TimeFinder.class);
+    	startActivity(toFinder);
     }
     
     public void settings(MenuItem m){

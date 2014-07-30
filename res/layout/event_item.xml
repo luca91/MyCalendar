@@ -11,8 +11,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/dateAndTimeItem"
@@ -20,10 +21,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/nameAndCalendarItem"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
         android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/hiddenEventID"
@@ -34,5 +36,13 @@
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/choose_event_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/dateAndTimeItem"
+        android:layout_alignParentRight="true"
+        android:text="@string/text_choose_time" />
 
 </RelativeLayout>

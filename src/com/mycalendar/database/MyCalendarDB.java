@@ -2,23 +2,20 @@ package com.mycalendar.database;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
-import com.mycalendar.tools.AppDialogs;
+import com.mycalendar.components.Reminder;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.provider.CalendarContract;
-import android.provider.CalendarContract.Calendars;
 import android.widget.Toast;
 
 /**
@@ -44,36 +41,35 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public static final String EVENTS_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS events " +
 			"(event_id INTEGER PRIMARY KEY,"+ 
-			"event_name VARCHAR(40), " +
-			"event_start_date DATE, " +
-			"event_start_time TIME, " +
-			"event_end_date DATE," +
-			"event_end_time TIME," +
+			"event_name TEXT, " +
+			"event_start_date TEXT, " +
+			"event_start_time TEXT, " +
+			"event_end_date TEXT," +
+			"event_end_time TEXT," +
 			"event_calendar_id INTEGER,"
 			+ "event_all_day INTEGER DEFAULT 0,"
 			+ "event_parent_id INTEGER,"
-			+ "event_flexibility VARCHAR DEFAULT None,"
+			+ "event_flexibility TEXT DEFAULT None,"
 			+ "event_flexibility_range INTEGER DEFAULT 0,"
-			+ "event_repetition_id INTEGER 15,"
-			+ "event_notes VARCHAR(255) DEFAULT NULL,"
-			+ "UNIQUE(event_name, event_start_date, event_start_time, event_calendar_id));";
+			+ "event_repetition_id INTEGER DEFAULT 1,"
+			+ "event_reminder_id INTEGER DEFAULT 0,"
+			+ "event_notes TEXT DEFAULT NULL,"
+			+ "UNIQUE(event_name, event_start_date, event_start_time, event_calendar_id),"
+			+ "FOREIGN KEY (event_reminder_id) REFERENCES reminders(reminder_id));";
 	
 	public static final String CALENDAR_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS calendars " +
 					"(calendar_id INTEGER PRIMARY KEY ,"
-					+ "calendar_name VARCHAR(40), " +
-					"calendar_color VARCHAR(15),"
-					+ "calendar_export INTEGER DEFAULT 0,"
-					+ "calendar_local INTEGER DEFAULT 1,"
-					+ "calendar_google_id INTEGER DEFAULT NULL,"
-					+ "UNIQUE(calendar_name, calendar_color));";
+					+ "calendar_name TEXT, " +
+					"calendar_color TEXT,"
+					+ "UNIQUE(calendar_name));";
 	
 	public static final String REMINDER_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS reminders " +
 					"(reminder_id INTEGER,"
-					+ "reminder_event_id INTEGER "
-					+ "reminder_date_time VARCHAR(30),"
-					+ "reminder_time_chosen VARCHAR(10));";
+					+ "reminder_event_id INTEGER, "
+					+ "reminder_date_time TEXT,"
+					+ "reminder_time_chosen TEXT);";
 	
 	public static final String[] EVENT_PROJECTION = new String[] {
 		CalendarContract.Calendars._ID,                           // 0
@@ -143,7 +139,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		toInsert.put("event_start_time", anEvent.getStartTime());
 		toInsert.put("event_end_time", anEvent.getEndTime());
 		toInsert.put("event_calendar_id", getCalendarByName(anEvent.getCalendar()).getID());
-		toInsert.put("event_all_day", anEvent.getAllDayParsed());
+		toInsert.put("event_all_day", anEvent.getAllDay());
+		toInsert.put("event_flexibility", anEvent.getFlexibility());
+		toInsert.put("event_flexibility_range", anEvent.getFlexibilityRange());
+		toInsert.put("event_repetition_id", anEvent.getRepetition());
+		toInsert.put("event_notes", anEvent.getNotes());
 		return this.getWritableDatabase().insert("events", null, toInsert);
 	}
 	
@@ -155,7 +155,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		toInsert.put("event_start_time", update.getStartTime());
 		toInsert.put("event_end_time", update.getEndTime());
 		toInsert.put("event_calendar_id", getCalendarByName(update.getCalendar()).getID());
-		toInsert.put("event_all_day", update.getAllDayParsed());
+		toInsert.put("event_all_day", update.getAllDay());
+		toInsert.put("event_flexibility", update.getFlexibility());
+		toInsert.put("event_flexibility_range", update.getFlexibilityRange());
+		toInsert.put("event_repetition_id", update.getRepetition());
+		toInsert.put("event_notes", update.getNotes());
 		String[] whereArgs = {String.valueOf(update.getId())};
 		return this.getWritableDatabase().update("events", toInsert, "event_id=?", whereArgs);
 	}
@@ -168,10 +172,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		ContentValues toInsert = new ContentValues();
 		toInsert.put("calendar_name", aCalendar.getName());
 		toInsert.put("calendar_color", aCalendar.getColor());
-		toInsert.put("calendar_local", AppCalendar.parseBooleanToInt(aCalendar.getIsLocal()));
-		toInsert.put("calendar_google_id", aCalendar.getServerID());
-		toInsert.put("calendar_local", AppCalendar.parseBooleanToInt(aCalendar.getIsLocal()));
-		toInsert.put("calendar_export", AppCalendar.parseBooleanToInt(aCalendar.getIsSync()));
 		return this.getWritableDatabase().insert("calendars", null, toInsert);
 	}
 	
@@ -186,33 +186,43 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			String name = result.getString(1);
 			String color = result.getString(2);
 			AppCalendar aCalendar = new AppCalendar(name, color);
-			aCalendar.setID(result.getInt(0));
-			aCalendar.setIsSync(Boolean.valueOf(result.getString(3)));
+			aCalendar.setID(result.getInt(0));;
 			calendarList.add(aCalendar);
 			result.moveToNext();
 		}
 		return calendarList;
 	} 
 	
-	public String[] getCalendarList(){
+	public ArrayList<String> getCalendarList(){
 		String[] columns = {"calendar_name"};
 		Cursor result = this.getReadableDatabase().query("calendars", columns, null, null, null, null, null);
-		String[] calendarList = new String[result.getCount()];
+		ArrayList<String> list = new ArrayList<String>();
 		result.moveToFirst();
 		for(int i = 0; i < result.getCount(); i++){
 			if(!(result.isAfterLast())){
-				calendarList[i] = result.getString(0);
+				list.add(result.getString(0));
 				result.moveToNext();
 			}
 		}
-		return calendarList;
+		return list;
 	}
 	
-	public AppCalendar getSingleCalendarByName(String calendarName){
-		String[] values = {calendarName};
+	public AppCalendar getSingleCalendarByID(int id){
+		String[] values = {String.valueOf(id)};
+		Cursor result = this.getReadableDatabase().query("calendars", null, "calendar_id=?", values, null, null, null);
+		result.moveToFirst();
+		AppCalendar toReturn = new AppCalendar(result.getString(1), result.getString(2)); 
+		toReturn.setID(result.getInt(0));
+		return toReturn; 
+	}
+	
+	public AppCalendar getSingleCalendarByName(String name){
+		String[] values = {name};
 		Cursor result = this.getReadableDatabase().query("calendars", null, "calendar_name=?", values, null, null, null);
 		result.moveToFirst();
-		return new AppCalendar(result.getString(1), result.getString(2));
+		AppCalendar toReturn = new AppCalendar(result.getString(1), result.getString(2)); 
+		toReturn.setID(result.getInt(0));
+		return toReturn; 
 	}
 	
 	public AppCalendar getCalendarByID(int id){
@@ -234,7 +244,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		result.moveToFirst();
 		AppCalendar ac = new AppCalendar(result.getString(1), result.getString(2));
 		ac.setID(result.getInt(0));
-		ac.setIsSync(Boolean.valueOf(result.getString(3)));
 		return ac;
 	}
 	
@@ -244,12 +253,12 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return this.getWritableDatabase().delete("calendars", "calendar_id=?", selArgs); 
 	}
 	
-	public long updateCalendar(AppCalendar old, AppCalendar modified){
+	public long updateCalendar(int id, AppCalendar modified){
 		ContentValues values = new ContentValues();
 		values.put("calendar_name", modified.getName());
 		values.put("calendar_color", modified.getColor());
-		String[] whereArgs = {old.getName(), old.getColor()};
-		return this.getWritableDatabase().update("calendar", values, "calendar_name=? AND calendar_color=?", whereArgs);
+		String[] whereArgs = {String.valueOf(id)};
+		return this.getWritableDatabase().update("calendars", values, "calendar_id=?", whereArgs);
 	}
 	
 	public String[] getEventNameList(){
@@ -297,47 +306,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return e;
 	}
 	
-	public Event[] sort(Event[] toSort){
-		Arrays.sort(toSort, new Comparator<Event>() {
-			
-			public int compare(Event t1, Event t2){
-				if(Array.getInt(t1.getDateToken("start"), 0) > Array.getInt(t2.getDateToken("start"), 0))
-					return 1;
-				else if(Array.getInt(t1.getDateToken("start"), 0) < Array.getInt(t2.getDateToken("start"), 0))
-					return -1;
-				else if(Array.getInt(t1.getDateToken("start"), 0) == Array.getInt(t2.getDateToken("start"), 0)){
-					if(Array.getInt(t1.getDateToken("start"), 1) > Array.getInt(t2.getDateToken("start"), 1))
-						return 1;
-					else if(Array.getInt(t1.getDateToken("start"), 1) < Array.getInt(t2.getDateToken("start"), 1))
-						return -1;
-					else if(Array.getInt(t1.getDateToken("start"), 1) == Array.getInt(t2.getDateToken("start"), 1)){
-						if(Array.getInt(t1.getDateToken("start"), 2) > Array.getInt(t2.getDateToken("start"), 2))
-							return 1;
-						else if(Array.getInt(t1.getDateToken("start"), 2) < Array.getInt(t2.getDateToken("start"), 2))
-							return -1;
-						else if(Array.getInt(t1.getDateToken("start"), 2) == Array.getInt(t2.getDateToken("start"), 2)){
-							if(Array.getInt(t1.getTimeToken("start"), 0) > Array.getInt(t2.getDateToken("start"), 1))
-								return 1;
-							else if(Array.getInt(t1.getTimeToken("start"), 0) < Array.getInt(t2.getTimeToken("start"), 0))
-								return -1;
-							else if(Array.getInt(t1.getTimeToken("start"), 0) == Array.getInt(t2.getTimeToken("start"), 0)){
-								if(Array.getInt(t1.getTimeToken("start"), 1) > Array.getInt(t2.getTimeToken("start"), 1))
-									return 1;
-								else if(Array.getInt(t1.getTimeToken("start"), 1) < Array.getInt(t2.getTimeToken("start"), 1))
-									return -1;
-								else if(Array.getInt(t1.getTimeToken("start"), 1) == Array.getInt(t2.getTimeToken("start"), 0))
-									return 0;
-							}
-						}
-					}
-				}
-				return 2;
-			}
-		});
-		
-		return toSort;
-	} 
-	
 	public Event getSingleEvent(Event toSearch){
 		String[] values = {toSearch.getName(), 
 				convertDateFromStringToDB(toSearch.getStartDate()), 
@@ -383,12 +351,17 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return outputDate;
 	}
 	
-	public long addReminder(int eventID, String dateTime, String before){
+	public long addReminder(Reminder aReminder){
 		ContentValues values = new ContentValues();
-		values.put("reminder_event_id", eventID);
-		values.put("reminder_date_time", dateTime);
-		values.put("remider_time_chosen", before);
+		values.put("reminder_event_id", aReminder.getEventID());
+		values.put("reminder_date_time", aReminder.dateAndTimeToString());
+		values.put("reminder_time_chosen", aReminder.getRemTimChosen());
 		return this.getWritableDatabase().insert("reminders", null, values);
+	}
+	
+	public long removeReminder(int eventID){
+		String[] selArgs = {String.valueOf(eventID)};
+		return this.getWritableDatabase().delete("reminders", "reminder_event_id=?", selArgs); 
 	}
 	
 	public boolean checkEventUnique(String name, String date, String time, int calendar){
@@ -404,11 +377,12 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	}
 	
 	public ArrayList<Event> getEventsByDay(String date){
-		String[] values = {date};
+		String[] values = {convertDateFromStringToDB(date)};
 		Cursor result = this.getReadableDatabase().query("events", null, "event_start_date=?", values, null, null, "event_start_time");
 		ArrayList<Event> list = new ArrayList<Event>();
 		boolean check = result.moveToFirst();
-		if(check){
+		int rows = result.getCount();
+		for(int i = 0; check && (i < rows); i++){
 			Event e = new Event(result.getString(1), 
 				convertDateFromDBToString(result.getString(2)), 
 				convertDateFromDBToString(result.getString(4)), 
@@ -416,7 +390,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 				result.getString(5), 
 				getCalendarByID(result.getInt(6)).getName());
 			e.setId(Integer.parseInt(result.getString(0)));
+			e.setAllDay(result.getInt(7));
 			list.add(e);
+			result.moveToNext();
 		}
 		return list;
 	}
@@ -432,55 +408,37 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 					result.getString(5), 
 					getCalendarByID(result.getInt(6)).getName());
 			e.setId(Integer.parseInt(result.getString(0)));
+			e.setAllDay(result.getInt(7));
+			e.setFlexibility(result.getString(9));
+			e.setFlexibilityRange(result.getInt(10));
+			e.setRepetition(result.getInt(11));
 			return e;
 		}
 		else
 		return null;
 	}
 	
-	public void importGoogleAccountCalendars(){
-		Cursor cur = null;
-		ContentResolver cr = ctx.getContentResolver();
-		Uri uri = CalendarContract.Calendars.CONTENT_URI;   
-		String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND (" 
-		                        + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
-		                        + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
-		String[] selectionArgs = new String[] {"lucabelles@gmail.com", "com.google",
-		        "lucabelles@gmail.com"}; 
-		// Submit the query and get a Cursor object back. 
-		cur = cr.query(uri, null, null, null, null);
-		while (cur.moveToNext()) {
-		    long calID = 0;
-		    String displayName = null;
-		    String accountName = null;
-		    String ownerName = null;
-		    String color = null;
-		    String name = null;
-		      
-		    // Get the field values
-		    calID = cur.getLong(0);
-		    displayName = cur.getString(2);
-		    accountName = cur.getString(1);
-		    ownerName = cur.getString(4);
-		    color = cur.getString(5);
-		    name = cur.getString(3);
-		    AppCalendar fromServer = new AppCalendar(name, AppCalendar.parseHexStringColor(color));
-		    fromServer.setServerID((int) calID);
-		    fromServer.setIsLocal(false);
-		    fromServer.setIsSync(true);
-		    if(!checkImportCalendar(fromServer.getServerID()))
-		    	addCalendar(fromServer);
-		    else
-		    	continue;
+	public ArrayList<Event> getEventsFromDay(int day, int month, int year){
+		Calendar c = new GregorianCalendar(year, month, day);
+		Cursor result = this.getReadableDatabase().query("events", null, null, null, null, null, "event_start_date, event_start_time");
+		ArrayList<Event> list = new ArrayList<Event>();
+		boolean check = result.moveToFirst();
+		int rows = result.getCount();
+		for(int i = 0; check && (i < rows); i++){
+			Event e = new Event(result.getString(1), 
+				convertDateFromDBToString(result.getString(2)), 
+				convertDateFromDBToString(result.getString(4)), 
+				result.getString(3), 
+				result.getString(5), 
+				getCalendarByID(result.getInt(6)).getName());
+			e.setId(Integer.parseInt(result.getString(0)));
+			e.setAllDay(result.getInt(7));
+			int[] date = e.getDateToken("start");
+			Calendar actual = new GregorianCalendar(date[2], date[1], date[0]);
+			if(actual.compareTo(c) >= 0)
+				list.add(e);
+			result.moveToNext();
 		}
-		AppDialogs d = new AppDialogs(ctx);
-		d.setMessage("Sync with Google completed.");
-		d.setPositiveButton();
-	}
-	
-	public boolean checkImportCalendar(int serverID){
-		String[] selArgs = {String.valueOf(serverID)};
-		Cursor res = this.getReadableDatabase().query("calendars", null, "calendar_google_id=?", selArgs, null, null, null);
-		return res.moveToFirst();
+		return list;
 	}
 }

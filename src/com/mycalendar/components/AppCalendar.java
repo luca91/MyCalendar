@@ -1,7 +1,5 @@
 package com.mycalendar.components;
 
-import java.util.UUID;
-
 import android.graphics.Color;
 
 /**
@@ -9,7 +7,7 @@ import android.graphics.Color;
  * @author Luca Bellettati
  *
  */
-public class AppCalendar{
+public class AppCalendar extends AppItem{
 	
 	/**
 	 * Constant for the name field.
@@ -20,13 +18,10 @@ public class AppCalendar{
 	 * Constant for the color field.
 	 */
 	public static final String CAL_COLOR = "com.example.aux.C_COLOR";
-	public static final String CAL_EMAIL = "com.example.aux.C_EMAIL";
+	public static final String CAL_ID = "com.example.aux.C_ID";
 	private String name;
 	private String color;
 	private int id;
-	private int serverID;
-	private boolean isSync;
-	private boolean isLocal;
 	
 	/**
 	 * 
@@ -36,7 +31,6 @@ public class AppCalendar{
 	public AppCalendar(String name, String color){
 		this.name = name;
 		this.color = color;
-		isLocal = true;
 	}
 	
 	/**
@@ -71,30 +65,6 @@ public class AppCalendar{
 		return id;
 	}
 	
-	public void setIsSync(boolean sync){
-		isSync = sync;
-	}
-	
-	public boolean getIsSync(){
-		return isSync;
-	}
-	
-	public void setIsLocal(boolean isLocal){
-		this.isLocal = isLocal;
-	}
-	
-	public boolean getIsLocal(){
-		return isLocal;
-	}
-	
-	public void setServerID(int id){
-		serverID = id;
-	}
-	
-	public int getServerID(){
-		return serverID;
-	}
-	
 	/**
 	 * It return the associated constant value of this calendar color.
 	 * @param color the string denoting the color of this calendar
@@ -107,7 +77,7 @@ public class AppCalendar{
 			return Color.BLUE;
 		if(color.equals("Cyan"))
 			return Color.CYAN;
-		if(color.equals("Dark Grey"))
+		if(color.equals("Dark Gray"))
 			return Color.DKGRAY;
 		if(color.equals("Gray"))
 			return Color.GRAY;

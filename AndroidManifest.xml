@@ -10,14 +10,10 @@
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-     <uses-permission
-            android:name="android.permission.INTERNET"/>
-    <uses-permission
-            android:name="android.permission.READ_SYNC_SETTINGS"/>
-    <uses-permission
-            android:name="android.permission.WRITE_SYNC_SETTINGS"/>
-    <uses-permission
-            android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -36,8 +32,8 @@
         <activity
             android:name="com.mycalendar.activity.EventEditor"
             android:label="@string/title_activity_event_editor"
-            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" 
-            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" >
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize|adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.accounts.AccountAuthenticatorActivity" />
@@ -118,9 +114,9 @@
             android:name="com.mycalendar.activity.CalendarViewDay"
             android:label="@string/title_activity_calendar_view_day" >
         </activity>
-          <activity
+        <activity
             android:name="com.mycalendar.activity.CalendarViewMonth"
-            android:label="@string/title_activity_calendar_view_month"  >
+            android:label="@string/title_activity_calendar_view_month" >
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewWeek"
@@ -133,6 +129,11 @@
         <activity
             android:name="com.mycalendar.activity.EventsView"
             android:label="@string/title_activity_events_view" >
+        </activity>
+        <activity
+            android:name="com.mycalendar.activity.TimeFinder"
+            android:label="@string/title_activity_time_finder" 
+            android:windowSoftInputMode="stateUnchanged|adjustResize|adjustPan" >
         </activity>
     </application>
 

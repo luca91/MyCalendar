@@ -19,15 +19,6 @@
         <requestFocus />
     </EditText>
 
-    <Button
-        android:id="@+id/Create"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:onClick="createModifyCalendar"
-        android:text="@string/text_save_button" />
-
     <Spinner
         android:id="@+id/CalendarColor"
         android:layout_width="fill_parent"
@@ -36,5 +27,16 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/CalendarName"
         android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/Create"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="false"
+        android:layout_below="@+id/CalendarColor"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:onClick="createModifyCalendar"
+        android:text="@string/text_save_button" />
 
 </RelativeLayout>

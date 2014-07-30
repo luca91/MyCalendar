@@ -50,25 +50,14 @@ public class CalendarListAdapter extends ArrayAdapter<AppCalendar>{
 		}
 		TextView calendarName = (TextView) convertView.findViewById(R.id.cal_name);
 		TextView calendarColor = (TextView) convertView.findViewById(R.id.cal_color);
-		Button action = (Button) convertView.findViewById(R.id.import_button);
 		calendarName.setText(getItem(position).getName());
 		calendarColor.setText("");
 		calendarColor.setBackgroundColor(AppCalendar.colorFromStringToInt(list.get(position).getColor()));
-		if(getItem(position).getIsLocal())
-			action.setText(R.string.text_export_calendar_button);
-		else
-			action.setText(R.string.text_import_calendar_button);
-		action.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				AppDialogs d = new AppDialogs(c);
-				d.setMessage("Calendar successfully exported to your Google account.");
-				d.setPositiveButton();
-				d.createAndShowDialog();
-			}
-		});
 		return convertView;
+	}
+	
+	public void setList(ArrayList<AppCalendar> list){
+		this.list = list;
 	}
 
 }
