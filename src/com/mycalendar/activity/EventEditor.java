@@ -147,23 +147,37 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 						anEvent.setNotes(notesArea.getText().toString());
 					if(allDay.isChecked()){
 						anEvent.setAllDay(1);
-						manager.setTime("00:00", "end");
-						manager.setTime("00:00", "start");
+//						Calendar updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start"), manager.getDay("start"), 0, 0);
+//						Calendar updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end"), manager.getDay("end"), 0, 0);
+//						manager.setStartCalendar(updatedStart);
+//						manager.setEndCalendar(updatedEnd);
 					}
 					anEvent.setFlexibility(flexPref);
 					if(!flexPref.equals("None"))
 						anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
 					anEvent.setRepetition(repetitionChosen);
-					Reminder rem = getReminderObject();
-					rem.setRemTimeChosen(parseReminderTime());
-					anEvent.setReminder(rem);
-					db.addReminder(rem);
+					Reminder rem = null;
+					if(!timeChosen.equals("No reminder")){
+						rem = getReminderObject();
+						rem.setRemTimeChosen(parseReminderTime());
+						anEvent.setReminder(rem);
+					}
+					else
+						checkForReminder(id);	
 					long result;
-					if(!isModify)
+					if(!isModify){
 						result = db.addEvent(anEvent);
+						rem.setEventID((int) result);
+						if(!timeChosen.equals("No reminder"))
+							db.addReminder(rem);
+					}
 					else{
 						anEvent.setId(id);
-						result = db.updateEvent(anEvent);
+						rem.setEventID(id);
+						result = id; 
+						db.updateEvent(anEvent);
+						if(!timeChosen.equals("No reminder"))
+							db.updateReminder(rem);
 					}
 					if (result != -1){
 		//				db.addReminder(db.getSingleEvent(anEvent).getId(), calculateReminder(calculateMinutesForReminder()), "");
@@ -237,10 +251,14 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		manager.setCurrentCalendar((Calendar) current.clone());
 //		manager.setStartCalendar(new GregorianCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH)+1, current.get(Calendar.HOUR_OF_DAY), 0));
 //		manager.setEndCalendar(new GregorianCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH)+1, current.get(Calendar.HOUR_OF_DAY), 0));
-		manager.setStartCalendar((Calendar) current.clone());
-		manager.setEndCalendar((Calendar) current.clone());
+		Calendar start = new GregorianCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH), current.get(Calendar.HOUR_OF_DAY), 0);
+		Calendar end = new GregorianCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH), current.get(Calendar.HOUR_OF_DAY), 0);
+		manager.setStartCalendar(start);
+		manager.setEndCalendar(end);
+//		manager.setStartCalendar((Calendar) current.clone());
+//		manager.setEndCalendar((Calendar) current.clone());
 		
-		Toast.makeText(this, manager.calendarToString("start") + "\n" + manager.calendarToString("end") + "\n" + manager.calendarToString("current"), Toast.LENGTH_LONG).show();
+//		Toast.makeText(this, manager.calendarToString("start") + "\n" + manager.calendarToString("end") + "\n" + manager.calendarToString("current"), Toast.LENGTH_LONG).show();
 		
 		//setting the button
 		manager.setButtons(startDate, endDate, startTime, endTime);
@@ -250,8 +268,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		
 		calendars = db.getCalendarList();
 		currentCalendar = calendars.get(0);
-		Toast.makeText(this, "Repetition: " + repetitionChosen, Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this, "Repetition: " + repetitionChosen, Toast.LENGTH_SHORT).show();
 		timeChosen = (String) reminder.getItemAtPosition(0);
+		Toast.makeText(this, "Time chosen: " + timeChosen, Toast.LENGTH_SHORT).show();
+		;
 		repetitionChosen = 0;
 		flexPref = (String) flexibility.getItemAtPosition(0);
 		flexibilityRange.setVisibility(View.INVISIBLE);
@@ -301,7 +321,11 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		flexRange = anEvent.getFlexibilityRange();
 		flexibilityRange.setText(String.valueOf(flexRange));
 		repetition.setSelection(repetitionChosen, false);
-		reminder.setSelection(getItemSelectedPosition(timeChosen, getResources().getStringArray(R.array.reminder_options)), false);
+//		reminder.setSelection(getItemSelectedPosition(timeChosen, getResources().getStringArray(R.array.reminder_options)), false);
+		Reminder aux = db.getReminderByEventID(id);
+		
+		String time = aux.getReminderTextFromTimeChosen();
+		reminder.setSelection(getReminderAdapterIndex(time), false);
 		notesArea.setText("");
 	}
 	
@@ -381,19 +405,36 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			flexibilityRange.setVisibility(View.INVISIBLE);
 			TextView flexText = (TextView) findViewById(R.id.flexibility_text);
 			flexText.setVisibility(View.INVISIBLE);
+			Calendar updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 0, 0);
+			Calendar updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 0, 0);
+			manager.setStartCalendar(updatedStart);
+			manager.setEndCalendar(updatedEnd);
 		}
 		else{
 //			setStartDateButtonAllDayNotChecked();
 //			setEndDateButtonAllDayNotChecked();
 //			setStartTimeButtonAllDayNotChecked();
 //			setEndTimeButtonAllDayNotChecked();
-			manager.setTimeButtonText("start");
-			manager.setTimeButtonText("end");
 			flexibility.setVisibility(View.VISIBLE);
 			flexibility.setSelection(0, false);
 			flexibilityRange.setVisibility(View.INVISIBLE);
 			flexibilityRange.setText("0");
 			flexText.setVisibility(View.VISIBLE);
+			current = Calendar.getInstance();
+			Calendar updatedStart = null;
+			Calendar updatedEnd = null;
+			if(getIsModify()){
+				updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY)+1, 0);
+				updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), current.get(Calendar.HOUR_OF_DAY)+2, 0);
+			}
+			else{
+				updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY), 0);
+				updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), current.get(Calendar.HOUR_OF_DAY), 0);
+			}
+			manager.setStartCalendar(updatedStart);
+			manager.setEndCalendar(updatedEnd);
+			manager.setTimeButtonText("start");
+			manager.setTimeButtonText("end");
 		}
 	}
 
@@ -534,11 +575,24 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	
 	public Reminder getReminderObject(){
 		Reminder result = null;
-//		Calendar rem = (Calendar) manager.getCalendar("start").clone();
-		Calendar rem = manager.getCalendar("start");
-//		rem.add(Calendar.MINUTE, -parseReminderTime());
-		result = new Reminder(rem.get(Calendar.DAY_OF_MONTH)+"/"+rem.get(Calendar.MONTH)+"/"+rem.get(Calendar.YEAR), rem.get(Calendar.HOUR_OF_DAY)+":"+rem.get(Calendar.MINUTE), id);
+		Calendar rem = (Calendar) manager.getCalendar("start").clone();
+//		Calendar rem = manager.getCalendar("start");
+		rem.add(Calendar.MINUTE, -parseReminderTime());
+		result = new Reminder(rem.get(Calendar.DAY_OF_MONTH)+"/"+rem.get(Calendar.MONTH)+"/"+rem.get(Calendar.YEAR) + " " + rem.get(Calendar.HOUR_OF_DAY)+":"+rem.get(Calendar.MINUTE), id);
 		Toast.makeText(this, "Reminder: " + result.toString(), Toast.LENGTH_LONG).show();
 		return result;
+	}
+	
+	public int getReminderAdapterIndex(String choice){
+		for(int i = 0; i < reminderAdapter.getCount(); i++){
+			if(reminderAdapter.getItem(i).toString().equals(choice))
+				return i;
+		}
+		return -1;
+	}
+	
+	public void checkForReminder(int eventID){
+		if(db.getReminderByEventID(eventID) != null)
+			db.removeReminder(eventID);
 	}
 }

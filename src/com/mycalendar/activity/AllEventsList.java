@@ -11,7 +11,6 @@ import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,10 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner; 
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
-
-import com.mycalendar.tools.AppDialogs;
 
 public class AllEventsList extends ItemList implements AdapterView.OnItemSelectedListener {
 	
@@ -34,7 +30,6 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 	private Spinner viewSelection;
 	private ArrayList<Event> eventsList;
 	private Event clicked;
-	private int actionResult;
 	private RelativeLayout container;
 	CalendarAdapter adapter;
 	
@@ -114,7 +109,8 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 				public void onClick(DialogInterface dialog, int which) {
 					MyCalendarDB db = MainActivity.getAppDB();
 					db.removeEvent(eventID);
-					db.removeReminder(eventID);
+					if(db.getReminderByEventID(eventID) != null)
+						db.removeReminder(eventID);
 					adapter.setEventsList(db.getEventList());
 					itemList.setAdapter(adapter);
 				}
@@ -157,7 +153,7 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
-		// TODO Auto-generated method stub
+		//Do nothing!!!
 	}
 	
 	public Intent setIntentExtra(Intent i){

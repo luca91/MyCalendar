@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import com.example.mycalendar.R;
 import com.mycalendar.activity.EventEditor;
 import com.mycalendar.activity.EventsView;
+import com.mycalendar.activity.MainActivity;
+import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
+import com.mycalendar.database.MyCalendarDB;
 
 import android.content.Context;
 import android.content.Intent;
@@ -50,15 +53,21 @@ public class CalendarAdapter extends ArrayAdapter<Event> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Event toPut = (Event) list.get(position);
+		MyCalendarDB db = MainActivity.getAppDB();
 		if(convertView == null){
 			LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.event_item, parent, false);
 		}
 		TextView nameAndCalendar = (TextView) convertView.findViewById(R.id.nameAndCalendarItem);
 		TextView dateAndTime = (TextView) convertView.findViewById(R.id.dateAndTimeItem);
+		TextView calColor = (TextView) convertView.findViewById(R.id.calColorEventList);
+		calColor.setBackgroundColor(AppCalendar.colorFromStringToInt(db.getCalendarByName(toPut.getCalendar()).getColor()));
 		nameAndCalendar.setText(list.get(position).getName());
 		if(toPut.getStartDate().equals(toPut.getEndDate()))
-			dateAndTime.setText(toPut.getStartDate() + ", " + toPut.getStartTime() + "-" + toPut.getEndTime());
+			if(toPut.getStartTime().equals("00:00") && toPut.getEndTime().equals("00:00"))
+				dateAndTime.setText(toPut.getStartDate() + ", " + "All day");
+			else
+				dateAndTime.setText(toPut.getStartDate() + ", " + toPut.getStartTime() + "-" + toPut.getEndTime());
 		else
 			dateAndTime.setText(toPut.getStartDate() + ", " + toPut.getStartTime() + "\n"
 					+ toPut.getEndDate() + ", " + toPut.getStartTime());

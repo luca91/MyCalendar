@@ -147,7 +147,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return this.getWritableDatabase().insert("events", null, toInsert);
 	}
 	
-	public long updateEvent(Event update){
+	public int updateEvent(Event update){
 		ContentValues toInsert = new ContentValues();
 		toInsert.put("event_name", update.getName());
 		toInsert.put("event_start_date", convertDateFromStringToDB(update.getStartDate()));
@@ -354,7 +354,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public long addReminder(Reminder aReminder){
 		ContentValues values = new ContentValues();
 		values.put("reminder_event_id", aReminder.getEventID());
-		values.put("reminder_date_time", aReminder.dateAndTimeToString());
+		values.put("reminder_date_time", aReminder.getDateTime());
 		values.put("reminder_time_chosen", aReminder.getRemTimChosen());
 		return this.getWritableDatabase().insert("reminders", null, values);
 	}
@@ -362,6 +362,26 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public long removeReminder(int eventID){
 		String[] selArgs = {String.valueOf(eventID)};
 		return this.getWritableDatabase().delete("reminders", "reminder_event_id=?", selArgs); 
+	}
+	
+	public long updateReminder(Reminder update){
+		ContentValues values = new ContentValues();
+		values.put("reminder_date_time", update.getDateTime());
+		values.put("reminder_time_chosen", update.getRemTimChosen());
+		String[] whereArgs = {String.valueOf(update.getEventID())};
+		return this.getWritableDatabase().update("reminders", values, "reminder_event_id=?", whereArgs);
+	}
+	
+	public Reminder getReminderByEventID(int id){
+		String[] values = {String.valueOf(id)};
+		Cursor result = getReadableDatabase().query("reminders", null, "reminder_event_id = ?", values, null, null, null);
+		result.moveToFirst();
+		if(result.getCount() == 1){
+			Reminder rem = new Reminder(result.getString(2), Integer.parseInt(result.getString(1)));
+			rem.setRemTimeChosen(result.getInt(3));
+			return rem;
+		}
+		return null;
 	}
 	
 	public boolean checkEventUnique(String name, String date, String time, int calendar){

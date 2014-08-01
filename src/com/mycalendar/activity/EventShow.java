@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -42,9 +43,24 @@ public class EventShow extends Activity {
 		date = (TextView) findViewById(R.id.Date);
 		infoContainer = (RelativeLayout) findViewById(R.id.EventInfoContainer);
 		time = (TextView) findViewById(R.id.Time);
+		int color = AppCalendar.colorFromStringToInt(db.getCalendarByName(received.getStringExtra(Event.CALENDAR)).getColor());
+		int textColor = -1;
+		if(color == Color.WHITE || color == Color.CYAN || color == Color.YELLOW)
+			textColor = Color.BLACK;
+		else
+			textColor = Color.WHITE;
+		
+		//setting text color for text views
+		name.setTextColor(textColor);
+		date.setTextColor(textColor);
+		time.setTextColor(textColor);
+		
 		name.setText(received.getStringExtra(Event.NAME));
 		if(received.getIntExtra(Event.ALL_DAY, -1) == 1){
-			date.setText(received.getStringExtra(Event.S_DATE) + "-" + received.getStringExtra(Event.E_DATE));
+			if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE)))
+				date.setText(received.getStringExtra(Event.S_DATE));
+			else
+				date.setText(received.getStringExtra(Event.S_DATE) + "-" + received.getStringExtra(Event.E_DATE));
 			time.setText("All Day");
 		}
 		else if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE))){

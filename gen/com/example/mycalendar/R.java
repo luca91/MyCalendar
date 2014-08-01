@@ -82,17 +82,18 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int backgroundAsGridDay=0x7f0b0011;
         public static final int backgroundAsGridMonth=0x7f0b0018;
         public static final int backgroundAsGridWeek=0x7f0b0020;
+        public static final int calColorEventList=0x7f0b0057;
         public static final int cal_color=0x7f0b0054;
         public static final int cal_name=0x7f0b0053;
         public static final int calendarItemContainer=0x7f0b0052;
         public static final int calendars_text=0x7f0b0044;
-        public static final int choose_event_found=0x7f0b0059;
+        public static final int choose_event_found=0x7f0b005a;
         public static final int containerDay=0x7f0b000a;
         public static final int containerMonth=0x7f0b0013;
         public static final int containerWeek=0x7f0b0019;
-        public static final int dateAndTimeItem=0x7f0b0057;
+        public static final int dateAndTimeItem=0x7f0b0058;
         public static final int dayItem=0x7f0b0055;
-        public static final int end_date_finder=0x7f0b005c;
+        public static final int end_date_finder=0x7f0b005d;
         public static final int eventEditorContainer=0x7f0b0022;
         public static final int eventsContainerDay=0x7f0b0012;
         public static final int eventsContainerWeek=0x7f0b0021;
@@ -109,7 +110,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int flexible=0x7f0b0030;
         public static final int gridContainer=0x7f0b001e;
         public static final int gridContainerDay=0x7f0b000f;
-        public static final int hiddenEventID=0x7f0b0058;
+        public static final int hiddenEventID=0x7f0b0059;
         public static final int home=0x7f0b003c;
         public static final int hoursContainerDay=0x7f0b0010;
         public static final int hoursContainerWeek=0x7f0b001f;
@@ -128,11 +129,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int new_calendar_text=0x7f0b0041;
         public static final int new_event_text=0x7f0b003f;
         public static final int notesArea=0x7f0b002d;
-        public static final int numberPicker1=0x7f0b005b;
-        public static final int picker_dialog_title=0x7f0b005a;
+        public static final int numberPicker1=0x7f0b005c;
+        public static final int picker_dialog_title=0x7f0b005b;
         public static final int range_finder=0x7f0b004f;
         public static final int range_text_finder=0x7f0b0050;
-        public static final int reminder=0x7f0b005e;
+        public static final int reminder=0x7f0b005f;
         public static final int reminderSpinner=0x7f0b002e;
         public static final int reminder_text=0x7f0b0031;
         public static final int removeButtonCalShow=0x7f0b0007;
@@ -151,7 +152,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int viewTypeMonth=0x7f0b0015;
         public static final int viewTypeWeek=0x7f0b001a;
         public static final int weekDaysContainer=0x7f0b001c;
-        public static final int weekItem=0x7f0b005d;
+        public static final int weekItem=0x7f0b005e;
     }
     public static final class layout {
         public static final int activity_all_calendar_list=0x7f030000;
