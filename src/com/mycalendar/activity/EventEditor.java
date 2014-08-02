@@ -164,6 +164,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					}
 					else
 						checkForReminder(id);	
+					if(notesArea.getText().toString() != null)
+						anEvent.setNotes(notesArea.getText().toString());
+					else
+						anEvent.setNotes("");
 					long result;
 					if(!isModify){
 						result = db.addEvent(anEvent);
@@ -326,7 +330,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		
 		String time = aux.getReminderTextFromTimeChosen();
 		reminder.setSelection(getReminderAdapterIndex(time), false);
-		notesArea.setText("");
+		if(anEvent.getNotes() != null)
+			notesArea.setText(anEvent.getNotes());
 	}
 	
 	public void setEventFromFinderEnvironment(Intent received){
@@ -400,13 +405,40 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 //			setEndDateButtonAllDayChecked();
 			startTime.setText("All day");
 			endTime.setText("All day");
+			startTime.setClickable(false);
+			endTime.setClickable(false);
 			rangeMinText.setVisibility(View.INVISIBLE);
 			flexibility.setVisibility(View.INVISIBLE);
 			flexibilityRange.setVisibility(View.INVISIBLE);
 			TextView flexText = (TextView) findViewById(R.id.flexibility_text);
 			flexText.setVisibility(View.INVISIBLE);
-			Calendar updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 0, 0);
-			Calendar updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 0, 0);
+			current = Calendar.getInstance();
+			String startDateSet = manager.getDay("start") + "/" + manager.getMonth("start") + "/" + manager.getYear("start");
+			String endDateSet = manager.getDay("end") + "/" + manager.getMonth("end") + "/" + manager.getYear("end"); 
+			String dateCurrent = current.get(Calendar.DAY_OF_MONTH) + "/" + (current.get(Calendar.MONTH)+1) + "/" + current.get(Calendar.YEAR);
+			Calendar updatedStart = null;
+			Calendar updatedEnd = null;
+			if(startDateSet.equals(dateCurrent))
+				if(getIsModify())
+					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY)+1, 0);
+				else
+					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY), 0);
+			else
+				if(getIsModify())
+					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 0, 0);
+				else
+					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 23, 0);
+			
+			if(endDateSet.equals(dateCurrent))
+				if(getIsModify())
+					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 0);
+				else
+					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
+			else
+				if(getIsModify())
+					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 0);
+				else
+					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
 			manager.setStartCalendar(updatedStart);
 			manager.setEndCalendar(updatedEnd);
 		}
@@ -415,6 +447,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 //			setEndDateButtonAllDayNotChecked();
 //			setStartTimeButtonAllDayNotChecked();
 //			setEndTimeButtonAllDayNotChecked();
+			startTime.setClickable(true);
+			endTime.setClickable(true);
 			flexibility.setVisibility(View.VISIBLE);
 			flexibility.setSelection(0, false);
 			flexibilityRange.setVisibility(View.INVISIBLE);
@@ -594,5 +628,11 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	public void checkForReminder(int eventID){
 		if(db.getReminderByEventID(eventID) != null)
 			db.removeReminder(eventID);
+	}
+	
+	@Override
+	public void onBackPressed(){
+		Intent toHome = new Intent(this, MainActivity.class);
+		startActivity(toHome);
 	}
 }

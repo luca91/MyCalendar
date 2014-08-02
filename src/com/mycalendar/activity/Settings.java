@@ -2,6 +2,7 @@ package com.mycalendar.activity;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -254,5 +255,11 @@ public class Settings extends PreferenceActivity {
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 		}
+	}
+	
+	@Override
+	public void onBackPressed(){
+		Intent toHome = new Intent(this, MainActivity.class);
+		startActivity(toHome);
 	}
 }

@@ -382,4 +382,10 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		int daysFromWeekStart = c.get(Calendar.DAY_OF_WEEK)-(c.get(Calendar.DAY_OF_WEEK)-1);
 		return daysFromWeekStart;
 	}
+	
+	@Override
+	public void onBackPressed(){
+		Intent toHome = new Intent(this, MainActivity.class);
+		startActivity(toHome);
+	}
 }

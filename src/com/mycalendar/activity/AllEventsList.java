@@ -11,6 +11,7 @@ import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner; 
 import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Toast;
 
 public class AllEventsList extends ItemList implements AdapterView.OnItemSelectedListener {
 	
@@ -38,13 +40,14 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_all_events_list);
 		db = new MyCalendarDB(this);
+		Toast.makeText(this, "Events number: " + db.getEventList().size(), Toast.LENGTH_SHORT).show();
 		viewSelection = (Spinner) findViewById(R.id.viewTypeAllEvents);
 		itemList = (ListView) findViewById(android.R.id.list);
 		container = (RelativeLayout) findViewById(R.id.eventsListObjectContainer);
 		itemList.setOnItemLongClickListener(this);
 		itemList.setOnItemClickListener(this);
 		Calendar c = (GregorianCalendar) Calendar.getInstance();
-		eventsList = db.getEventsFromDay(c.get(Calendar.DAY_OF_MONTH), (c.get(Calendar.MONTH)+1), c.get(Calendar.YEAR));
+		eventsList = db.getEventsFromDay(c.get(Calendar.DAY_OF_MONTH), (c.get(Calendar.MONTH)+1), c.get(Calendar.YEAR), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
 //		eventsList = db.getEventList();
 		ArrayAdapter<CharSequence> types = ArrayAdapter.createFromResource(this, R.array.view_types, android.R.layout.simple_spinner_item);
 		types.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -91,6 +94,7 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 
 	@Override
 	public void performClickedAction(int action){
+		final Context ctx = this;
 		switch (action){
 		
 		//Delete
@@ -108,11 +112,16 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					MyCalendarDB db = MainActivity.getAppDB();
-					db.removeEvent(eventID);
+					int res1 = (int) db.removeEvent(eventID);
+					int res2 = -1;
 					if(db.getReminderByEventID(eventID) != null)
-						db.removeReminder(eventID);
-					adapter.setEventsList(db.getEventList());
-					itemList.setAdapter(adapter);
+						res2 = (int) db.removeReminder(eventID);
+					if(res1 > 0 && res2 > 0)
+						Toast.makeText(ctx, "Event removed correctly", Toast.LENGTH_SHORT).show();
+					Intent toHome = new Intent(ctx, MainActivity.class);
+					startActivity(toHome);
+//					adapter.setEventsList(db.getEventList());
+//					itemList.setAdapter(adapter);
 				}
 			});
 //			setNegativeButton();
@@ -168,5 +177,10 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 		return i;
 	}
 	
+	@Override
+	public void onBackPressed(){
+		Intent toHome = new Intent(this, MainActivity.class);
+		startActivity(toHome);
+	}
 	
 }

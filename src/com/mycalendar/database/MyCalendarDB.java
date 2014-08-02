@@ -432,14 +432,15 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			e.setFlexibility(result.getString(9));
 			e.setFlexibilityRange(result.getInt(10));
 			e.setRepetition(result.getInt(11));
+			e.setNotes(result.getString(13));
 			return e;
 		}
 		else
 		return null;
 	}
 	
-	public ArrayList<Event> getEventsFromDay(int day, int month, int year){
-		Calendar c = new GregorianCalendar(year, month, day);
+	public ArrayList<Event> getEventsFromDay(int day, int month, int year, int hours, int minutes){
+		Calendar c = new GregorianCalendar(year, month, day, hours, minutes);
 		Cursor result = this.getReadableDatabase().query("events", null, null, null, null, null, "event_start_date, event_start_time");
 		ArrayList<Event> list = new ArrayList<Event>();
 		boolean check = result.moveToFirst();
@@ -454,7 +455,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			e.setId(Integer.parseInt(result.getString(0)));
 			e.setAllDay(result.getInt(7));
 			int[] date = e.getDateToken("start");
-			Calendar actual = new GregorianCalendar(date[2], date[1], date[0]);
+			int[] time = e.getTimeToken("start");
+			Calendar actual = new GregorianCalendar(date[2], date[1], date[0], time[0], time[1]);
 			if(actual.compareTo(c) >= 0)
 				list.add(e);
 			result.moveToNext();

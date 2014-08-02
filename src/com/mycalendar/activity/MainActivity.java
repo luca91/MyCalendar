@@ -111,11 +111,6 @@ public class MainActivity extends Activity {
     	}
     }
     
-    public void exportCalendar(View v){
-    	Intent exportCalendar = new Intent(this, ExportCalendar.class);
-    	startActivity(exportCalendar);
-    }
-    
     public void timeFinder(View v){
     	Intent toFinder = new Intent(this, TimeFinder.class);
     	startActivity(toFinder);

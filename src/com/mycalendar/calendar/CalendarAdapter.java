@@ -64,9 +64,9 @@ public class CalendarAdapter extends ArrayAdapter<Event> {
 		calColor.setBackgroundColor(AppCalendar.colorFromStringToInt(db.getCalendarByName(toPut.getCalendar()).getColor()));
 		nameAndCalendar.setText(list.get(position).getName());
 		if(toPut.getStartDate().equals(toPut.getEndDate()))
-			if(toPut.getStartTime().equals("00:00") && toPut.getEndTime().equals("00:00"))
-				dateAndTime.setText(toPut.getStartDate() + ", " + "All day");
-			else
+//			if(toPut.getStartTime().equals("00:00") && toPut.getEndTime().equals("00:00"))
+//				dateAndTime.setText(toPut.getStartDate() + ", " + "All day");
+//			else
 				dateAndTime.setText(toPut.getStartDate() + ", " + toPut.getStartTime() + "-" + toPut.getEndTime());
 		else
 			dateAndTime.setText(toPut.getStartDate() + ", " + toPut.getStartTime() + "\n"

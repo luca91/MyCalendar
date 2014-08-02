@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This class shown in a formatted way the information about an event.
@@ -56,14 +57,14 @@ public class EventShow extends Activity {
 		time.setTextColor(textColor);
 		
 		name.setText(received.getStringExtra(Event.NAME));
-		if(received.getIntExtra(Event.ALL_DAY, -1) == 1){
-			if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE)))
-				date.setText(received.getStringExtra(Event.S_DATE));
-			else
-				date.setText(received.getStringExtra(Event.S_DATE) + "-" + received.getStringExtra(Event.E_DATE));
-			time.setText("All Day");
-		}
-		else if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE))){
+//		if(received.getIntExtra(Event.ALL_DAY, -1) == 1){
+//			if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE)))
+//				date.setText(received.getStringExtra(Event.S_DATE));
+//			else
+//				date.setText(received.getStringExtra(Event.S_DATE) + "-" + received.getStringExtra(Event.E_DATE));
+//			time.setText("All Day");
+//		}
+		if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE))){
 			date.setText(received.getStringExtra(Event.S_DATE));
 			time.setText(received.getStringExtra(Event.S_TIME) + "-" +
 					received.getStringExtra(Event.E_TIME));
@@ -113,8 +114,12 @@ public class EventShow extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				MyCalendarDB db = MainActivity.getAppDB();
-				db.removeEvent(eventID);
-				db.removeReminder(eventID);
+				int res1 = (int) db.removeEvent(eventID);
+				int res2 = -1;
+				if(db.getReminderByEventID(eventID) != null)
+					res2 = (int) db.removeReminder(eventID);
+				if(res1 > 0 && res2 > 0)
+					Toast.makeText(ctx, "Event removed correctly", Toast.LENGTH_SHORT).show();
 				Intent toHome = new Intent(ctx, MainActivity.class);
 				startActivity(toHome);
 			}
