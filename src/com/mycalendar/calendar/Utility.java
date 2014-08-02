@@ -4,16 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import com.mycalendar.activity.EventsView;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.database.MyCalendarDB;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.view.View;
 
 public class Utility {
 	public static ArrayList<String> nameOfEvent = new ArrayList<String>();
