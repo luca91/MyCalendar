@@ -27,20 +27,48 @@
         android:layout_alignRight="@id/fakeView"
         android:minHeight="60dp" />
 
-    <TextView
-        android:id="@+id/selectedWeek"
+    <RelativeLayout
+        android:id="@+id/weekManagerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/fakeView"
-        android:layout_centerHorizontal="false"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_toRightOf="@id/viewTypeWeek"
-        android:gravity="center_horizontal"
-        android:text="@string/week"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:layout_toRightOf="@id/viewTypeWeek" >
+
+        <TextView
+            android:id="@+id/selectedWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="@string/week"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonPrevWeek"
+            style="@style/mycalendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/selectedWeek"
+            android:background="@drawable/button_state"
+            android:text="-"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/buttonNextWeek"
+            style="@style/mycalendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/selectedWeek"
+            android:background="@drawable/button_state"
+            android:text="+"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/weekDaysContainer"

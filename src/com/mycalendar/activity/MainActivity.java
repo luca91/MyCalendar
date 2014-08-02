@@ -116,9 +116,9 @@ public class MainActivity extends Activity {
     	startActivity(toFinder);
     }
     
-    public void settings(MenuItem m){
-    	Intent settings = new Intent(this, Settings.class);
-    	startActivity(settings);
+    public void settings(View v){
+//    	Intent settings = new Intent(this, Settings.class);
+//    	startActivity(settings);
     }
     
     public static void setActualView(String view){

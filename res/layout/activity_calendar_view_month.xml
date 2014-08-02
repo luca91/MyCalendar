@@ -27,21 +27,48 @@
         android:layout_alignRight="@id/fakeViewMonth"
         android:minHeight="60dp" />
 
-    <TextView
-        android:id="@+id/selectedMonth"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignLeft="@id/fakeViewMonth"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_toRightOf="@id/viewTypeMonth"
-        android:gravity="center_horizontal"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:layout_toRightOf="@id/viewTypeMonth" >
+
+        <TextView
+            android:id="@+id/selectedMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="Month"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonPrevMonth"
+            style="@style/mycalendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/selectedMonth"
+            android:background="@drawable/button_state"
+            android:text="-"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/buttonNextMonth"
+            style="@style/mycalendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/selectedMonth"
+            android:background="@drawable/button_state"
+            android:text="+"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
     
     <LinearLayout
         android:id="@+id/monthDaysContainer"

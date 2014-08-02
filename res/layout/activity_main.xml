@@ -10,12 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/button_state"
         android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:longClickable="true"
         android:onClick="addEvent"
-        android:paddingTop="10dp" >
+        android:paddingTop="5dp" >
 
         <ImageView
             android:id="@+id/icon_new_event"
@@ -26,20 +24,23 @@
             android:clickable="true"
             android:contentDescription="@string/new_event_description"
             android:scaleType="fitStart"
-            android:src="@drawable/new_event" />
+            android:src="@drawable/ic_launcher" />
 
         <TextView
             android:id="@+id/new_event_text"
-            android:layout_width="wrap_content"
+            style="@style/mycalendarButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
-            android:clickable="true"
+            android:background="@drawable/button_state"
+            android:clickable="false"
             android:fontFamily="@android:string/cancel"
-            android:onClick="addEvent"
             android:text="@string/add_event"
             android:textSize="20sp"
             android:textStyle="bold" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -47,10 +48,9 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/button_state"
         android:clickable="true"
-        android:duplicateParentState="false"
-        android:longClickable="true"
-        android:onClick="addCalendar"
+		android:onClick="addCalendar"
         android:paddingTop="5dp" >
 
         <ImageView
@@ -59,19 +59,19 @@
             android:layout_height="40dp"
             android:layout_marginTop="0dp"
             android:adjustViewBounds="true"
-            android:clickable="true"
             android:contentDescription="@string/new_calendar_description"
-            android:longClickable="false"
             android:paddingTop="0dp"
             android:scaleType="fitStart"
             android:src="@drawable/ic_launcher" />
 
         <TextView
             android:id="@+id/new_calendar_text"
-            android:layout_width="wrap_content"
+            style="@style/mycalendarButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
             android:fontFamily="@android:string/cancel"
             android:text="@string/add_calendar"
             android:textSize="20sp"
@@ -84,6 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/button_state"
         android:onClick="allEvents"
         android:paddingTop="0dp" >
 
@@ -94,14 +95,17 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/events"
             android:scaleType="fitStart"
-            android:src="@drawable/events" />
+            android:src="@drawable/ic_launcher" />
 
         <TextView
             android:id="@+id/calendars_text"
-            android:layout_width="wrap_content"
+            style="@style/mycalendarButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
+            android:background="@drawable/button_state"
             android:fontFamily="@android:string/cancel"
             android:text="@string/events"
             android:textSize="20sp"
@@ -114,6 +118,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/button_state"
         android:onClick="allCalendars"
         android:paddingTop="0dp" >
 
@@ -128,10 +133,12 @@
 
         <TextView
             android:id="@+id/events_text"
-            android:layout_width="wrap_content"
+            style="@style/mycalendarButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
             android:fontFamily="@android:string/cancel"
             android:text="@string/calendars"
             android:textSize="20sp"
@@ -144,6 +151,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/button_state"
         android:onClick="timeFinder"
         android:paddingTop="0dp" >
 
@@ -158,10 +166,12 @@
 
         <TextView
             android:id="@+id/time_finder_text"
-            android:layout_width="wrap_content"
+            style="@style/mycalendarButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
             android:fontFamily="@android:string/cancel"
             android:text="@string/time_finder"
             android:textSize="20sp"
@@ -174,6 +184,7 @@
            android:layout_width="match_parent"
            android:layout_height="50dp"
            android:layout_marginTop="10dp"
+           android:background="@drawable/button_state"
            android:onClick="settings"
            android:paddingTop="0dp" >
 
@@ -188,10 +199,12 @@
 
         <TextView
             android:id="@+id/settings_text"
-            android:layout_width="wrap_content"
+            style="@style/mycalendarButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
             android:fontFamily="@android:string/cancel"
             android:text="@string/settings_text"
             android:textSize="20sp"

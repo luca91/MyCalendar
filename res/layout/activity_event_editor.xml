@@ -36,6 +36,7 @@
 
 	        <Button
 	            android:id="@+id/StartDate"
+	            style="@style/mycalendarButton"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentLeft="true"
@@ -43,6 +44,7 @@
 	            android:layout_below="@+id/From"
 	            android:layout_marginLeft="5dp"
 	            android:layout_marginTop="5dp"
+	            android:background="@drawable/button_state"
 	            android:minWidth="200dp"
 	            android:onClick="startDatePicker" />
 
@@ -58,12 +60,14 @@
 
 	        <Button
 	            android:id="@+id/StartTime"
+	            style="@style/mycalendarButton"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentRight="true"
 	            android:layout_below="@id/From"
 	            android:layout_marginTop="5dp"
 	            android:layout_toRightOf="@id/StartDate"
+	            android:background="@drawable/button_state"
 	            android:minWidth="100dp"
 	            android:onClick="startTimePicker" />
 
@@ -79,6 +83,7 @@
 
 	        <Button
 	            android:id="@+id/EndDate"
+	            style="@style/mycalendarButton"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignLeft="@id/StartDate"
@@ -86,11 +91,13 @@
 	            android:layout_alignRight="@id/fakeView"
 	            android:layout_below="@id/To"
 	            android:layout_marginLeft="5dp"
+	            android:background="@drawable/button_state"
 	            android:minWidth="200dp"
 	            android:onClick="endDatePicker" />
 
 	        <Button
 	            android:id="@+id/EndTime"
+	            style="@style/mycalendarButton"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentRight="true"
@@ -98,6 +105,7 @@
 	            android:layout_marginLeft="0dp"
 	            android:layout_marginTop="0dp"
 	            android:layout_toRightOf="@id/EndDate"
+	            android:background="@drawable/button_state"
 	            android:minWidth="100dp"
 	            android:onClick="endTimePicker" />
 

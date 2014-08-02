@@ -4,7 +4,7 @@
     android:id="@+id/containerDay"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginLeft="1dp"
+    android:layout_marginLeft="0dp"
     android:clickable="true"
     android:orientation="vertical"
     tools:ignore="DuplicateIds" >
@@ -26,19 +26,58 @@
         android:layout_alignRight="@id/fakeView"
         android:minHeight="60dp" />
 
-    <TextView
-        android:id="@+id/selectedDay"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/dayManagerContainer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_toRightOf="@id/viewTypeDay"
-        android:gravity="center_horizontal"
-        android:text="@string/day"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/viewTypeDay" >
+
+        <Button
+            android:id="@+id/buttonPrevDay"
+            style="@style/mycalendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/selectedDay"
+            android:background="@drawable/button_state"
+            android:text="-"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/selectedDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/buttonPrevDay"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="@string/day"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonNextDay"
+            style="@style/mycalendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/buttonPrevDay"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/selectedDay"
+            android:background="@drawable/button_state"
+            android:text="+"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
 
     <ScrollView
         android:id="@+id/eventsObjectContainerDay"
