@@ -56,6 +56,8 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_time_finder);
 		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		manager = new TimeButtonManager(getFragmentManager(),this);
 		manager.setIsFinder(true);
 		initializeViews();
@@ -116,14 +118,16 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.reminder) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		  switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 	public void goToEventEditor(View v){
@@ -240,6 +244,6 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 	public void onBackPressed(){
 		Intent toHome = new Intent(this, MainActivity.class);
 		startActivity(toHome);
-	}
+	} 
 }
 

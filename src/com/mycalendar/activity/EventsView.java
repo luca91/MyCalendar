@@ -10,6 +10,7 @@ import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -32,7 +34,6 @@ import android.widget.Toast;
 
 public class EventsView extends Activity implements OnItemSelectedListener, OnClickListener{
 	
-	private static int position;
 	private static String actualView;
 	private TextView selectedTimePeriod;
 	private Calendar calendar;
@@ -51,6 +52,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		actualTime = Calendar.getInstance();
 //		actualTime.setFirstDayOfWeek(Calendar.MONDAY);
 		setInitialState(actualView);
@@ -108,7 +111,6 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			startActivity(toList);
 		}
 		else{
-			setPosition(position);
 			setInitialState(viewT);
 		}
 	}
@@ -323,10 +325,6 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		
 	}
 	
-	public static void setPosition(int i){
-		position = i;
-	}
-	
 	public static void setActualView(String v){
 		actualView = v;
 	}
@@ -462,5 +460,19 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			return 2;
 		}
 		return -1;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

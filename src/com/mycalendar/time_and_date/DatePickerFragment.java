@@ -72,7 +72,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 		manager.setDateAlreadySetFlag(true);
 		if(this.getTag().equals("startDatePicker")){
 //			set = new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("start"), manager.getMinutes("start"));
-			manager.setStartCalendar(new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("start"), manager.getMinutes("start")));
+			Calendar current = Calendar.getInstance();
+			String currentDate = current.get(Calendar.DAY_OF_MONTH) + "/" + (current.get(Calendar.MONTH)+1) + "/" + current.get(Calendar.YEAR);
+			if(currentDate.equals(manager.getCurrentStartDate()) && manager.getHours("start") == 0 && manager.getMinutes("start") == 0){
+				Calendar start = new GregorianCalendar(year, monthOfYear, dayOfMonth, current.get(Calendar.HOUR), 0);
+				start.add(Calendar.HOUR_OF_DAY, +1);
+				manager.setStartCalendar(start);
+			}
+			else
+				manager.setStartCalendar(new GregorianCalendar(year, monthOfYear, dayOfMonth, manager.getHours("start"), manager.getMinutes("start")));
 			manager.setDateButtonText("start");
 //			result = manager.checkDateStartValidity();
 		}

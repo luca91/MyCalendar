@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
         android:targetSdkVersion="20" />
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
@@ -87,22 +87,6 @@
                 android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
-            android:name="com.mycalendar.activity.ImportCalendar"
-            android:label="@string/title_activity_import_calendar"
-            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.accounts.AccountAuthenticatorActivity" />
-        </activity>
-        <activity
-            android:name="com.mycalendar.activity.ExportCalendar"
-            android:label="@string/title_activity_export_calendar"
-            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.accounts.AccountAuthenticatorActivity" />
-        </activity>
-        <activity
             android:name="com.mycalendar.activity.CalendarViews"
             android:label="@string/title_activity_calendar_view"
             android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
@@ -116,15 +100,27 @@
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewMonth"
-            android:label="@string/title_activity_calendar_view_month" >
+            android:label="@string/title_activity_calendar_view_month" 
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+             <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewWeek"
-            android:label="@string/title_activity_calendar_view_week" >
+            android:label="@string/title_activity_calendar_view_week"  
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+             <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewYear"
-            android:label="@string/title_activity_calendar_view_year" >
+            android:label="@string/title_activity_calendar_view_year" 
+ 			android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+             <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.mycalendar.activity.EventsView"

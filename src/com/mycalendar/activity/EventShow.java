@@ -5,6 +5,7 @@ import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +40,9 @@ public class EventShow extends Activity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_show);
-		db = new MyCalendarDB(this);
+		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		received = getIntent();
 		name = (TextView) findViewById(R.id.Name);
 		date = (TextView) findViewById(R.id.Date);
@@ -144,5 +148,19 @@ public class EventShow extends Activity {
 	public void createEvent(View v){
 		Intent toEventEditor = new Intent(this, EventEditor.class);
 		startActivity(toEventEditor);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

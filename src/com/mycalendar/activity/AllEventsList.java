@@ -10,12 +10,14 @@ import com.mycalendar.components.AppItem;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,7 +41,9 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_all_events_list);
-		db = new MyCalendarDB(this);
+		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		Toast.makeText(this, "Events number: " + db.getEventList().size(), Toast.LENGTH_SHORT).show();
 		viewSelection = (Spinner) findViewById(R.id.viewTypeAllEvents);
 		itemList = (ListView) findViewById(android.R.id.list);
@@ -154,7 +158,7 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 		String viewT = (String) parent.getItemAtPosition(position);
 		if(!viewT.equals("List")){
 			EventsView.setActualView(viewT);
-			EventsView.setPosition(position);
+//			EventsView.setPosition(position);
 			Intent toSelectedView = new Intent(this, EventsView.class);
 			startActivity(toSelectedView);
 		}
@@ -183,4 +187,17 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 		startActivity(toHome);
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}	
 }

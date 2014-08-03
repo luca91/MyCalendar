@@ -11,9 +11,11 @@ import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
 import com.mycalendar.tools.TimeButtonManager;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -76,6 +78,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_editor);
 		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		
 		
 		//The button of the layout are connected to an object in the class
@@ -634,5 +638,19 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	public void onBackPressed(){
 		Intent toHome = new Intent(this, MainActivity.class);
 		startActivity(toHome);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

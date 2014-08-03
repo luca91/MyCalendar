@@ -4,11 +4,13 @@ import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.database.MyCalendarDB;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,7 +43,9 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendar_editor);
 		received = getIntent();
-		db = new MyCalendarDB(this);
+		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		name = (EditText) findViewById(R.id.CalendarName);
 		color = (Spinner) findViewById(R.id.CalendarColor);
 		adapter = ArrayAdapter.createFromResource(this, R.array.calendar_colors, android.R.layout.simple_spinner_item);
@@ -179,5 +183,19 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 				return i;
 		}
 		return -1;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

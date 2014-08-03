@@ -10,8 +10,10 @@ import com.mycalendar.tools.AppDialogs;
 import com.mycalendar.tools.CalendarListAdapter;
 import com.mycalendar.tools.SwipeDetector;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -33,7 +35,9 @@ public class AllCalendarList extends ItemList {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_all_calendar_list);
-		db = new MyCalendarDB(this);
+		db = MainActivity.getAppDB();
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		current = savedInstanceState;
 		itemList = (ListView) findViewById(android.R.id.list);
 		itemList.setOnItemLongClickListener(this);
@@ -46,7 +50,7 @@ public class AllCalendarList extends ItemList {
 	
 	@Override
 	public void performClickedAction(int action){
-switch (action){
+		switch (action){
 		
 		//Delete
 		case 0:
@@ -80,5 +84,18 @@ switch (action){
 	public AppItem getCurrentSelectedCalendar(){
 		return currentItem;
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 }

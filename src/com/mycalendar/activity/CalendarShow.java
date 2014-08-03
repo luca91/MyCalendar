@@ -8,6 +8,7 @@ import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.view.MenuItem;
 import android.view.View;
 
 /**
@@ -36,6 +38,8 @@ public class CalendarShow extends Activity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendar_show);
+		ActionBar bar = getActionBar();
+		bar.setHomeButtonEnabled(true);
 		received = getIntent();
 		calendar = (TextView) findViewById(R.id.Name);
 		calendar.setText(received.getStringExtra(AppCalendar.CAL_NAME));
@@ -104,5 +108,18 @@ public class CalendarShow extends Activity {
 		builder.create();
 		builder.show();
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, MainActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 }
