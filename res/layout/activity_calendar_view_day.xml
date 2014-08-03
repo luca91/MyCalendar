@@ -43,6 +43,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/selectedDay"
             android:background="@drawable/button_state"
+            android:onClick="onPrevDayClick"
             android:text="-"
             android:textSize="30sp" />
 
@@ -74,6 +75,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/selectedDay"
             android:background="@drawable/button_state"
+            android:onClick="onNextDayClick"
             android:text="+"
             android:textSize="30sp" />
 

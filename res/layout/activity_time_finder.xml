@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/time_finder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mycalendar.TimeFinder$PlaceholderFragment" >
+
+    <Button
+        android:id="@+id/start_date_finder"
+        style="@style/mycalendarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/range_finder"
+        android:background="@drawable/button_state"
+        android:minWidth="200dp"
+        android:onClick="startDatePicker" />
+
+    <TextView
+        android:id="@+id/range_text_finder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/start_date_finder"
+        android:layout_alignParentLeft="false"
+        android:layout_marginTop="6dp"
+        android:text="@string/text_time_needed_finder"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/range_finder"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/start_date_finder"
+        android:layout_alignParentLeft="false"
+        android:layout_marginLeft="7dp"
+        android:layout_toRightOf="@id/range_text_finder"
+        android:ems="10"
+        android:inputType="number"
+        android:text="30"
+        android:textAlignment="center" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/find_time"
+        android:layout_marginTop="10dp" >
+    </ListView>
+
+    <Button
+        android:id="@+id/find_time"
+        style="@style/mycalendarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="false"
+        android:layout_below="@id/start_date_finder"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_state"
+        android:onClick="findTime"
+        android:text="@string/text_find_time" />
+
+</RelativeLayout>

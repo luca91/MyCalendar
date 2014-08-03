@@ -1,5 +1,7 @@
 package com.mycalendar.activity;
 
+import java.util.Calendar;
+
 import com.example.mycalendar.R;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
@@ -22,8 +24,20 @@ public class MainActivity extends Activity {
 	@SuppressWarnings("unused")
 	private static MyCalendarDB applicationDB;
 	
+	/**
+	 * Variable for setting actual view
+	 */
 	public static String defaultView;
+	
+	/**
+	 * Variable that maintain the actual view for events
+	 */
 	public static String actualView;
+	
+	/**
+	 * Variable that maintain the actual calendar for events view
+	 */
+	public static Calendar actualCalendar;
 	private AppDialogs d;
 	
 	/**
@@ -38,7 +52,8 @@ public class MainActivity extends Activity {
 
         //At the very first time, the database is created; then this only connect the app to it.
         applicationDB = new MyCalendarDB(this); 
-        defaultView = "List";
+        defaultView = "Month";
+        actualCalendar = Calendar.getInstance();
     }
 
     /**

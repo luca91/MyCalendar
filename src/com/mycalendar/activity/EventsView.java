@@ -44,14 +44,15 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	ArrayAdapter<CharSequence> adapterViewTypes;
 	private MyCalendarDB db;
 	private RelativeLayout eventsObjectContainer;
-	private static final int[] monthDays = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 29}; //the last number represent the days of February for leap years
+	private static final int[] monthDays = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; //the last number represent the days of February for leap years
+	private Calendar actualTime = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		db = MainActivity.getAppDB();
-		calendar = Calendar.getInstance();
-		calendar.setFirstDayOfWeek(Calendar.MONDAY);
+		actualTime = Calendar.getInstance();
+//		actualTime.setFirstDayOfWeek(Calendar.MONDAY);
 		setInitialState(actualView);
 	}
 	
@@ -59,7 +60,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		switch (type){
 		case "Day":
 			setContentView(R.layout.activity_calendar_view_day);
-			calendar = Calendar.getInstance();
+			actualTime = MainActivity.actualCalendar;
 			selectViewType = (Spinner) findViewById(R.id.viewTypeDay);
 			selectedTimePeriod = (TextView) findViewById(R.id.selectedDay);
 			hours = (LinearLayout) findViewById(R.id.hoursContainerDay);
@@ -71,6 +72,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		case "Week":
 			setContentView(R.layout.activity_calendar_view_week);
 			calendar = Calendar.getInstance();
+			actualTime = MainActivity.actualCalendar;
 			selectViewType = (Spinner) findViewById(R.id.viewTypeWeek);
 			selectedTimePeriod = (TextView) findViewById(R.id.selectedWeek);
 			hours = (LinearLayout) findViewById(R.id.hoursContainerWeek);
@@ -81,6 +83,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		case "Month":
 			setContentView(R.layout.activity_calendar_view_month);
 			calendar = Calendar.getInstance();
+			actualTime = MainActivity.actualCalendar;
 			selectViewType = (Spinner) findViewById(R.id.viewTypeMonth);
 			selectedTimePeriod = (TextView) findViewById(R.id.selectedMonth);
 			weekDayGrid = (LinearLayout) findViewById(R.id.backgroundAsGridMonth);
@@ -91,7 +94,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		adapterViewTypes = ArrayAdapter.createFromResource(this, R.array.view_types, android.R.layout.simple_spinner_item);
 		adapterViewTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selectViewType.setAdapter(adapterViewTypes);
-		selectViewType.setSelection(position, false);
+		selectViewType.setSelection(getActualViewIndex(), false);
 		selectViewType.setOnItemSelectedListener(this);
 	}
 	
@@ -113,30 +116,34 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	public void setDayLayoutObjects(){
 		setDay();
 		setHours();
-		setGridItems(null);
+		setGridItems();
 	}
 	
 	public void setWeekLayoutObjects(){
+		weekDayGrid.removeAllViews();
+		daysContainer.removeAllViews();
+		hours.removeAllViews();
 		setHours();
-		Calendar c = (Calendar) calendar.clone();
-		int today = c.get(Calendar.DAY_OF_WEEK);
+//		Calendar c = (Calendar) actualTime.clone();
+		int today = actualTime.get(Calendar.DAY_OF_WEEK);
 		int dayToSub = (today-2);
-		c.add(Calendar.DAY_OF_YEAR, -dayToSub);
-		setWeek(c);
-		setDaysOfWeek(c, 60, 74);
-		setGridItems(c);
+		actualTime.add(Calendar.DAY_OF_YEAR, -dayToSub);
+		setWeek(actualTime);
+		setDaysOfWeek(actualTime, 60, 74);
+		setGridItems();
 		
 	}
 	
 	public void setMonthLayoutObjects(){
+		int startDay;
+		if(actualTime.get(Calendar.DAY_OF_MONTH) > 1){
+			startDay = (actualTime.get(Calendar.DAY_OF_MONTH));
+			actualTime.add(Calendar.DAY_OF_MONTH, -(startDay-1));
+		}
 		setMonth();
-		Calendar month = (Calendar) calendar.clone();
-		int startDay = (month.get(Calendar.DAY_OF_MONTH));
-		month.add(Calendar.DAY_OF_YEAR, -startDay);
-		int startDayFirstWeekOfMonth = (month.get(Calendar.DAY_OF_WEEK)-1);
-		month.add(Calendar.DAY_OF_YEAR, -startDayFirstWeekOfMonth);
-		Toast.makeText(this, "Day of year: " + month.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_LONG).show();
-		setGridItems(month);
+		Toast.makeText(this, "Day of month: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Month: " + actualTime.get(Calendar.MONTH), Toast.LENGTH_SHORT).show();
+		setGridItems();
 	}
 	
 	public int setDayView(){
@@ -152,10 +159,12 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	}
 	
 	public void setDay(){
-		selectedTimePeriod.setText(Utility.parseWeekDayToString(calendar.get(Calendar.DAY_OF_WEEK)) + ", " 
-		+ calendar.get(Calendar.DAY_OF_MONTH) + " "
-		+ Utility.parseMonthToString(calendar.get(Calendar.MONTH)) + " " 
-		+ calendar.get(Calendar.YEAR));
+		if(actualTime == null)
+			actualTime = (Calendar) calendar.clone();
+		selectedTimePeriod.setText(Utility.parseWeekDayToString(actualTime.get(Calendar.DAY_OF_WEEK)) + ", " 
+		+ actualTime.get(Calendar.DAY_OF_MONTH) + " "
+		+ Utility.parseMonthToString(actualTime.get(Calendar.MONTH)) + " " 
+		+ actualTime.get(Calendar.YEAR));
 	}
 	
 	public void setWeek(Calendar c) {
@@ -165,13 +174,15 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	}
 	
 	public void setMonth(){
-		selectedTimePeriod.setText(Utility.parseMonthToString(calendar.get(Calendar.MONTH)) + ", " + calendar.get(Calendar.YEAR));
+		selectedTimePeriod.setText(Utility.parseMonthToString(actualTime.get(Calendar.MONTH)) + ", " + actualTime.get(Calendar.YEAR));
 	}
 	
 	public void setDaysOfWeek(Calendar weekBegin, int emptySpace, int spaceLeft){
 		Calendar week = (Calendar) weekBegin.clone();
 		int firstDayOfMonth = -1;
 		int lastDayOfMonth = -1;
+		firstDayOfMonth = actualTime.get(Calendar.DAY_OF_YEAR);
+		lastDayOfMonth = firstDayOfMonth + (monthDays[actualTime.get(Calendar.MONTH)]-1);
 		for(int i = 0; i <= 7; i++){
 			TextView tv = new TextView(this);
 			LinearLayout.LayoutParams lp = null;
@@ -180,30 +191,27 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 				tv.setBackgroundColor(Color.GRAY);
 			}
 			else{
-				week.add(Calendar.DAY_OF_YEAR, 1);
 				lp = new LinearLayout.LayoutParams(new LayoutParams(getWeekGridItemWidth(spaceLeft), LayoutParams.MATCH_PARENT));
 				tv.setText(Utility.parseWeekDayToString(week.get(Calendar.DAY_OF_WEEK)) + " " + week.get(Calendar.DAY_OF_MONTH));
-				Calendar aux = Calendar.getInstance();
-				firstDayOfMonth = (aux.get(Calendar.DAY_OF_YEAR)-aux.get(Calendar.DAY_OF_MONTH)+1);
-				lastDayOfMonth = firstDayOfMonth + (monthDays[aux.get(Calendar.MONTH)]-1);
 				if(week.get(Calendar.DAY_OF_YEAR) < firstDayOfMonth || week.get(Calendar.DAY_OF_YEAR) > lastDayOfMonth)
 					tv.setBackgroundColor(Color.WHITE);
 				else
 					tv.setBackgroundColor(Color.GRAY);
 				tv.setTextSize(12f);
+				if(week.get(Calendar.DAY_OF_YEAR) < firstDayOfMonth || week.get(Calendar.DAY_OF_YEAR) > lastDayOfMonth)
+					tv.setTextColor(Color.GRAY);
+				else
+					tv.setTextColor(Color.WHITE);
+				week.add(Calendar.DAY_OF_YEAR, 1);
 			}
 			lp.setMargins(0, 0, 2, 2);
 			tv.setLayoutParams(lp);
 			tv.setGravity(Gravity.CENTER);
-			if(week.get(Calendar.DAY_OF_YEAR) < firstDayOfMonth)
-				tv.setTextColor(Color.GRAY);
-			else
-				tv.setTextColor(Color.WHITE);
 			daysContainer.addView(tv);
 		}
 	}
 	
-	public void setGridItems(Calendar c){
+	public void setGridItems(){
 		switch(actualView){
 		case "Day":
 			weekDayGrid.setBackgroundColor(Color.LTGRAY);
@@ -237,14 +245,27 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			break;
 		case "Month":
 			weekDayGrid.setBackgroundColor(Color.LTGRAY);
+			if(weekDayGrid.getChildCount() != 0)
+				weekDayGrid.removeAllViews();
 			LinearLayout.LayoutParams weekLayoutParams = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 200));
 			LinearLayout.LayoutParams weekDayLayoutParams = new LinearLayout.LayoutParams(new LayoutParams(getWeekGridItemWidth(14), 200));
 			LinearLayout.LayoutParams daysLayoutParams = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 40));
 			weekLayoutParams.setMargins(0, 0, 2, 2);
 			weekDayLayoutParams.setMargins(2, 0, 0, 0);
-			Calendar month = (Calendar) c.clone();
-			int weekCount = getWeekCountPerMonth(month);	
-			for(int i = 0; i < weekCount-1; i++){
+			Calendar month = (Calendar) actualTime.clone();
+			if(month.get(Calendar.DAY_OF_WEEK) != 2){
+				int startDayFirstWeekOfMonth = -1;
+				if(month.get(Calendar.DAY_OF_WEEK) == 1)
+					month.add(Calendar.DAY_OF_YEAR, +1);
+				else{
+					startDayFirstWeekOfMonth = (actualTime.get(Calendar.DAY_OF_WEEK)-2);
+					month.add(Calendar.DAY_OF_YEAR, -startDayFirstWeekOfMonth);
+				}
+			}
+			
+			int weekCount = getWeekCountPerMonth();
+			Toast.makeText(this, "Week: " + weekCount, Toast.LENGTH_SHORT).show();
+			for(int i = 0; i <= weekCount; i++){
 				daysContainer = new LinearLayout(this);
 				setDaysOfWeek(month, 0, 14);
 				LinearLayout week = new LinearLayout(this);
@@ -360,13 +381,15 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	}
 	
 	//Return the number of weeks in the current month
-	public int getWeekCountPerMonth(Calendar month){
-		Calendar c = (Calendar) month.clone();
+	public int getWeekCountPerMonth(){
+		Calendar c = (Calendar) actualTime.clone();
 		int weekNumberOfMonthStart = c.get(Calendar.WEEK_OF_YEAR);
-		int lastDayOfCurrentMonth = monthDays[c.get(Calendar.MONTH)+1];
-		c.add(Calendar.DAY_OF_YEAR,  lastDayOfCurrentMonth);
+		int lastDayOfCurrentMonth = monthDays[c.get(Calendar.MONTH)];
+		c.add(Calendar.DAY_OF_YEAR,  (lastDayOfCurrentMonth-1));
 		int weekNumberOfMonthEnd = c.get(Calendar.WEEK_OF_YEAR);
-		return weekNumberOfMonthEnd - weekNumberOfMonthStart + 1;
+		if(c.get(Calendar.MONTH) == 11)
+			return 52 - weekNumberOfMonthStart + 1;
+		return weekNumberOfMonthEnd - weekNumberOfMonthStart;
 	}
 	
 	public int getLastDayOfMonth(int month){
@@ -374,7 +397,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 			return 31;
 		case 2:
-			if(((GregorianCalendar) calendar).isLeapYear(calendar.get(Calendar.YEAR)))
+			if(((GregorianCalendar) actualTime).isLeapYear(actualTime.get(Calendar.YEAR)))
 				return 29;
 			else
 				return 28;
@@ -396,5 +419,48 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	public void onBackPressed(){
 		Intent toHome = new Intent(this, MainActivity.class);
 		startActivity(toHome);
+	}
+	
+	public void onPrevDayClick(View v){
+		actualTime.add(Calendar.DAY_OF_YEAR, -1);
+		setDay();
+	}
+	
+	public void onNextDayClick(View v){
+		actualTime.add(Calendar.DAY_OF_YEAR, 1);
+		setDay();
+	}
+	
+	public void onPrevWeekClick(View v){
+		actualTime.add(Calendar.DAY_OF_YEAR, -7);
+		setWeekLayoutObjects();
+	}
+	
+	public void onNextWeekClick(View v){
+		actualTime.add(Calendar.DAY_OF_YEAR, 7);
+		setWeekLayoutObjects();
+	}
+	
+	public void onPrevMonthClick(View v){
+		actualTime.add(Calendar.MONTH, -1);
+		setMonthLayoutObjects();
+	}
+	
+	public void onNextMonthClick(View v){
+		int daysToAdd = getLastDayOfMonth(actualTime.get(Calendar.MONTH)+1);
+		actualTime.add(Calendar.DAY_OF_YEAR, daysToAdd);
+		setMonthLayoutObjects();
+	}
+	
+	public int getActualViewIndex(){
+		switch(actualView){
+		case "Day":
+			return 0;
+		case "Week":
+			return 1;
+		case "Month":
+			return 2;
+		}
+		return -1;
 	}
 }
