@@ -1,7 +1,5 @@
 package com.mycalendar.activity;
 
-import java.util.Locale;
-
 import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;

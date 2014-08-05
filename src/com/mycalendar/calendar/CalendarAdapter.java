@@ -3,24 +3,18 @@ package com.mycalendar.calendar;
 import java.util.ArrayList;
 
 import com.example.mycalendar.R;
-import com.mycalendar.activity.EventEditor;
-import com.mycalendar.activity.EventsView;
 import com.mycalendar.activity.MainActivity;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CalendarAdapter extends ArrayAdapter<Event> {
 	

@@ -24,6 +24,7 @@ public class TimeButtonManager {
 	private boolean dateAlreadySet = false;
 	private boolean timeAlreadySet = false;
 	private FragmentManager manager;
+	@SuppressWarnings("unused")
 	private Context c;
 	private boolean isFinder = false;
 	private int sDay;
@@ -40,6 +41,7 @@ public class TimeButtonManager {
 	private Calendar startCalendar;
 	private Calendar endCalendar;
 	private Calendar current;
+	private boolean isAllDayChecked;
 	
 	public TimeButtonManager(FragmentManager fm, Context ctx){
 		manager = fm;
@@ -545,4 +547,11 @@ public class TimeButtonManager {
 		return null;
 	}
 	
+	public void setIsAllDayChecked(boolean b){
+		isAllDayChecked = b;
+	}
+	
+	public boolean getIsAllDayChecked(){
+		return isAllDayChecked;
+	}
 }

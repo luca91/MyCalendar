@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 
@@ -21,7 +20,7 @@ import android.view.View;
  */
 public class MainActivity extends Activity {
 	
-	@SuppressWarnings("unused")
+
 	private static MyCalendarDB applicationDB;
 	
 	/**
@@ -131,9 +130,9 @@ public class MainActivity extends Activity {
     	startActivity(toFinder);
     }
     
-    public void settings(View v){
-//    	Intent settings = new Intent(this, Settings.class);
-//    	startActivity(settings);
+    public void allReminders(View v){
+    	Intent allReminders = new Intent(this, ReminderList.class);
+    	startActivity(allReminders);
     }
     
     public static void setActualView(String view){

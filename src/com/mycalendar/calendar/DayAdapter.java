@@ -1,27 +1,17 @@
 package com.mycalendar.calendar;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
-import com.example.mycalendar.R;
 import com.mycalendar.components.Event;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class DayAdapter {
 
 	private ArrayList<TextView> hours;
-	private ArrayList<TextView> eventsObjects;
-	private ScrollView eventsObjectContainer;
 	private RelativeLayout gridContainer;
 	private LinearLayout hoursContainerDay;
 	private RelativeLayout eventsContainer;

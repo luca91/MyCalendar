@@ -40,6 +40,7 @@ public class Event extends AppItem {
 	public static final String CALENDAR = "com.example.mycalendar.CALENDAR";
 	public static final String ID = "com.example.mycalendar.ID";
 	public static final String ALL_DAY = "com.example.mycalendr.ALL_DAY";
+	public static final String NOTES = "com.example.mycalendr.NOTES";
 	private String name;
 	private String startDate, endDate, startTime, endTime;
 	private int id;

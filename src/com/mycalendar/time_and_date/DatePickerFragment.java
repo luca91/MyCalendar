@@ -64,17 +64,18 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 	 */
 	public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 		
-//		current = Calendar.getInstance();
+		current = Calendar.getInstance();
 		
 //		manager.setCurrentCalendar(current);
-//		Calendar set;
+		Calendar set;
 //		boolean result = false;
 		manager.setDateAlreadySetFlag(true);
 		if(this.getTag().equals("startDatePicker")){
-//			set = new GregorianCalendar(year, monthOfYear, dayOfMonth,manager.getHours("start"), manager.getMinutes("start"));
-			Calendar current = Calendar.getInstance();
-			String currentDate = current.get(Calendar.DAY_OF_MONTH) + "/" + (current.get(Calendar.MONTH)+1) + "/" + current.get(Calendar.YEAR);
-			if(currentDate.equals(manager.getCurrentStartDate()) && manager.getHours("start") == 0 && manager.getMinutes("start") == 0){
+			set = new GregorianCalendar(year, monthOfYear, dayOfMonth, manager.getHours("start"), manager.getMinutes("start"));
+			manager.setStartCalendar(set);
+//			String currentDate = current.get(Calendar.DAY_OF_MONTH) + "/" + (current.get(Calendar.MONTH)+1) + "/" + current.get(Calendar.YEAR);
+			if(current.compareTo(manager.getCalendar("start")) > 0 && manager.getHours("start") == 0 && manager.getMinutes("start") == 0 && manager.getIsAllDayChecked()){
+				manager.setTimeAlreadySetFlag(true);
 				Calendar start = new GregorianCalendar(year, monthOfYear, dayOfMonth, current.get(Calendar.HOUR), 0);
 				start.add(Calendar.HOUR_OF_DAY, +1);
 				manager.setStartCalendar(start);

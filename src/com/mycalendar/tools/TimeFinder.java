@@ -3,13 +3,13 @@ package com.mycalendar.tools;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import android.view.View;
-
 import com.mycalendar.components.Event;
 
 public class TimeFinder {
 	
+	@SuppressWarnings("unused")
 	private ArrayList<Event> existing;
+	@SuppressWarnings("unused")
 	private ArrayList<Event> potential;
 	private String sDate;
 	private String sTime;

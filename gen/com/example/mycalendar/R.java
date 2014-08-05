@@ -77,6 +77,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int StartTime=0x7f0b0030;
         public static final int Time=0x7f0b003f;
         public static final int To=0x7f0b0031;
+        public static final int action_settings=0x7f0b006a;
         public static final int allCalendars=0x7f0b0008;
         public static final int allDay=0x7f0b0034;
         public static final int allEventEvtShow=0x7f0b0042;
@@ -101,7 +102,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int dateAndTimeItem=0x7f0b0061;
         public static final int dayItem=0x7f0b005e;
         public static final int dayManagerContainer=0x7f0b000d;
-        public static final int end_date_finder=0x7f0b0066;
+        public static final int end_date_finder=0x7f0b0067;
         public static final int eventEditorContainer=0x7f0b002a;
         public static final int eventsContainerDay=0x7f0b0015;
         public static final int eventsContainerWeek=0x7f0b0029;
@@ -137,12 +138,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int newEventEvtShow=0x7f0b0043;
         public static final int new_calendar_text=0x7f0b004a;
         public static final int new_event_text=0x7f0b0048;
+        public static final int noReminderText=0x7f0b0064;
         public static final int notesArea=0x7f0b0035;
-        public static final int numberPicker1=0x7f0b0065;
-        public static final int picker_dialog_title=0x7f0b0064;
+        public static final int numberPicker1=0x7f0b0066;
+        public static final int picker_dialog_title=0x7f0b0065;
         public static final int range_finder=0x7f0b0058;
         public static final int range_text_finder=0x7f0b0059;
-        public static final int reminder=0x7f0b0068;
+        public static final int reminder=0x7f0b0069;
         public static final int reminderSpinner=0x7f0b0036;
         public static final int reminder_text=0x7f0b0039;
         public static final int removeButtonCalShow=0x7f0b0007;
@@ -161,7 +163,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int viewTypeMonth=0x7f0b0018;
         public static final int viewTypeWeek=0x7f0b001f;
         public static final int weekDaysContainer=0x7f0b0024;
-        public static final int weekItem=0x7f0b0067;
+        public static final int weekItem=0x7f0b0068;
         public static final int weekManagerContainer=0x7f0b0020;
     }
     public static final class layout {
@@ -177,13 +179,15 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_export_calendar=0x7f030009;
         public static final int activity_import_calendar=0x7f03000a;
         public static final int activity_main=0x7f03000b;
-        public static final int activity_time_finder=0x7f03000c;
-        public static final int calendar_item=0x7f03000d;
-        public static final int day_item=0x7f03000e;
-        public static final int event_item=0x7f03000f;
-        public static final int import_calendar_item=0x7f030010;
-        public static final int picker_dialog=0x7f030011;
-        public static final int week_item=0x7f030012;
+        public static final int activity_reminder_list=0x7f03000c;
+        public static final int activity_time_finder=0x7f03000d;
+        public static final int calendar_item=0x7f03000e;
+        public static final int day_item=0x7f03000f;
+        public static final int event_item=0x7f030010;
+        public static final int import_calendar_item=0x7f030011;
+        public static final int no_reminders_layout=0x7f030012;
+        public static final int picker_dialog=0x7f030013;
+        public static final int week_item=0x7f030014;
     }
     public static final class menu {
         public static final int all_calendar_list=0x7f0a0000;
@@ -198,7 +202,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int export_calendar=0x7f0a0009;
         public static final int import_calendar=0x7f0a000a;
         public static final int main=0x7f0a000b;
-        public static final int time_finder=0x7f0a000c;
+        public static final int reminder_list=0x7f0a000c;
+        public static final int time_finder=0x7f0a000d;
     }
     public static final class string {
         public static final int  text_all_day=0x7f070032;
@@ -224,27 +229,27 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int new_event_description=0x7f07001f;
         public static final int next=0x7f07001a;
         public static final int positive_button=0x7f070016;
-        public static final int pref_default_display_name=0x7f070048;
-        public static final int pref_description_social_recommendations=0x7f070046;
+        public static final int pref_default_display_name=0x7f070049;
+        public static final int pref_description_social_recommendations=0x7f070047;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f07004a;
+        public static final int pref_header_data_sync=0x7f07004b;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f070044;
+        public static final int pref_header_general=0x7f070045;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f07004d;
-        public static final int pref_ringtone_silent=0x7f070050;
-        public static final int pref_title_add_friends_to_messages=0x7f070049;
-        public static final int pref_title_display_name=0x7f070047;
-        public static final int pref_title_new_message_notifications=0x7f07004e;
-        public static final int pref_title_ringtone=0x7f07004f;
-        public static final int pref_title_social_recommendations=0x7f070045;
-        public static final int pref_title_sync_frequency=0x7f07004b;
-        public static final int pref_title_system_sync_settings=0x7f07004c;
-        public static final int pref_title_vibrate=0x7f070051;
+        public static final int pref_header_notifications=0x7f07004e;
+        public static final int pref_ringtone_silent=0x7f070051;
+        public static final int pref_title_add_friends_to_messages=0x7f07004a;
+        public static final int pref_title_display_name=0x7f070048;
+        public static final int pref_title_new_message_notifications=0x7f07004f;
+        public static final int pref_title_ringtone=0x7f070050;
+        public static final int pref_title_social_recommendations=0x7f070046;
+        public static final int pref_title_sync_frequency=0x7f07004c;
+        public static final int pref_title_system_sync_settings=0x7f07004d;
+        public static final int pref_title_vibrate=0x7f070052;
         public static final int previous=0x7f070019;
         public static final int reminder_text=0x7f070042;
         public static final int settings_text=0x7f070030;
@@ -261,7 +266,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int text_flexible=0x7f07003a;
         public static final int text_import_calendar_button=0x7f070038;
         public static final int text_modify_button=0x7f07000b;
-        public static final int text_reminder=0x7f070033;
+        public static final int text_reminders=0x7f070033;
         public static final int text_remove_button=0x7f070036;
         public static final int text_repeat=0x7f070035;
         public static final int text_save_button=0x7f070005;
@@ -284,7 +289,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int title_activity_export_calendar=0x7f070026;
         public static final int title_activity_import_calendar=0x7f070025;
         public static final int title_activity_main=0x7f070003;
-        public static final int title_activity_settings=0x7f070043;
+        public static final int title_activity_reminder_list=0x7f070043;
+        public static final int title_activity_settings=0x7f070044;
         public static final int title_activity_time_finder=0x7f07003c;
         public static final int title_edit_dialog=0x7f070012;
         public static final int title_no_calendar_dialog=0x7f070015;

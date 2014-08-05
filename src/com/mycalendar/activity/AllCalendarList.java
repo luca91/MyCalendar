@@ -5,18 +5,12 @@ import java.util.ArrayList;
 import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.AppItem;
-import com.mycalendar.database.MyCalendarDB;
-import com.mycalendar.tools.AppDialogs;
 import com.mycalendar.tools.CalendarListAdapter;
-import com.mycalendar.tools.SwipeDetector;
 
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;

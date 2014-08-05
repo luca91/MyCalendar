@@ -6,36 +6,26 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import com.example.mycalendar.R;
-import com.example.mycalendar.R.id;
-import com.example.mycalendar.R.layout;
-import com.example.mycalendar.R.menu;
 import com.mycalendar.calendar.CalendarAdapter;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.TimeButtonManager;
 
-import android.app.Activity;
 import android.app.ActionBar;
-import android.app.Fragment;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
-import android.os.Build;
 
 public class TimeFinder extends ListActivity implements AdapterView.OnItemSelectedListener{
 	

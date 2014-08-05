@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.example.mycalendar.R;
+import com.mycalendar.calendar.ReminderRecevier;
 import com.mycalendar.components.Event;
 import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
@@ -13,7 +14,11 @@ import com.mycalendar.tools.TimeButtonManager;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +74,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private TextView flexText;
 	private TimeButtonManager manager;
 	private TextView rangeMinText;
+	private Intent oldIntent;
 	
 	/**
 	 * It sets the layout of the activity used to add an event to the agenda
@@ -161,10 +167,21 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 						anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
 					anEvent.setRepetition(repetitionChosen);
 					Reminder rem = null;
+//					int reminderIDUri = -1;
+					int eventID = -1;
+					boolean putRem = false;
+					Calendar remCal = (Calendar) manager.getCalendar("start");
+					Calendar aux = Calendar.getInstance();
 					if(!timeChosen.equals("No reminder")){
-						rem = getReminderObject();
-						rem.setRemTimeChosen(parseReminderTime());
-						anEvent.setReminder(rem);
+//						remCal.add(Calendar.MINUTE, -(parseReminderTime()));
+						aux.add(Calendar.SECOND, 20);
+						if(remCal.compareTo(Calendar.getInstance()) >= 0){
+//							eventID = (int) insertEventToUri();
+//							reminderIDUri = (int) insertReminderToUri(eventID, parseReminderTime());
+							rem = new Reminder(eventID, parseReminderTime());
+							anEvent.setReminder(rem);
+							putRem = true;
+						}
 					}
 					else
 						checkForReminder(id);	
@@ -175,17 +192,25 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					long result;
 					if(!isModify){
 						result = db.addEvent(anEvent);
-						rem.setEventID((int) result);
-						if(!timeChosen.equals("No reminder"))
+						if(!timeChosen.equals("No reminder") && putRem){
+							rem.setEventID((int) result);
 							db.addReminder(rem);
+//							setReminder(remCal);
+							setReminder(aux);
+						}
 					}
 					else{
 						anEvent.setId(id);
 						rem.setEventID(id);
 						result = id; 
 						db.updateEvent(anEvent);
-						if(!timeChosen.equals("No reminder"))
+						if(!timeChosen.equals("No reminder")){
 							db.updateReminder(rem);
+							PendingIntent old = PendingIntent.getBroadcast(this, 0, oldIntent, 0);
+							AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+							am.cancel(old);
+							setReminder(remCal);
+						}
 					}
 					if (result != -1){
 		//				db.addReminder(db.getSingleEvent(anEvent).getId(), calculateReminder(calculateMinutesForReminder()), "");
@@ -278,6 +303,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		currentCalendar = calendars.get(0);
 //		Toast.makeText(this, "Repetition: " + repetitionChosen, Toast.LENGTH_SHORT).show();
 		timeChosen = (String) reminder.getItemAtPosition(0);
+		reminder.setSelection(0, false);
 		Toast.makeText(this, "Time chosen: " + timeChosen, Toast.LENGTH_SHORT).show();
 		;
 		repetitionChosen = 0;
@@ -293,6 +319,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		Intent received = getIntent();
 		id = received.getIntExtra(Event.ID, -1);
 		Event anEvent = db.getEventByID(id);
+		this.anEvent = anEvent;
+		oldIntent = getReminderIntent();
 		current = Calendar.getInstance();
 		manager = new TimeButtonManager(getFragmentManager(), this);
 		manager.setCurrentCalendar((Calendar) current.clone());
@@ -394,7 +422,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
+		// Do nothing, just dismiss.
 		
 	}
 
@@ -405,6 +433,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 //		elemsContainer.removeView(startTime);
 //		elemsContainer.removeView(endTime);
 		if(isChecked){
+			manager.setIsAllDayChecked(true);
+			manager.setTimeAlreadySetFlag(true);
 //			setStartDateButtonAllDayChecked();
 //			setEndDateButtonAllDayChecked();
 			startTime.setText("All day");
@@ -423,30 +453,32 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			Calendar updatedStart = null;
 			Calendar updatedEnd = null;
 			if(startDateSet.equals(dateCurrent))
-				if(getIsModify())
+//				if(getIsModify())
 					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY)+1, 0);
-				else
-					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY), 0);
+//				else
+//					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY), 0);
 			else
-				if(getIsModify())
+//				if(getIsModify())
 					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 0, 0);
-				else
-					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 23, 0);
+//				else
+//					updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), 23, 0);
 			
 			if(endDateSet.equals(dateCurrent))
-				if(getIsModify())
+//				if(getIsModify())
 					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 0);
-				else
-					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
+//				else
+//					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
 			else
-				if(getIsModify())
+//				if(getIsModify())
 					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 0);
-				else
-					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
+//				else
+//					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
 			manager.setStartCalendar(updatedStart);
 			manager.setEndCalendar(updatedEnd);
 		}
 		else{
+			manager.setIsAllDayChecked(false);
+			manager.setTimeAlreadySetFlag(false);
 //			setStartDateButtonAllDayNotChecked();
 //			setEndDateButtonAllDayNotChecked();
 //			setStartTimeButtonAllDayNotChecked();
@@ -462,8 +494,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			Calendar updatedStart = null;
 			Calendar updatedEnd = null;
 			if(getIsModify()){
-				updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY)+1, 0);
-				updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), current.get(Calendar.HOUR_OF_DAY)+2, 0);
+				updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY), 0);
+				updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), current.get(Calendar.HOUR_OF_DAY), 0);
+				updatedStart.add(Calendar.HOUR_OF_DAY, +1);
+				updatedEnd.add(Calendar.HOUR_OF_DAY, +2);
 			}
 			else{
 				updatedStart = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), current.get(Calendar.HOUR_OF_DAY), 0);
@@ -611,15 +645,15 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		return -1;
 	}
 	
-	public Reminder getReminderObject(){
-		Reminder result = null;
-		Calendar rem = (Calendar) manager.getCalendar("start").clone();
-//		Calendar rem = manager.getCalendar("start");
-		rem.add(Calendar.MINUTE, -parseReminderTime());
-		result = new Reminder(rem.get(Calendar.DAY_OF_MONTH)+"/"+rem.get(Calendar.MONTH)+"/"+rem.get(Calendar.YEAR) + " " + rem.get(Calendar.HOUR_OF_DAY)+":"+rem.get(Calendar.MINUTE), id);
-		Toast.makeText(this, "Reminder: " + result.toString(), Toast.LENGTH_LONG).show();
-		return result;
-	}
+//	public Reminder getReminderObject(){
+//		Reminder result = null;
+//		Calendar rem = (Calendar) manager.getCalendar("start").clone();
+////		Calendar rem = manager.getCalendar("start");
+//		rem.add(Calendar.MINUTE, -parseReminderTime());
+//		result = new Reminder(rem.get(Calendar.DAY_OF_MONTH)+"/"+rem.get(Calendar.MONTH)+"/"+rem.get(Calendar.YEAR) + " " + rem.get(Calendar.HOUR_OF_DAY)+":"+rem.get(Calendar.MINUTE), id);
+//		Toast.makeText(this, "Reminder: " + result.toString(), Toast.LENGTH_LONG).show();
+//		return result;
+//	}
 	
 	public int getReminderAdapterIndex(String choice){
 		for(int i = 0; i < reminderAdapter.getCount(); i++){
@@ -652,5 +686,57 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	public boolean isAllDayChecked(){
+		if(allDay.isChecked())
+			return true;
+		else
+			return false;
+	}
+	
+//	public long insertEventToUri(){
+//		ContentResolver cr = getContentResolver();
+//		ContentValues values = new ContentValues();
+//		values.put(Events.DTSTART, manager.getCalendar("start").getTimeInMillis());
+//		values.put(Events.DTEND, manager.getCalendar("end").getTimeInMillis());
+//		values.put(Events.TITLE, "Jazzercise");
+//		values.put(Events.DESCRIPTION, "Group workout");
+//		values.put(Events.CALENDAR_ID, db.getCalendarByName(anEvent.getCalendar()).getID());
+//		values.put(Events.EVENT_TIMEZONE, "Europe/Rome");
+//		Uri uri = cr.insert(Events.CONTENT_URI, values);
+//
+//		// get the event ID that is the last element in the Uri
+//		return Long.parseLong(uri.getLastPathSegment());
+//	}
+//	
+//	public long insertReminderToUri(int eventID, int minutes){
+//		ContentResolver cr = getContentResolver();
+//		ContentValues values = new ContentValues();
+//		values.put(Reminders.MINUTES, minutes);
+//		values.put(Reminders.EVENT_ID, eventID);
+//		values.put(Reminders.METHOD, Reminders.METHOD_ALERT);
+//		Uri uri = cr.insert(Reminders.CONTENT_URI, values);
+//		return Long.parseLong(uri.getLastPathSegment());
+//	}
+	
+	public Intent getReminderIntent(){
+		Intent reminder = new Intent(Reminder.REMINDER_INTENT);
+		reminder.putExtra(Event.NAME, anEvent.getName());
+		reminder.putExtra(Event.ID, anEvent.getId());
+		reminder.putExtra(Event.S_DATE, anEvent.getStartDate());
+		reminder.putExtra(Event.E_DATE, anEvent.getEndDate());
+		reminder.putExtra(Event.S_TIME, anEvent.getStartTime());
+		reminder.putExtra(Event.E_TIME, anEvent.getEndTime());
+		reminder.putExtra(Event.NOTES, anEvent.getNotes());
+		return reminder;
+	}
+	public void setReminder(Calendar cal){
+		Intent reminder = getReminderIntent();
+		sendBroadcast(reminder);
+		AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+		registerReceiver(new ReminderRecevier(), new IntentFilter(Reminder.REMINDER_INTENT + "_" + String.valueOf(anEvent.getId())));
+		PendingIntent pi = PendingIntent.getBroadcast(this, 0, reminder, 0);
+		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
 	}
 }

@@ -54,8 +54,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			+ "event_repetition_id INTEGER DEFAULT 1,"
 			+ "event_reminder_id INTEGER DEFAULT 0,"
 			+ "event_notes TEXT DEFAULT NULL,"
-			+ "UNIQUE(event_name, event_start_date, event_start_time, event_calendar_id),"
-			+ "FOREIGN KEY (event_reminder_id) REFERENCES reminders(reminder_id));";
+			+ "UNIQUE(event_name, event_start_date, event_start_time, event_calendar_id));";
 	
 	public static final String CALENDAR_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS calendars " +
@@ -66,10 +65,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	
 	public static final String REMINDER_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS reminders " +
-					"(reminder_id INTEGER,"
+					"(reminder_id INTEGER PRIMARY KEY,"
 					+ "reminder_event_id INTEGER, "
-					+ "reminder_date_time TEXT,"
-					+ "reminder_time_chosen TEXT);";
+//					+ "reminder_event_id_uri INTEGER DEFAULT 0,"
+					+ "reminder_time_chosen INTEGER);";
+//					+ "reminder_id_uri INTEGER DEFAULT 0);";
 	
 	public static final String[] EVENT_PROJECTION = new String[] {
 		CalendarContract.Calendars._ID,                           // 0
@@ -306,6 +306,19 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return e;
 	}
 	
+	public ArrayList<String> getReminderList(){
+		Cursor result = this.getReadableDatabase().query("reminders", null, null, null, null, null, null);
+		ArrayList<String> e = new ArrayList<String>();
+		boolean count = result.moveToFirst();
+		int rows = result.getCount();
+		for(int i = 0; count && (i < rows); i++){
+			String r = "Reminder " + result.getInt(0) + " for event " + getEventByID(result.getInt(1)).getName();
+			e.add(r);
+			result.moveToNext();
+		}
+		return e;
+	}
+	
 	public Event getSingleEvent(Event toSearch){
 		String[] values = {toSearch.getName(), 
 				convertDateFromStringToDB(toSearch.getStartDate()), 
@@ -354,7 +367,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public long addReminder(Reminder aReminder){
 		ContentValues values = new ContentValues();
 		values.put("reminder_event_id", aReminder.getEventID());
-		values.put("reminder_date_time", aReminder.getDateTime());
 		values.put("reminder_time_chosen", aReminder.getRemTimChosen());
 		return this.getWritableDatabase().insert("reminders", null, values);
 	}
@@ -366,7 +378,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	
 	public long updateReminder(Reminder update){
 		ContentValues values = new ContentValues();
-		values.put("reminder_date_time", update.getDateTime());
+//		values.put("reminder_date_time", update.getDateTime());
 		values.put("reminder_time_chosen", update.getRemTimChosen());
 		String[] whereArgs = {String.valueOf(update.getEventID())};
 		return this.getWritableDatabase().update("reminders", values, "reminder_event_id=?", whereArgs);
@@ -377,9 +389,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		Cursor result = getReadableDatabase().query("reminders", null, "reminder_event_id = ?", values, null, null, null);
 		result.moveToFirst();
 		if(result.getCount() == 1){
-			Reminder rem = new Reminder(result.getString(2), Integer.parseInt(result.getString(1)));
-			rem.setRemTimeChosen(result.getInt(3));
-			return rem;
+//			Reminder rem = new Reminder(result.getString(2), Integer.parseInt(result.getString(1)));
+//			rem.setRemTimeChosen(result.getInt(3));
+//			return rem;
 		}
 		return null;
 	}

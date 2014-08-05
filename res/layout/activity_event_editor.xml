@@ -221,7 +221,7 @@
 	            android:layout_below="@id/allDay"
 	            android:layout_marginLeft="5dp"
 	            android:layout_marginTop="10dp"
-	            android:text="@string/text_reminder"
+	            android:text="@string/reminder_text"
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	        <TextView

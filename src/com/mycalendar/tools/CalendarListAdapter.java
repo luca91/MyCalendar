@@ -5,14 +5,12 @@ import java.util.List;
 
 import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
-import com.mycalendar.components.Event;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class CalendarListAdapter extends ArrayAdapter<AppCalendar>{

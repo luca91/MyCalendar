@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -100,25 +102,25 @@
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewMonth"
-            android:label="@string/title_activity_calendar_view_month" 
+            android:label="@string/title_activity_calendar_view_month"
             android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
-             <meta-data
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewWeek"
-            android:label="@string/title_activity_calendar_view_week"  
+            android:label="@string/title_activity_calendar_view_week"
             android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
-             <meta-data
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
             android:name="com.mycalendar.activity.CalendarViewYear"
-            android:label="@string/title_activity_calendar_view_year" 
- 			android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
-             <meta-data
+            android:label="@string/title_activity_calendar_view_year"
+            android:parentActivityName="android.accounts.AccountAuthenticatorActivity" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
@@ -128,8 +130,12 @@
         </activity>
         <activity
             android:name="com.mycalendar.activity.TimeFinder"
-            android:label="@string/title_activity_time_finder" 
+            android:label="@string/title_activity_time_finder"
             android:windowSoftInputMode="stateUnchanged|adjustResize|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.mycalendar.activity.ReminderList"
+            android:label="@string/title_activity_reminder_list" >
         </activity>
     </application>
 

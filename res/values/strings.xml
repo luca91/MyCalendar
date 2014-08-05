@@ -81,7 +81,7 @@
     <string name="settings_text">Settings</string>
     <string name="hint_calendar_email">Email</string>
     <string name=" text_all_day">All Day</string>
-    <string name="text_reminder">Reminder</string>
+    <string name="text_reminders">Reminders</string>
     <string name="text_event_notes">Notes</string>
     <string name="text_repeat">Repeat every</string>
 
@@ -123,5 +123,6 @@
     <string name="text_find_time">Find</string>
     <string name="text_time_needed_finder">Time needed</string>
     <string name="reminder_text">Remind</string>
+    <string name="title_activity_reminder_list">ReminderList</string>
 
 </resources>

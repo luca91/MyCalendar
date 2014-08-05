@@ -2,34 +2,47 @@ package com.mycalendar.components;
 
 public class Reminder {
 	
+	public final static String REMINDER_INTENT = "com.mycalendar.components.REMINDER_INTENT";
+	
 	private int id;
+	private int uriID;
 	private int eventID;
-	private String reminderDateTime;
+	private int eventIDUri;
 	private int remTimeChosen;
 	
-	public Reminder(String dateTime, int eventID){
-		reminderDateTime = dateTime;
-		this.eventID = eventID;
-	}
+//	public Reminder(int uriID, int eventIDUri, int timeChosen){
+//		this.uriID = uriID;
+//		this.eventIDUri = eventIDUri;
+//		remTimeChosen = timeChosen;
+//	}
 	
-	public void setDateTime(String dateTime){
-		reminderDateTime = dateTime;
+	public Reminder(int eventID, int timeChosen){
+		this.eventID = eventID;
+		remTimeChosen = timeChosen;
 	}
 	
 	public void setEventID(int id){
 		eventID = id;
 	}
 	
-	public String getDateTime(){
-		return reminderDateTime;
-	}
-	
 	public int getEventID(){
 		return eventID;
 	}
 	
-	public int getID(){
-		return id;
+	public void setUriID(int id){
+		uriID = id;
+	}
+	
+	public int getUriID(){
+		return uriID;
+	}
+	
+	public void setEventIDUri(int id){
+		eventIDUri = id;
+	}
+	
+	public int getEventIDUri(){
+		return eventIDUri;
 	}
 	
 	public void setRemTimeChosen(int time){
@@ -38,6 +51,14 @@ public class Reminder {
 	
 	public int getRemTimChosen(){
 		return remTimeChosen;
+	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public int getId(){
+		return this.id;
 	}
 	
 	public String getReminderTextFromTimeChosen(){
@@ -57,9 +78,4 @@ public class Reminder {
 		}
 		return null;
 	}
-	
-	public String toString(){
-		return reminderDateTime + " " + remTimeChosen;
-	}
-
 }
