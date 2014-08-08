@@ -34,20 +34,6 @@
 	            <requestFocus />
 	        </EditText>
 
-	        <Button
-	            android:id="@+id/StartDate"
-	            style="@style/mycalendarButton"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentLeft="true"
-	            android:layout_alignRight="@id/fakeView"
-	            android:layout_below="@+id/From"
-	            android:layout_marginLeft="5dp"
-	            android:layout_marginTop="5dp"
-	            android:background="@drawable/button_state"
-	            android:minWidth="200dp"
-	            android:onClick="startDatePicker" />
-
 	        <TextView
 	            android:id="@+id/From"
 	            android:layout_width="wrap_content"
@@ -66,10 +52,11 @@
 	            android:layout_alignParentRight="true"
 	            android:layout_below="@id/From"
 	            android:layout_marginTop="5dp"
-	            android:layout_toRightOf="@id/StartDate"
+	            android:layout_toRightOf="@+id/StartDate"
 	            android:background="@drawable/button_state"
 	            android:minWidth="100dp"
-	            android:onClick="startTimePicker" />
+	            android:onClick="startTimePicker"
+	            android:textStyle="bold" />
 
 	        <TextView
 	            android:id="@+id/To"
@@ -93,7 +80,8 @@
 	            android:layout_marginLeft="5dp"
 	            android:background="@drawable/button_state"
 	            android:minWidth="200dp"
-	            android:onClick="endDatePicker" />
+	            android:onClick="endDatePicker"
+	            android:textStyle="bold" />
 
 	        <Button
 	            android:id="@+id/EndTime"
@@ -107,7 +95,8 @@
 	            android:layout_toRightOf="@id/EndDate"
 	            android:background="@drawable/button_state"
 	            android:minWidth="100dp"
-	            android:onClick="endTimePicker" />
+	            android:onClick="endTimePicker"
+	            android:textStyle="bold" />
 
 	        <CheckBox
 	            android:id="@+id/allDay"
@@ -168,7 +157,8 @@
 	            android:background="@drawable/button_state"
 	            android:onClick="createEvent"
 	            android:text="@string/text_save_button"
-	            android:textColorLink="@android:color/holo_orange_light" />
+	            android:textColorLink="@android:color/holo_orange_light"
+	            android:textStyle="bold" />
 
 	        <Spinner
 	            android:id="@+id/reminderSpinner"
@@ -237,6 +227,19 @@
 	            android:text="min"
 	            android:textAppearance="?android:attr/textAppearanceMedium"
 	            android:visibility="invisible" />
+
+	        <Button
+	            android:id="@+id/StartDate"
+	            style="@style/mycalendarButton"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignBaseline="@+id/StartTime"
+	            android:layout_alignBottom="@+id/StartTime"
+	            android:layout_toLeftOf="@+id/Create"
+	            android:background="@drawable/button_state"
+	            android:minWidth="200dp"
+	            android:onClick="startDatePicker"
+	            android:textStyle="bold" />
 
 	    </RelativeLayout>
 

@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -35,7 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class EventsView extends Activity implements OnItemSelectedListener, OnClickListener{
+public class EventsView extends Activity implements OnItemSelectedListener, OnClickListener, OnLongClickListener{
 	
 	private static String actualView;
 	private TextView selectedTimePeriod;
@@ -50,6 +51,32 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	private RelativeLayout eventsObjectContainer;
 	private static final int[] monthDays = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; //the last number represent the days of February for leap years
 	private Calendar actualTime = null;
+	private int[] eventsByHourCount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
+	private int[] eventsByDayCount;
+	private int[] eventsContainersIDs = {R.id.hour_0, 
+			R.id.hour_1,
+			R.id.hour_2,
+			R.id.hour_3, 
+			R.id.hour_4, 
+			R.id.hour_5, 
+			R.id.hour_6, 
+			R.id.hour_7, 
+			R.id.hour_8, 
+			R.id.hour_9, 
+			R.id.hour_10, 
+			R.id.hour_11, 
+			R.id.hour_12, 
+			R.id.hour_13, 
+			R.id.hour_14, 
+			R.id.hour_15, 
+			R.id.hour_16, 
+			R.id.hour_17, 
+			R.id.hour_18, 
+			R.id.hour_19, 
+			R.id.hour_20, 
+			R.id.hour_21, 
+			R.id.hour_22,
+			R.id.hour_23};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -74,6 +101,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			eventsObjectContainer = (RelativeLayout) findViewById(R.id.eventsContainerDay);
 			list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
 			setDayLayoutObjects();
+			setEventsByHourCount();
+			setEventByDay();
 			break;
 		case "Week":
 			setContentView(R.layout.activity_calendar_view_week);
@@ -244,6 +273,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 					dayHour.setBackgroundColor(Color.WHITE);
 					dayHour.setOnClickListener(this);
 					dayHour.setBackground(getResources().getDrawable(R.drawable.button_state_day));
+					dayHour.setTag(String.valueOf(i) + String.valueOf(j+1));
 					weekHour.addView(dayHour, dayHourLayoutParams);
 				}
 				weekDayGrid.addView(weekHour, hourLayoutParams);
@@ -270,7 +300,6 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			}
 			
 			int weekCount = getWeekCountPerMonth();
-			Toast.makeText(this, "Week: " + weekCount, Toast.LENGTH_SHORT).show();
 			for(int i = 0; i <= weekCount; i++){
 				daysContainer = new LinearLayout(this);
 				setDaysOfWeek(month, 0, 14);
@@ -281,6 +310,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 					day.setBackgroundColor(Color.WHITE);
 					day.setOnClickListener(this);
 					day.setBackground(getResources().getDrawable(R.drawable.button_state_day));
+					day.setTag(String.valueOf(i+1) + String.valueOf(j+1));
 					week.addView(day, weekDayLayoutParams);
 				}
 				month.add(Calendar.DAY_OF_YEAR, 7);
@@ -349,7 +379,14 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 
 	@Override
 	public void onClick(View v) {
-		 onHourClick(v);
+		 switch(actualView){
+		 case "Week":
+			 onWeekHourClick(v);
+			 break;
+		 case "Month":
+			 onMonthDayClick(v);
+			 break;
+		 }
 	}
 	
 	public void setEventsObjectShape(){
@@ -426,11 +463,17 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	
 	public void onPrevDayClick(View v){
 		actualTime.add(Calendar.DAY_OF_YEAR, -1);
+		list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
+		setEventsByHourCount();
+		setEventByDay();
 		setDay();
 	}
 	
 	public void onNextDayClick(View v){
 		actualTime.add(Calendar.DAY_OF_YEAR, 1);
+		list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
+		setEventsByHourCount();
+		setEventByDay();
 		setDay();
 	}
 	
@@ -487,5 +530,75 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		toEditor.putExtra(Event.S_DATE, sDate);
 		toEditor.putExtra(Event.S_TIME, (String) v.getTag());
 		startActivity(toEditor);
+	}
+	
+	public void onWeekHourClick(View v){
+		Intent toEditor = new Intent(this, EventEditor.class);
+		String tag = (String) v.getTag();
+		Calendar c = (Calendar) actualTime.clone();
+		int hourIdx = Integer.parseInt(tag.substring(0,1));
+		int index = Integer.parseInt(tag.substring(1,2));
+		c.add(Calendar.DAY_OF_MONTH, +(index-1));
+		
+		toEditor.putExtra(Event.S_DATE, new int[] {c.get(Calendar.DAY_OF_MONTH), (c.get(Calendar.MONTH)), c.get(Calendar.YEAR)});
+		toEditor.putExtra(Event.S_TIME, String.valueOf(hourIdx)); 
+		startActivity(toEditor);
+	}
+	
+	public void onMonthDayClick(View v){
+		actualView = "Day";
+		String tag = (String) v.getTag();
+		setContentView(R.layout.activity_calendar_view_day);
+		int dayOfWeek = actualTime.get(Calendar.DAY_OF_WEEK);
+		int hourIdx = Integer.parseInt(tag.substring(0,1));
+		int index = Integer.parseInt(tag.substring(1,2));
+		Toast.makeText(this, "Day selected before: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
+		actualTime.add(Calendar.DAY_OF_MONTH, -(dayOfWeek-1));
+		Toast.makeText(this, "Day selected: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
+		actualTime.add(Calendar.DAY_OF_MONTH, (((hourIdx-1)*7)+index));
+		setInitialState(actualView);
+	}
+	
+	/**
+	 * It sets the number of events for each hour as button text.
+	 */
+	public void setEventByDay(){
+		for(int i = 0; i < 24; i++){
+			Button b = (Button) findViewById(eventsContainersIDs[i]);
+			b.setOnLongClickListener(this);
+			if(eventsByHourCount[i] > 0){
+				b.setText(eventsByHourCount[i] + " events");
+				b.setBackgroundColor(Color.LTGRAY);
+			}
+		}
+	}
+	
+	/**
+	 * It counts the event of that day for each hour.
+	 */
+	public void setEventsByHourCount(){
+		for(Event e: list.toArray(new Event[]{})){
+			int[] time = e.getTimeToken("start");
+			Toast.makeText(this, "TIME: " + time[0], Toast.LENGTH_SHORT).show();
+			eventsByHourCount[time[0]]++; 
+		}
+	}
+
+	@Override
+	public boolean onLongClick(View arg0) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Your events for today");
+		builder.setMessage("The tag is: " + arg0.getTag());
+		builder.create();
+		builder.show();
+		return false;
+	}
+	
+	public void setEventsByMonth(){
+		eventsByDayCount = new int[monthDays[actualTime.get(Calendar.MONTH)]];
+		for(int i = 0; i < eventsByDayCount.length; i++){
+			list = db.getEventsByDay(i + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
+			
+		}
 	}
 }
