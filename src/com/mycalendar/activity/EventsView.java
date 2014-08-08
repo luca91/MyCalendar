@@ -12,9 +12,12 @@ import com.mycalendar.database.MyCalendarDB;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -69,12 +72,11 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			hours = (LinearLayout) findViewById(R.id.hoursContainerDay);
 			weekDayGrid = (LinearLayout) findViewById(R.id.backgroundAsGridDay);
 			eventsObjectContainer = (RelativeLayout) findViewById(R.id.eventsContainerDay);
-			list = db.getEventsByDay(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR));
+			list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
 			setDayLayoutObjects();
 			break;
 		case "Week":
 			setContentView(R.layout.activity_calendar_view_week);
-			calendar = Calendar.getInstance();
 			actualTime = MainActivity.actualCalendar;
 			selectViewType = (Spinner) findViewById(R.id.viewTypeWeek);
 			selectedTimePeriod = (TextView) findViewById(R.id.selectedWeek);
@@ -117,15 +119,15 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	
 	public void setDayLayoutObjects(){
 		setDay();
-		setHours();
+//		setHours();
 		setGridItems();
 	}
 	
 	public void setWeekLayoutObjects(){
 		weekDayGrid.removeAllViews();
 		daysContainer.removeAllViews();
-		hours.removeAllViews();
-		setHours();
+//		hours.removeAllViews();
+//		setHours();
 //		Calendar c = (Calendar) actualTime.clone();
 		int today = actualTime.get(Calendar.DAY_OF_WEEK);
 		int dayToSub = (today-2);
@@ -216,15 +218,15 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	public void setGridItems(){
 		switch(actualView){
 		case "Day":
-			weekDayGrid.setBackgroundColor(Color.LTGRAY);
-			LinearLayout.LayoutParams glp = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 100));
-			glp.setMargins(0, 0, 2, 2);
-			for(int i = 0; i < 24; i++){
-				Button dayHour = new Button(this);
-				dayHour.setBackgroundColor(Color.WHITE);
-				dayHour.setClickable(true);
-				weekDayGrid.addView(dayHour, glp);
-			}
+//			weekDayGrid.setBackgroundColor(Color.LTGRAY);
+//			LinearLayout.LayoutParams glp = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 100));
+//			glp.setMargins(0, 0, 2, 2);
+//			for(int i = 0; i < 24; i++){
+//				Button dayHour = new Button(this);
+//				dayHour.setBackgroundColor(Color.WHITE);
+//				dayHour.setClickable(true);
+//				weekDayGrid.addView(dayHour, glp);
+//			}
 			break;
 		case "Week":
 			weekDayGrid.setBackgroundColor(Color.LTGRAY);
@@ -240,6 +242,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 					Button dayHour = new Button(this);
 					dayHour.setClickable(true);
 					dayHour.setBackgroundColor(Color.WHITE);
+					dayHour.setOnClickListener(this);
+					dayHour.setBackground(getResources().getDrawable(R.drawable.button_state_day));
 					weekHour.addView(dayHour, dayHourLayoutParams);
 				}
 				weekDayGrid.addView(weekHour, hourLayoutParams);
@@ -275,6 +279,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 				for(int j = 0; j < 7; j++){
 					TextView day = new TextView(this);
 					day.setBackgroundColor(Color.WHITE);
+					day.setOnClickListener(this);
+					day.setBackground(getResources().getDrawable(R.drawable.button_state_day));
 					week.addView(day, weekDayLayoutParams);
 				}
 				month.add(Calendar.DAY_OF_YEAR, 7);
@@ -343,8 +349,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		
+		 onHourClick(v);
 	}
 	
 	public void setEventsObjectShape(){
@@ -474,5 +479,13 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	public void onHourClick(View v){
+		Intent toEditor = new Intent(this, EventEditor.class);
+		int[] sDate = {actualTime.get(Calendar.DAY_OF_MONTH), actualTime.get(Calendar.MONTH), actualTime.get(Calendar.YEAR)}; 
+		toEditor.putExtra(Event.S_DATE, sDate);
+		toEditor.putExtra(Event.S_TIME, (String) v.getTag());
+		startActivity(toEditor);
 	}
 }

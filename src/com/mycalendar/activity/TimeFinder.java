@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TimeFinder extends ListActivity implements AdapterView.OnItemSelectedListener{
 	
@@ -63,27 +64,31 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 		rangeValue = Integer.parseInt(range.getText().toString());
 		currentStartDate = startDate.getText().toString();
 		existing = db.getEventsByDay((currentStartDate));
-		String actualStartDate = currentStartDate;
-		String actualStartTime = currentStartTime;
-		String actualEndTime = currentStartTime;
 		
 		if(existing.size() > 0){
-			for(int i = 0; i < existing.size(); i++){
-				Event e = existing.get(i);
+			for(int i = 0; i < existing.size()-1; i++){
+				Event e1 = existing.get(i);
+				Event e2 = existing.get(i+1);
 				
-				//find the start for a potential event
-				if(compareTime(actualStartTime, e.getStartTime()) <= 0){
-					actualEndTime = e.getStartTime();
-					Event e1 = existing.get(i+1);
-					int potentialTime = compareTime(actualStartTime, e1.getStartTime()); 
-					if(potentialTime > 0 && potentialTime >= rangeValue){
-						Event aPot = new Event("No name yet", actualStartDate, actualStartDate, actualStartTime, actualEndTime, "No calendar");
-						potentialList.add(aPot);
-					}
-				}
+				int[] d1e = e1.getDateToken("end");
+				int[] d2s = e2.getDateToken("start");
+				int[] t1e = e1.getTimeToken("end");
+				int[] t2s = e2.getTimeToken("start");
+				Calendar c1 = new GregorianCalendar(d1e[2], d1e[1], d1e[0], t1e[0], t1e[1]);
+				Calendar c2 = new GregorianCalendar(d2s[2], d2s[1], d2s[0], t2s[0], t2s[1]);
+				long l1 = c1.getTimeInMillis();
+				long l2 = c2.getTimeInMillis();
+				if((l2-l1) <= (rangeValue*1000) && l2 > l1){
+					Event pot = new Event("No name", e1.getEndDate(), e2.getStartDate(), e1.getEndTime(), e2.getStartTime(), e1.getCalendar());
+					potentialList.add(pot);
+				}				
 			}
-			CalendarAdapter adapter = new CalendarAdapter(this, potentialList, false);
-			list.setAdapter(adapter);
+			if(potentialList.size() > 0){
+				CalendarAdapter adapter = new CalendarAdapter(this, potentialList, false);
+				list.setAdapter(adapter);
+			}
+			else
+				Toast.makeText(this, "No free time in the selected period. Edit your choice to find one.", Toast.LENGTH_LONG).show();
 		}
 		else{
 			TextView noResult = new TextView(this);
@@ -92,6 +97,16 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 			noResult.setText("All day is free.");
 			noResult.setTextAppearance(this, android.R.style.TextAppearance_Large);
 			noResult.setGravity(Gravity.CENTER);
+			noResult.setBackgroundResource(R.drawable.button_state);
+			noResult.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					 Intent toEditor = new Intent(getApplicationContext(), EventEditor.class);
+					 EventEditor.setIsFromFinder(true);
+					 startActivity(toEditor);
+				}
+			});
 			list.setVisibility(View.INVISIBLE);
 			container.addView(noResult, rp);
 		}

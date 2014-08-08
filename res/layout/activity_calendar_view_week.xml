@@ -79,6 +79,7 @@
         android:layout_below="@id/viewTypeWeek"
         android:layout_marginTop="0dp"
         android:orientation="horizontal" >
+
     </LinearLayout>
 
     <ScrollView
@@ -108,6 +109,294 @@
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
                 android:scrollbars="vertical" >
+
+                <TextView
+                    android:id="@+id/textHour_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="00"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="01"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="02"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="03"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="04"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="05"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="06"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="07"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="08"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_9"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="09"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="10"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_11"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="11"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_12"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="12"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_13"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="13"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_14"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="14"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_15"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="15"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_16"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="16"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_17"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="17"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_18"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="18"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_19"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="19"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="20"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_21"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="21"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_22"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="22"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/textHour_23"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/gray"
+                    android:text="23"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -118,19 +407,6 @@
                 android:layout_toRightOf="@id/hoursContainerWeek"
                 android:orientation="vertical" >
             </LinearLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignTop="@id/hoursContainerWeek"
-                android:layout_toRightOf="@id/hoursContainerWeek" >
-
-                <RelativeLayout
-                    android:id="@+id/eventsContainerWeek"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp" >
-                </RelativeLayout>
-            </FrameLayout>
         </RelativeLayout>
     </ScrollView>
 

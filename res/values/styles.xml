@@ -35,7 +35,10 @@
 
     <style name="ButtonBarButton" />
     <style name="mycalendarButton">
-        <item name="android:background">@android:color/transparent</item>
+    	<item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="dayButton">
+        <item name="android:background">@android:color/white</item>
     </style>
 
 </resources>

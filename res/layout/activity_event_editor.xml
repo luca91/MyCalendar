@@ -156,6 +156,7 @@
 
 	        <Button
 	            android:id="@+id/Create"
+	            style="@style/mycalendarButton"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignBottom="@id/Calendar"
@@ -164,6 +165,7 @@
 	            android:layout_marginLeft="50dp"
 	            android:layout_marginRight="50dp"
 	            android:layout_toRightOf="@id/Calendar"
+	            android:background="@drawable/button_state"
 	            android:onClick="createEvent"
 	            android:text="@string/text_save_button"
 	            android:textColorLink="@android:color/holo_orange_light" />
