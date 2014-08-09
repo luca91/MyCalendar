@@ -45,8 +45,9 @@
                 android:clickable="false"
                 android:fontFamily="@android:string/cancel"
                 android:text="@string/add_event"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -80,8 +81,9 @@
                 android:layout_marginLeft="8dp"
                 android:fontFamily="@android:string/cancel"
                 android:text="@string/add_calendar"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -113,8 +115,9 @@
                 android:background="@drawable/button_state"
                 android:fontFamily="@android:string/cancel"
                 android:text="@string/events"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -145,8 +148,9 @@
                 android:layout_marginLeft="8dp"
                 android:fontFamily="@android:string/cancel"
                 android:text="@string/calendars"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -177,8 +181,9 @@
                 android:layout_marginLeft="8dp"
                 android:fontFamily="@android:string/cancel"
                 android:text="@string/time_finder"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -204,13 +209,12 @@
                 style="@style/mycalendarButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="8dp"
                 android:fontFamily="@android:string/cancel"
                 android:onClick="allReminders"
                 android:text="@string/text_reminders"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
 
         </LinearLayout>

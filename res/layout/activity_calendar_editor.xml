@@ -30,13 +30,17 @@
 
     <Button
         android:id="@+id/Create"
-        android:layout_width="150dp"
+        style="@style/mycalendarButton"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentLeft="false"
         android:layout_below="@+id/CalendarColor"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_state"
         android:onClick="createModifyCalendar"
-        android:text="@string/text_save_button" />
+        android:text="@string/text_save_button"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
 </RelativeLayout>

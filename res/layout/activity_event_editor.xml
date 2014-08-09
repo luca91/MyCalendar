@@ -56,6 +56,7 @@
 	            android:background="@drawable/button_state"
 	            android:minWidth="100dp"
 	            android:onClick="startTimePicker"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textStyle="bold" />
 
 	        <TextView
@@ -73,14 +74,15 @@
 	            style="@style/mycalendarButton"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_alignLeft="@id/StartDate"
-	            android:layout_alignParentLeft="true"
-	            android:layout_alignRight="@id/fakeView"
+	            android:layout_alignBaseline="@+id/EndTime"
+	            android:layout_alignBottom="@id/EndTime"
+	            android:layout_alignParentLeft="false"
 	            android:layout_below="@id/To"
-	            android:layout_marginLeft="5dp"
+	            android:layout_toLeftOf="@+id/Create"
 	            android:background="@drawable/button_state"
 	            android:minWidth="200dp"
 	            android:onClick="endDatePicker"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textStyle="bold" />
 
 	        <Button
@@ -96,6 +98,7 @@
 	            android:background="@drawable/button_state"
 	            android:minWidth="100dp"
 	            android:onClick="endTimePicker"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textStyle="bold" />
 
 	        <CheckBox
@@ -157,6 +160,7 @@
 	            android:background="@drawable/button_state"
 	            android:onClick="createEvent"
 	            android:text="@string/text_save_button"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textColorLink="@android:color/holo_orange_light"
 	            android:textStyle="bold" />
 
@@ -239,6 +243,7 @@
 	            android:background="@drawable/button_state"
 	            android:minWidth="200dp"
 	            android:onClick="startDatePicker"
+	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textStyle="bold" />
 
 	    </RelativeLayout>

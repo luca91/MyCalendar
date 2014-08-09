@@ -44,11 +44,12 @@ public class EventShow extends Activity {
 		ActionBar bar = getActionBar();
 		bar.setHomeButtonEnabled(true);
 		received = getIntent();
+		Event e = db.getEventByID(received.getIntExtra(Event.ID, -1));
 		name = (TextView) findViewById(R.id.Name);
 		date = (TextView) findViewById(R.id.Date);
 		infoContainer = (RelativeLayout) findViewById(R.id.EventInfoContainer);
 		time = (TextView) findViewById(R.id.Time);
-		int color = AppCalendar.colorFromStringToInt(db.getCalendarByName(received.getStringExtra(Event.CALENDAR)).getColor());
+		int color = AppCalendar.colorFromStringToInt(db.getCalendarByName(e.getCalendar()).getColor());
 		int textColor = -1;
 		if(color == Color.WHITE || color == Color.CYAN || color == Color.YELLOW)
 			textColor = Color.BLACK;
@@ -60,7 +61,7 @@ public class EventShow extends Activity {
 		date.setTextColor(textColor);
 		time.setTextColor(textColor);
 		
-		name.setText(received.getStringExtra(Event.NAME));
+		name.setText(e.getName());
 //		if(received.getIntExtra(Event.ALL_DAY, -1) == 1){
 //			if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE)))
 //				date.setText(received.getStringExtra(Event.S_DATE));
@@ -68,18 +69,27 @@ public class EventShow extends Activity {
 //				date.setText(received.getStringExtra(Event.S_DATE) + "-" + received.getStringExtra(Event.E_DATE));
 //			time.setText("All Day");
 //		}
-		if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE))){
-			date.setText(received.getStringExtra(Event.S_DATE));
-			time.setText(received.getStringExtra(Event.S_TIME) + "-" +
-					received.getStringExtra(Event.E_TIME));
+//		if((received.getStringExtra(Event.S_DATE)).equals(received.getStringExtra(Event.E_DATE))){
+//			date.setText(received.getStringExtra(Event.S_DATE));
+//			time.setText(received.getStringExtra(Event.S_TIME) + "-" +
+//					received.getStringExtra(Event.E_TIME));
+//		}
+//		else{
+//			date.setText(received.getStringExtra(Event.S_DATE) + ", " +
+//					received.getStringExtra(Event.S_TIME));
+//		time.setText(received.getStringExtra(Event.E_DATE) + ", " +
+//				received.getStringExtra(Event.E_TIME));
+//		}
+		
+		if(e.getStartDate().equals(e.getEndDate())){
+			date.setText(e.getStartDate());
+			time.setText(e.getStartTime() + "-" + e.getEndTime());
 		}
 		else{
-			date.setText(received.getStringExtra(Event.S_DATE) + ", " +
-					received.getStringExtra(Event.S_TIME));
-		time.setText(received.getStringExtra(Event.E_DATE) + ", " +
-				received.getStringExtra(Event.E_TIME));
+			date.setText(e.getStartDate() + ", " + e.getStartTime());
+		time.setText(e.getEndDate() + ", " + e.getEndTime());
 		}
-		infoContainer.setBackgroundColor(AppCalendar.colorFromStringToInt(db.getCalendarByName(received.getStringExtra(Event.CALENDAR)).getColor()));		
+		infoContainer.setBackgroundColor(AppCalendar.colorFromStringToInt(db.getCalendarByName(e.getCalendar()).getColor()));		
 	}
 	
 	/**

@@ -15,7 +15,9 @@
         android:layout_toRightOf="@+id/range_finder"
         android:background="@drawable/button_state"
         android:minWidth="200dp"
-        android:onClick="startDatePicker" />
+        android:onClick="startDatePicker"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/range_text_finder"
@@ -52,7 +54,7 @@
     <Button
         android:id="@+id/find_time"
         style="@style/mycalendarButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="false"
         android:layout_below="@id/start_date_finder"
@@ -61,6 +63,8 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/button_state"
         android:onClick="findTime"
-        android:text="@string/text_find_time" />
+        android:text="@string/text_find_time"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
 </RelativeLayout>
