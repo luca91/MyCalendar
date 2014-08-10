@@ -93,6 +93,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			weekDayGrid = (LinearLayout) findViewById(R.id.backgroundAsGridWeek);
 			daysContainer = (LinearLayout) findViewById(R.id.weekDaysContainer);
 			setWeekLayoutObjects();
+			setEventByWeek();
 			break;
 		case "Month":
 			setContentView(R.layout.activity_calendar_view_month);
@@ -615,23 +616,27 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	}
 	
 	public void setEventByWeek(){
-		int day = actualTime.get(Calendar.DAY_OF_MONTH);
-		int month = actualTime.get(Calendar.MONTH);
-		int year = actualTime.get(Calendar.YEAR);
-		for(int i = 0; i < 24; i++){
-			Button b = (Button) findViewById(eventsContainersIDs[i]);
-			b.setOnLongClickListener(this);
-			list = db.getEventsFromTime(day, month, year, i, 0);
-			int size = list.size();
-			if(size > 0){
-				b.setText(list.size());
-				b.setBackgroundResource(R.drawable.button_state_day_w_events);;
-				b.setTextColor(Color.WHITE);
-			}
-			else{
-				b.setText("No events");
-				b.setBackgroundResource(R.drawable.button_state_day);
-				b.setTextColor(Color.BLACK);
+		Calendar c = (Calendar) actualTime.clone();
+		for(int j = 0; j < 7; j++){
+			c.add(Calendar.DAY_OF_MONTH, j);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			int month = c.get(Calendar.MONTH);
+			int year = c.get(Calendar.YEAR);
+			for(int i = 0; i < 24; i++){
+				Button b = (Button) findViewById(eventsContainersIDs[i]);
+				b.setOnLongClickListener(this);
+				list = db.getEventsFromTime(day, month, year, i, 0);
+				int size = list.size();
+				if(size > 0){
+					b.setText(list.size());
+					b.setBackgroundResource(R.drawable.button_state_day_w_events);;
+					b.setTextColor(Color.WHITE);
+				}
+				else{
+					b.setText("No events");
+					b.setBackgroundResource(R.drawable.button_state_day);
+					b.setTextColor(Color.BLACK);
+				}
 			}
 		}
 	}
@@ -663,17 +668,28 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			break;
 		case "Week":
 			toEditor = new Intent(this, EventEditor.class);
+			Toast.makeText(this, "Start: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
 			Calendar c = (Calendar) actualTime.clone();
 			String tag = (String) arg0.getTag();
-			int hourIdx = Integer.parseInt(tag.substring(0,1));
-			int index = Integer.parseInt(tag.substring(1,2));
+			int hourIdx = -1;
+			int index = -1;
+			if(tag.length() == 3){
+				hourIdx = Integer.parseInt(tag.substring(0,2));
+				index = Integer.parseInt(tag.substring(2,3));
+			}
+			else{
+				hourIdx = Integer.parseInt(tag.substring(0,1));
+				index = Integer.parseInt(tag.substring(1,2));
+			}
 			c.add(Calendar.DAY_OF_MONTH, +(index-1));
-			toEditor.putExtra(Event.S_DATE, new int[] {c.get(Calendar.DAY_OF_MONTH), (c.get(Calendar.MONTH)), c.get(Calendar.YEAR)});
+			Toast.makeText(this, "Indexes: " + hourIdx + " " + index, Toast.LENGTH_SHORT).show();
+			toEditor.putExtra(Event.S_DATE, new int[] {c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR)});
 			toEditor.putExtra(Event.S_TIME, String.valueOf(hourIdx)); 
 			startActivity(toEditor);
+			break;
 		case "Month":
 			toEditor = new Intent(this, EventEditor.class);
-		tag = (String) arg0.getTag();
+			tag = (String) arg0.getTag();
 			int dayOfWeek = actualTime.get(Calendar.DAY_OF_WEEK);
 			hourIdx = Integer.parseInt(tag.substring(0,1));
 			index = Integer.parseInt(tag.substring(1,2));
@@ -682,6 +698,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			toEditor.putExtra(Event.S_DATE, new int[] {actualTime.get(Calendar.DAY_OF_MONTH), (actualTime.get(Calendar.MONTH)), actualTime.get(Calendar.YEAR)});
 			toEditor.putExtra(Event.S_TIME, String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+1)); 
 			startActivity(toEditor);
+			break;
 		}
 		return false;
 	}
