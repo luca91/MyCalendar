@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -54,30 +55,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	private ArrayList<Event> viewDialogItems;
 	private int[] eventsByHourCount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
 	private int[] eventsByDayCount;
-	private int[] eventsContainersIDs = {R.id.hour_0, 
-			R.id.hour_1,
-			R.id.hour_2,
-			R.id.hour_3, 
-			R.id.hour_4, 
-			R.id.hour_5, 
-			R.id.hour_6, 
-			R.id.hour_7, 
-			R.id.hour_8, 
-			R.id.hour_9, 
-			R.id.hour_10, 
-			R.id.hour_11, 
-			R.id.hour_12, 
-			R.id.hour_13, 
-			R.id.hour_14, 
-			R.id.hour_15, 
-			R.id.hour_16, 
-			R.id.hour_17, 
-			R.id.hour_18, 
-			R.id.hour_19, 
-			R.id.hour_20, 
-			R.id.hour_21, 
-			R.id.hour_22,
-			R.id.hour_23};
+	private int[] eventsContainersIDs = {R.id.hour_0, R.id.hour_1, R.id.hour_2, R.id.hour_3, R.id.hour_4, R.id.hour_5, R.id.hour_6, R.id.hour_7, R.id.hour_8, R.id.hour_9, R.id.hour_10, R.id.hour_11, R.id.hour_12, R.id.hour_13, R.id.hour_14, R.id.hour_15, R.id.hour_16, R.id.hour_17, R.id.hour_18, R.id.hour_19, R.id.hour_20, R.id.hour_21, R.id.hour_22, R.id.hour_23};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -100,9 +78,10 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			hours = (LinearLayout) findViewById(R.id.hoursContainerDay);
 			weekDayGrid = (LinearLayout) findViewById(R.id.backgroundAsGridDay);
 			eventsObjectContainer = (RelativeLayout) findViewById(R.id.eventsContainerDay);
-			list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
+//			list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
+//			Toast.makeText(this, "Day: " + actualTime.get(Calendar.DAY_OF_MONTH) + actualTime.get(Calendar.MONTH), Toast.LENGTH_SHORT).show();
 			setDayLayoutObjects();
-			setEventsByHourCount();
+//			setEventsByHourCount();
 			setEventByDay();
 			break;
 		case "Week":
@@ -175,8 +154,6 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			actualTime.add(Calendar.DAY_OF_MONTH, -(startDay-1));
 		}
 		setMonth();
-		Toast.makeText(this, "Day of month: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
-		Toast.makeText(this, "Month: " + actualTime.get(Calendar.MONTH), Toast.LENGTH_SHORT).show();
 		setGridItems();
 	}
 	
@@ -239,6 +216,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 				week.add(Calendar.DAY_OF_YEAR, 1);
 			}
 			lp.setMargins(0, 0, 2, 2);
+			tv.setTextAppearance(this, android.R.attr.textAppearanceLarge);
 			tv.setLayoutParams(lp);
 			tv.setGravity(Gravity.CENTER);
 			daysContainer.addView(tv);
@@ -385,18 +363,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			 onWeekHourClick(v);
 			 break;
 		 case "Month":
-			Intent toEditor = new Intent(this, EventEditor.class);
-			String tag = (String) v.getTag();
-			int dayOfWeek = actualTime.get(Calendar.DAY_OF_WEEK);
-			int hourIdx = Integer.parseInt(tag.substring(0,1));
-			int index = Integer.parseInt(tag.substring(1,2));
-			Toast.makeText(this, "Day selected before: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
-			actualTime.add(Calendar.DAY_OF_MONTH, -(dayOfWeek-1));
-			Toast.makeText(this, "Day selected: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
-			actualTime.add(Calendar.DAY_OF_MONTH, (((hourIdx-1)*7)+index));
-			toEditor.putExtra(Event.S_DATE, new int[] {actualTime.get(Calendar.DAY_OF_MONTH), (actualTime.get(Calendar.MONTH)), actualTime.get(Calendar.YEAR)});
-			toEditor.putExtra(Event.S_TIME, String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+1)); 
-			startActivity(toEditor);
+			onMonthDayClick(v);
 			break;
 		 }
 	}
@@ -475,16 +442,14 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	
 	public void onPrevDayClick(View v){
 		actualTime.add(Calendar.DAY_OF_YEAR, -1);
-		list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
-		setEventsByHourCount();
+//		setEventsByHourCount();
 		setEventByDay();
 		setDay();
 	}
 	
 	public void onNextDayClick(View v){
 		actualTime.add(Calendar.DAY_OF_YEAR, 1);
-		list = db.getEventsByDay(actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1)+"/"+actualTime.get(Calendar.YEAR));
-		setEventsByHourCount();
+//		setEventsByHourCount();
 		setEventByDay();
 		setDay();
 	}
@@ -537,11 +502,30 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	}
 	
 	public void onHourClick(View v){
-		Intent toEditor = new Intent(this, EventEditor.class);
-		int[] sDate = {actualTime.get(Calendar.DAY_OF_MONTH), actualTime.get(Calendar.MONTH), actualTime.get(Calendar.YEAR)}; 
-		toEditor.putExtra(Event.S_DATE, sDate);
-		toEditor.putExtra(Event.S_TIME, (String) v.getTag());
-		startActivity(toEditor);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final Context ctx = this;
+		builder.setTitle("Your events for today");
+		int hour = Integer.parseInt((String) v.getTag());
+		viewDialogItems = db.getEventsFromTime(actualTime.get(Calendar.DAY_OF_MONTH), actualTime.get(Calendar.MONTH), actualTime.get(Calendar.YEAR), hour, 0);
+		ArrayList<String> items = new ArrayList<String>();
+		for(Event ev: viewDialogItems.toArray(new Event[]{})){
+			String s = ev.getName();
+			items.add(s);
+		}
+		if(viewDialogItems.size() > 0)
+			builder.setItems(items.toArray(new String[]{}), new DialogInterface.OnClickListener() {
+			
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent toShow = new Intent(ctx, EventShow.class);
+					toShow.putExtra(Event.ID, viewDialogItems.get(which).getId());
+					ctx.startActivity(toShow);
+				}
+			});
+		else
+			builder.setMessage("No events.");
+		builder.create();
+		builder.show();
 	}
 	
 	public void onWeekHourClick(View v){
@@ -563,9 +547,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		int dayOfWeek = actualTime.get(Calendar.DAY_OF_WEEK);
 		int hourIdx = Integer.parseInt(tag.substring(0,1));
 		int index = Integer.parseInt(tag.substring(1,2));
-		Toast.makeText(this, "Day selected before: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
 		actualTime.add(Calendar.DAY_OF_MONTH, -(dayOfWeek-1));
-		Toast.makeText(this, "Day selected: " + actualTime.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
 		actualTime.add(Calendar.DAY_OF_MONTH, (((hourIdx-1)*7)+index));
 		setInitialState(actualView);
 	}
@@ -574,12 +556,23 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	 * It sets the number of events for each hour as button text.
 	 */
 	public void setEventByDay(){
+		int day = actualTime.get(Calendar.DAY_OF_MONTH);
+		int month = actualTime.get(Calendar.MONTH);
+		int year = actualTime.get(Calendar.YEAR);
 		for(int i = 0; i < 24; i++){
 			Button b = (Button) findViewById(eventsContainersIDs[i]);
 			b.setOnLongClickListener(this);
-			if(eventsByHourCount[i] > 0){
-				b.setText(eventsByHourCount[i] + " events");
-				b.setBackgroundColor(Color.LTGRAY);
+			list = db.getEventsFromTime(day, month, year, i, 0);
+			int size = list.size();
+			if(size > 0){
+				b.setText(list.size() + " events");
+				b.setBackgroundResource(R.drawable.button_state_day_w_events);;
+				b.setTextColor(Color.WHITE);
+			}
+			else{
+				b.setText("No events");
+				b.setBackgroundResource(R.drawable.button_state_day);
+				b.setTextColor(Color.BLACK);
 			}
 		}
 	}
@@ -588,44 +581,38 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	 * It counts the event of that day for each hour.
 	 */
 	public void setEventsByHourCount(){
-		for(Event e: list.toArray(new Event[]{})){
-			int[] time = e.getTimeToken("start");
-			Toast.makeText(this, "TIME: " + time[0], Toast.LENGTH_SHORT).show();
-			eventsByHourCount[time[0]]++; 
+		int day = actualTime.get(Calendar.DAY_OF_MONTH);
+		int month = actualTime.get(Calendar.MONTH);
+		int year = actualTime.get(Calendar.YEAR);
+		for(int i = 0; i < 24; i++){
+			list = db.getEventsFromTime(day, month, year, i, 0);
+//			Toast.makeText(this, "Count: " + list.size(), Toast.LENGTH_SHORT).show();
+//			Toast.makeText(this, "TIME: " + i, Toast.LENGTH_SHORT).show();
+			eventsByHourCount[i] = list.size(); 
 		}
 	}
 
 	@Override
 	public boolean onLongClick(View arg0) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final Context ctx = this;
 		switch(actualView){
 		case "Day":
-			builder.setTitle("Your events for today");
-			int hour = Integer.parseInt((String) arg0.getTag());
-			viewDialogItems = db.getEventsFromTime(actualTime.get(Calendar.DAY_OF_MONTH), actualTime.get(Calendar.MONTH)+1, actualTime.get(Calendar.YEAR), hour, 0);
-			ArrayList<String> items = new ArrayList<String>();
-			for(Event ev: viewDialogItems.toArray(new Event[]{})){
-				String s = ev.getName();
-				items.add(s);
-			}
-			if(viewDialogItems.size() > 0)
-				builder.setItems(items.toArray(new String[]{}), new DialogInterface.OnClickListener() {
-				
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Intent toShow = new Intent(ctx, EventShow.class);
-						toShow.putExtra(Event.ID, viewDialogItems.get(which).getId());
-						ctx.startActivity(toShow);
-					}
-				});
-			else
-				builder.setMessage("No events.");
-			builder.create();
-			builder.show();
+			Intent toEditor = new Intent(this, EventEditor.class);
+			int[] sDate = {actualTime.get(Calendar.DAY_OF_MONTH), actualTime.get(Calendar.MONTH), actualTime.get(Calendar.YEAR)}; 
+			toEditor.putExtra(Event.S_DATE, sDate);
+			toEditor.putExtra(Event.S_TIME, (String) arg0.getTag());
+			startActivity(toEditor);
 			break;
 		case "Month":
-			onMonthDayClick(arg0);
+			toEditor = new Intent(this, EventEditor.class);
+			String tag = (String) arg0.getTag();
+			int dayOfWeek = actualTime.get(Calendar.DAY_OF_WEEK);
+			int hourIdx = Integer.parseInt(tag.substring(0,1));
+			int index = Integer.parseInt(tag.substring(1,2));
+			actualTime.add(Calendar.DAY_OF_MONTH, -(dayOfWeek-1));
+			actualTime.add(Calendar.DAY_OF_MONTH, (((hourIdx-1)*7)+index));
+			toEditor.putExtra(Event.S_DATE, new int[] {actualTime.get(Calendar.DAY_OF_MONTH), (actualTime.get(Calendar.MONTH)), actualTime.get(Calendar.YEAR)});
+			toEditor.putExtra(Event.S_TIME, String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+1)); 
+			startActivity(toEditor);
 		}
 		return false;
 	}

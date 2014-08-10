@@ -53,12 +53,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class drawable {
         public static final int button_state=0x7f020000;
         public static final int button_state_day=0x7f020001;
-        public static final int events=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int new_event=0x7f020004;
-        public static final int square=0x7f020005;
-        public static final int triangle_left=0x7f020006;
-        public static final int triangle_right=0x7f020007;
+        public static final int button_state_day_w_events=0x7f020002;
+        public static final int events=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int new_event=0x7f020005;
+        public static final int square=0x7f020006;
+        public static final int triangle_left=0x7f020007;
+        public static final int triangle_right=0x7f020008;
     }
     public static final class id {
         public static final int Calendar=0x7f0b005d;

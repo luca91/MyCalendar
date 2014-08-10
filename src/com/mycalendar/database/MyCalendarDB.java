@@ -478,11 +478,13 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	
 	public ArrayList<Event> getEventsFromTime(int day, int month, int year, int hours, int minutes){
 		Calendar c = new GregorianCalendar(year, month, day, hours, minutes);
-		Cursor result = this.getReadableDatabase().query("events", null, null, null, null, null, "event_start_date, event_start_time");
+		String date = convertDateFromStringToDB(formatDate(day, month+1, year));
+		String[] values = {date, date};
+		Cursor result = this.getReadableDatabase().query("events", null, "event_start_date = ? OR event_end_date = ?", values, null, null, "event_start_date, event_start_time");
 		ArrayList<Event> list = new ArrayList<Event>();
 		boolean check = result.moveToFirst();
 		int rows = result.getCount();
-		for(int i = 0; check && (i < rows); i++){
+		for(int i = 0; check && i < rows; i++){
 			Event e = new Event(result.getString(1), 
 				convertDateFromDBToString(result.getString(2)), 
 				convertDateFromDBToString(result.getString(4)), 
@@ -491,13 +493,76 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 				getCalendarByID(result.getInt(6)).getName());
 			e.setId(Integer.parseInt(result.getString(0)));
 			e.setAllDay(result.getInt(7));
-			int[] date = e.getDateToken("end");
-			int[] time = e.getTimeToken("end");
-			Calendar actual = new GregorianCalendar(date[2], date[1], date[0], time[0], time[1]);
-			if(actual.compareTo(c) > 0)
+			int[] dateS = e.getDateToken("start");
+			int[] timeS = e.getTimeToken("start");
+			Calendar actualS = new GregorianCalendar(dateS[2], dateS[1]-1, dateS[0], timeS[0], timeS[1]);
+			int[] dateE = e.getDateToken("end");
+			int[] timeE = e.getTimeToken("end");
+			Calendar actualE = new GregorianCalendar(dateE[2], dateE[1]-1, dateE[0], timeE[0], timeE[1]);
+			Calendar end = new GregorianCalendar(year, month, day, hours+1, 0);
+			if((actualS.compareTo(c) >= 0 && actualS.compareTo(end) < 0) || (actualE.compareTo(c) > 0 && actualE.compareTo(end) <= 0))
 				list.add(e);
 			result.moveToNext();
 		}
 		return list;
+	}
+	
+	public String formatDate(int d, int m, int y){
+		String date;
+		int day;
+		int month;
+		int year;
+		day = d;
+		month = m;
+		year = y;
+		if(day<10 && month>=10){
+			date = "0"+day+"/"+(month)+"/"+year;
+		 }
+		 else if(day<10 && month<10){
+			 date = "0"+day+"/"+"0"+month+"/"+year;
+		 }
+		 else if(day>=10 && month<10){
+			 date = day+"/"+"0"+month+"/"+year;
+		 }
+		 else{
+			 date = day+"/"+month+"/"+year;
+		 }
+		return date;
+	}
+	
+	public String formatTime(int h, int m){
+		String time;
+		int hours; 
+		int minutes;
+		hours = h;
+		minutes = m;
+		if(hours<10 && minutes>=10){
+			time = "0"+hours+":"+minutes;
+		}
+		else if(hours >= 10 && minutes < 10){
+			time = hours+":"+"0"+minutes;
+		}
+		else if(hours < 10 && minutes < 10){
+			time = "0"+hours+":"+"0"+minutes;
+		}
+		else if(hours == 0 && minutes < 10){
+			time = "00"+":"+"0"+minutes;
+		}
+		else if(hours == 0 && minutes >= 10){
+			time = "00"+":"+"0"+minutes;
+		}
+		else if(hours < 10 && minutes == 10){
+			time = "0"+hours+":"+"00";
+		}
+		else if(hours >= 0 && minutes >= 10){
+			time = hours+":"+"00";
+		}
+		else if(hours == 0 && minutes == 0){
+			time = "00"+":"+"00";
+		}
+		else{
+			time = hours+":"+minutes;
+		}
+		return time;
 	}
 }

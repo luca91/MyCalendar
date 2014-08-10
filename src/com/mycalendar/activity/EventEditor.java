@@ -360,9 +360,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		repetition.setSelection(repetitionChosen, false);
 //		reminder.setSelection(getItemSelectedPosition(timeChosen, getResources().getStringArray(R.array.reminder_options)), false);
 		Reminder aux = db.getReminderByEventID(id);
-		
-		String time = aux.getReminderTextFromTimeChosen();
-		reminder.setSelection(getReminderAdapterIndex(time), false);
+		if(aux != null){
+			String time = aux.getReminderTextFromTimeChosen();
+			reminder.setSelection(getReminderAdapterIndex(time), false);
+		}
 		if(anEvent.getNotes() != null)
 			notesArea.setText(anEvent.getNotes());
 	}
