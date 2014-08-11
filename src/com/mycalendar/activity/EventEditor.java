@@ -18,7 +18,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ReceiverCallNotAllowedException;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -169,7 +168,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					Reminder rem = null;
 //					int reminderIDUri = -1;
 					int eventID = -1;
-					boolean putRem = false;
 					Calendar remCal = (Calendar) manager.getCalendar("start");
 					Calendar aux = Calendar.getInstance();
 					if(!timeChosen.equals("No reminder")){
@@ -180,7 +178,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 //							reminderIDUri = (int) insertReminderToUri(eventID, parseReminderTime());
 							rem = new Reminder(eventID, parseReminderTime());
 							anEvent.setReminder(rem);
-							putRem = true;
 //						}
 					}
 					else

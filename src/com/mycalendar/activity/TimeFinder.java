@@ -63,8 +63,8 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 	public void findTime(View v){
 		rangeValue = Integer.parseInt(range.getText().toString());
 		currentStartDate = startDate.getText().toString();
-		existing = db.getEventsByDay((currentStartDate));
-		
+		int[] date = manager.getDateToken("start");
+		existing = db.getEventsByDay(date[0], date[1], date[2]);
 		if(existing.size() > 0){
 			for(int i = 0; i < existing.size()-1; i++){
 				Event e1 = existing.get(i);

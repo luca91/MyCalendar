@@ -408,9 +408,9 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return result.moveToFirst();
 	}
 	
-	public ArrayList<Event> getEventsByDay(String date){
-		String[] values = {convertDateFromStringToDB(date)};
-		Cursor result = this.getReadableDatabase().query("events", null, "event_start_date=?", values, null, null, "event_start_time");
+	public ArrayList<Event> getEventsByDay(int day, int month, int year){
+		String[] values = {convertDateFromStringToDB(formatDate(day, month, year)), convertDateFromStringToDB(formatDate(day, month, year))};
+		Cursor result = this.getReadableDatabase().query("events", null, "event_start_date = ? OR event_end_date = ?", values, null, null, "event_start_time");
 		ArrayList<Event> list = new ArrayList<Event>();
 		boolean check = result.moveToFirst();
 		int rows = result.getCount();
