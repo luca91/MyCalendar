@@ -94,15 +94,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.accounts.AccountAuthenticatorActivity" />
-        </activity>
-
-        <receiver android:name=".ReminderReceiver" >
-        </receiver>
-"
+        </activity>
         <activity
             android:name="com.mycalendar.activity.SettingsActivity"
             android:label="@string/settings_text" >
         </activity>
+        
+          <receiver android:name="com.mycalendar.calendar.MyBroadcastReceiver" >
+        </receiver>
     </application>
 
 </manifest>

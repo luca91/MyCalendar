@@ -3,11 +3,15 @@ package com.mycalendar.activity;
 import java.util.Calendar;
 
 import com.example.mycalendar.R;
+import com.mycalendar.calendar.MyBroadcastReceiver;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;

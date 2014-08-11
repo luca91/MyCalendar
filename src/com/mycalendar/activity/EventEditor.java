@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.example.mycalendar.R;
-import com.mycalendar.calendar.ReminderReceiver;
+import com.mycalendar.calendar.MyBroadcastReceiver;
 import com.mycalendar.components.Event;
 import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
@@ -31,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * This is the class to create a new event and modify a already existing one.
@@ -132,7 +131,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	 * @param v the current view
 	 */
 	public void createEvent(View v){
-		Toast.makeText(this, manager.calendarToString("start") + "\n" + manager.calendarToString("end") + "\n" + manager.calendarToString("current"), Toast.LENGTH_LONG).show();
 		if(manager.validateSelectedDate()){
 			String name = "";
 			if(eventName.getText().toString().isEmpty()){
@@ -203,9 +201,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 						db.updateEvent(anEvent);
 						if(!timeChosen.equals("No reminder")){
 							db.updateReminder(rem);
-							PendingIntent old = PendingIntent.getBroadcast(this, 0, oldIntent, 0);
-							AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-							am.cancel(old);
 							setReminder(remCal);
 						}
 					}
@@ -308,7 +303,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		calendar.setSelection(getCalendarIndex(currentCalendar), false);
 		timeChosen = (String) reminder.getItemAtPosition(0);
 		reminder.setSelection(0, false);
-		Toast.makeText(this, "Time chosen: " + timeChosen, Toast.LENGTH_SHORT).show();
 		repetitionChosen = 0;
 		flexPref = (String) flexibility.getItemAtPosition(0);
 		flexibilityRange.setVisibility(View.INVISIBLE);
@@ -649,16 +643,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		return -1;
 	}
 	
-//	public Reminder getReminderObject(){
-//		Reminder result = null;
-//		Calendar rem = (Calendar) manager.getCalendar("start").clone();
-////		Calendar rem = manager.getCalendar("start");
-//		rem.add(Calendar.MINUTE, -parseReminderTime());
-//		result = new Reminder(rem.get(Calendar.DAY_OF_MONTH)+"/"+rem.get(Calendar.MONTH)+"/"+rem.get(Calendar.YEAR) + " " + rem.get(Calendar.HOUR_OF_DAY)+":"+rem.get(Calendar.MINUTE), id);
-//		Toast.makeText(this, "Reminder: " + result.toString(), Toast.LENGTH_LONG).show();
-//		return result;
-//	}
-	
 	public int getReminderAdapterIndex(String choice){
 		for(int i = 0; i < reminderAdapter.getCount(); i++){
 			if(reminderAdapter.getItem(i).toString().equals(choice))
@@ -725,27 +709,21 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 //	}
 	
 	public Intent getReminderIntent(){
-//		Intent reminder = new Intent(Reminder.REMINDER_INTENT);
-		Intent reminder = new Intent(this, ReminderReceiver.class);
-//		reminder.putExtra(Event.NAME, anEvent.getName());
-//		reminder.putExtra(Event.ID, anEvent.getId());
-//		reminder.putExtra(Event.S_DATE, anEvent.getStartDate());
-//		reminder.putExtra(Event.E_DATE, anEvent.getEndDate());
-//		reminder.putExtra(Event.S_TIME, anEvent.getStartTime());
-//		reminder.putExtra(Event.E_TIME, anEvent.getEndTime());
-//		reminder.putExtra(Event.NOTES, anEvent.getNotes());
-//		reminder.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		Intent reminder = new Intent(this, MyBroadcastReceiver.class);
+		reminder.putExtra(Event.NAME, anEvent.getName());
+		reminder.putExtra(Event.ID, anEvent.getId());
+		reminder.putExtra(Event.S_DATE, anEvent.getStartDate());
+		reminder.putExtra(Event.E_DATE, anEvent.getEndDate());
+		reminder.putExtra(Event.S_TIME, anEvent.getStartTime());
+		reminder.putExtra(Event.E_TIME, anEvent.getEndTime());
+		reminder.putExtra(Event.NOTES, anEvent.getNotes());
 		return reminder;
 	}
 	public void setReminder(Calendar cal){
-//		Intent reminder = getReminderIntent();
-		Intent reminder = new Intent(this, ReminderReceiver.class);
-//		sendBroadcast(reminder);
-//		getApplicationContext().registerReceiver(new ReminderReceiver(), new IntentFilter(Reminder.REMINDER_INTENT + "_" + String.valueOf(anEvent.getId())));
-		PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(), 232323234, reminder, 0);
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-		am.set(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis() + 10000), pi);
-		Toast.makeText(this, "Reminder: " + am.toString(), Toast.LENGTH_SHORT).show();
+		Intent reminder = getReminderIntent();
+		PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(), 0, reminder, 0);
+		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pi);
 	}
 	
 	public int getCalendarIndex(String calendar){
