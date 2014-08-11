@@ -71,6 +71,12 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 					+ "reminder_time_chosen INTEGER);";
 //					+ "reminder_id_uri INTEGER DEFAULT 0);";
 	
+	public static final String SETTINGS_TABLE_CREATE = 
+			"CREATE TABLE IF NOT EXISTS settings "
+			+ "(setting_name TEXT,"
+			+ "setting_value TEXT,"
+			+ "UNIQUE(setting_name));";
+	
 	public static final String[] EVENT_PROJECTION = new String[] {
 		CalendarContract.Calendars._ID,                           // 0
 		CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
@@ -99,9 +105,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 //		db.execSQL("DROP TABLE IF EXISTS events;");
 //		db.execSQL("DROP TABLE IF EXISTS calendars;");
 //		db.execSQL("DROP TABLE IF EXISTS reminders;");
+//		db.execSQL("DROP TABLE IF EXISTS settings;");		
 		db.execSQL(EVENTS_TABLE_CREATE);
 		db.execSQL(CALENDAR_TABLE_CREATE);
 		db.execSQL(REMINDER_TABLE_CREATE);
+		db.execSQL(SETTINGS_TABLE_CREATE);
 	}
 
 	@Override
@@ -114,9 +122,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 //		db.execSQL("DROP TABLE IF EXISTS events;");
 //		db.execSQL("DROP TABLE IF EXISTS calendars;");
 //		db.execSQL("DROP TABLE IF EXISTS reminders;");
+//		db.execSQL("DROP TABLE IF EXISTS settings;");
 		db.execSQL(EVENTS_TABLE_CREATE);
 		db.execSQL(CALENDAR_TABLE_CREATE);
 		db.execSQL(REMINDER_TABLE_CREATE);
+		db.execSQL(SETTINGS_TABLE_CREATE);
 		
 	}
 	
@@ -564,5 +574,26 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			time = hours+":"+minutes;
 		}
 		return time;
+	}
+	
+	public long addSetting(String name, String value){
+		ContentValues values = new ContentValues();
+		values.put("setting_name", name);
+		values.put("setting_value", value);
+		return this.getWritableDatabase().insert("settings", null, values);
+	}
+	
+	public String getSettingByName(String name){
+		Cursor result = this.getReadableDatabase().query("settings", null, "setting_name = ?", new String[] {name}, null, null, null);
+		boolean check = result.moveToFirst();
+		if(check)
+			return result.getString(1);
+		return null;
+	}
+	
+	public long updateSetting(String name, String value){
+		ContentValues values = new ContentValues();
+		values.put("setting_value", value);
+		return this.getWritableDatabase().update("settings", values, "setting_name = ?", new String[]{name});
 	}
 }

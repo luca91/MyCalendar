@@ -124,5 +124,8 @@
     <string name="text_time_needed_finder">Time needed</string>
     <string name="reminder_text">Remind</string>
     <string name="title_activity_reminder_list">ReminderList</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="text_default_calendar">Default calendar</string>
+    <string name="text_default_view">Default view</string>
 
 </resources>

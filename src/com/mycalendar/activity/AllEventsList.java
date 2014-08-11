@@ -157,7 +157,7 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 			long id) {
 		String viewT = (String) parent.getItemAtPosition(position);
 		if(!viewT.equals("List")){
-			EventsView.setActualView(viewT);
+			MainActivity.actualView = viewT;
 //			EventsView.setPosition(position);
 			Intent toSelectedView = new Intent(this, EventsView.class);
 			startActivity(toSelectedView);

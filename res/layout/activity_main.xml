@@ -192,7 +192,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_state"
-            android:onClick="allReminders"
+            android:onClick="settings"
             android:paddingTop="0dp" >
 
             <ImageView
@@ -212,8 +212,8 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="8dp"
                 android:fontFamily="@android:string/cancel"
-                android:onClick="allReminders"
-                android:text="@string/text_reminders"
+                android:onClick="settings"
+                android:text="@string/settings_text"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
 

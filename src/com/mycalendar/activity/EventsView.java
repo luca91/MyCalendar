@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 public class EventsView extends Activity implements OnItemSelectedListener, OnClickListener, OnLongClickListener{
 	
-	private static String actualView;
+	private String actualView;
 	private TextView selectedTimePeriod;
 	private Calendar calendar;
 	private Spinner selectViewType;
@@ -49,7 +49,6 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	private static final int[] monthDays = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; //the last number represent the days of February for leap years
 	private Calendar actualTime = null;
 	private ArrayList<Event> viewDialogItems;
-	private int[] eventsByDayCount;
 	private int[] eventsContainersIDs = {R.id.hour_0, R.id.hour_1, R.id.hour_2, R.id.hour_3, R.id.hour_4, R.id.hour_5, R.id.hour_6, R.id.hour_7, R.id.hour_8, R.id.hour_9, R.id.hour_10, R.id.hour_11, R.id.hour_12, R.id.hour_13, R.id.hour_14, R.id.hour_15, R.id.hour_16, R.id.hour_17, R.id.hour_18, R.id.hour_19, R.id.hour_20, R.id.hour_21, R.id.hour_22, R.id.hour_23};
 	
 	@Override
@@ -58,7 +57,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		db = MainActivity.getAppDB();
 		ActionBar bar = getActionBar();
 		bar.setHomeButtonEnabled(true);
-		actualTime = Calendar.getInstance();
+		actualView = MainActivity.actualView;
 //		actualTime.setFirstDayOfWeek(Calendar.MONDAY);
 		setInitialState(actualView);
 	}
@@ -95,6 +94,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			setMonthLayoutObjects();
 			break;
 		}
+		MainActivity.actualCalendar = actualTime;
+		MainActivity.actualView = actualView;
 		adapterViewTypes = ArrayAdapter.createFromResource(this, R.array.view_types, android.R.layout.simple_spinner_item);
 		adapterViewTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selectViewType.setAdapter(adapterViewTypes);
@@ -343,11 +344,11 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		
 	}
 	
-	public static void setActualView(String v){
+	public void setActualView(String v){
 		actualView = v;
 	}
 	
-	public static String getActualView(){
+	public String getActualView(){
 		return actualView;
 	}
 
@@ -479,7 +480,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
+		   switch (item.getItemId()) {
 	        case android.R.id.home:
 	            // app icon in action bar clicked; go home
 	            Intent intent = new Intent(this, MainActivity.class);

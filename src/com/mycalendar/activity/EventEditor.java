@@ -300,7 +300,12 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		manager.setButtonState();
 		
 		calendars = db.getCalendarList();
-		currentCalendar = calendars.get(0);
+		
+		if(!db.getSettingByName("def_calendar").equals("No default"))
+			currentCalendar = db.getSettingByName("def_calendar");
+		else
+			currentCalendar = calendars.get(0);
+		calendar.setSelection(getCalendarIndex(currentCalendar), false);
 		timeChosen = (String) reminder.getItemAtPosition(0);
 		reminder.setSelection(0, false);
 		Toast.makeText(this, "Time chosen: " + timeChosen, Toast.LENGTH_SHORT).show();
@@ -742,4 +747,14 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		am.set(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis() + 10000), pi);
 		Toast.makeText(this, "Reminder: " + am.toString(), Toast.LENGTH_SHORT).show();
 	}
+	
+	public int getCalendarIndex(String calendar){
+		for(int i = 0; i < calendars.size(); i++){
+			if(calendars.get(i).equals(calendar))
+				return i;
+		}
+		return -1;
+	}
 }
+
+

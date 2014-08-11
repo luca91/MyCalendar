@@ -51,7 +51,12 @@ public class MainActivity extends Activity {
 
         //At the very first time, the database is created; then this only connect the app to it.
         applicationDB = new MyCalendarDB(this); 
-        defaultView = "Month";
+        if(applicationDB.getSettingByName("def_view") == null)
+        	applicationDB.addSetting("def_view", "Month");
+        if(applicationDB.getSettingByName("def_calendar") == null)
+        	applicationDB.addSetting("def_calendar", "No default");
+        defaultView = applicationDB.getSettingByName("def_view");
+//        actualView = applicationDB.getSettingByName("last_view");
         actualCalendar = Calendar.getInstance();
     }
 
@@ -106,20 +111,22 @@ public class MainActivity extends Activity {
     
     public void allEvents(View v){
 		Intent allEvent;
-    	EventsView.setActualView(defaultView);
-    	if(defaultView.equals("Day")){
+		if(actualView == null)
+			actualView = defaultView;
+			
+    	if(actualView.equals("Day")){
     		allEvent = new Intent(this, EventsView.class);
     		startActivity(allEvent);
     	}
-    	if(defaultView.equals("Week")){
+    	if(actualView.equals("Week")){
     		allEvent = new Intent(this, EventsView.class);
 			startActivity(allEvent);
     	}
-    	if(defaultView.equals("Month")){
+    	if(actualView.equals("Month")){
     		allEvent = new Intent(this, EventsView.class);
 			startActivity(allEvent);
     	}
-    	if(defaultView.equals("List")){
+    	if(actualView.equals("List")){
     		allEvent = new Intent(this, AllEventsList.class);
 			startActivity(allEvent);
     	}
@@ -145,6 +152,11 @@ public class MainActivity extends Activity {
     
     public static MyCalendarDB getAppDB(){
     	return applicationDB;
+    }
+    
+    public void settings(View v){
+    	Intent settings = new Intent(this, SettingsActivity.class);
+    	startActivity(settings);
     }
     
 }
