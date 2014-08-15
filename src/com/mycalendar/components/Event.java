@@ -41,6 +41,7 @@ public class Event extends AppItem {
 	public static final String ID = "com.example.mycalendar.ID";
 	public static final String ALL_DAY = "com.example.mycalendr.ALL_DAY";
 	public static final String NOTES = "com.example.mycalendr.NOTES";
+	public static final String FLEX = "com.example.myacalendar.FLEX";
 	private String name;
 	private String startDate, endDate, startTime, endTime;
 	private int id;
@@ -187,5 +188,21 @@ public class Event extends AppItem {
 	
 	public int getRepetition(){
 		return repetition;
+	}
+	
+	public void setStartDate(String date){
+		startDate = date;
+	}
+	
+	public void setEndDate(String date){
+		endDate = date;
+	}
+	
+	public void setStartTime(String time){
+		startTime = time;
+	}
+	
+	public void setEndTime(String time){
+		endDate = time;
 	}
 }

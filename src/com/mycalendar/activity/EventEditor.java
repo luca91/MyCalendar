@@ -72,7 +72,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private TextView flexText;
 	private TimeButtonManager manager;
 	private TextView rangeMinText;
-	private Intent oldIntent;
 	
 	/**
 	 * It sets the layout of the activity used to add an event to the agenda
@@ -162,7 +161,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					anEvent.setFlexibility(flexPref);
 					if(!flexPref.equals("None"))
 						anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
-					anEvent.setRepetition(repetitionChosen);
+					else
+						anEvent.setFlexibilityRange(0);
 					Reminder rem = null;
 //					int reminderIDUri = -1;
 					int eventID = -1;
@@ -187,6 +187,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					long result;
 					if(!isModify){
 						result = db.addEvent(anEvent);
+						anEvent.setId((int) result);
 //						if(!timeChosen.equals("No reminder") && putRem){
 							rem.setEventID((int) result);
 							db.addReminder(rem);
@@ -317,7 +318,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		id = received.getIntExtra(Event.ID, -1);
 		Event anEvent = db.getEventByID(id);
 		this.anEvent = anEvent;
-		oldIntent = getReminderIntent();
 		current = Calendar.getInstance();
 		manager = new TimeButtonManager(getFragmentManager(), this);
 		manager.setCurrentCalendar((Calendar) current.clone());
@@ -717,6 +717,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		reminder.putExtra(Event.S_TIME, anEvent.getStartTime());
 		reminder.putExtra(Event.E_TIME, anEvent.getEndTime());
 		reminder.putExtra(Event.NOTES, anEvent.getNotes());
+		if(!anEvent.getFlexibility().equals("None"))
+			reminder.putExtra(Event.FLEX, anEvent.getFlexibilityRange());
 		return reminder;
 	}
 	public void setReminder(Calendar cal){

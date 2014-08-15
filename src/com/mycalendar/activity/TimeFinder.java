@@ -31,8 +31,6 @@ import android.widget.Toast;
 public class TimeFinder extends ListActivity implements AdapterView.OnItemSelectedListener{
 	
 	private MyCalendarDB db;
-	private String currentStartDate;
-	private String currentStartTime;
 	private TimeButtonManager manager;
 	private Button startDate;
 	private ListView list;
@@ -62,7 +60,6 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 	
 	public void findTime(View v){
 		rangeValue = Integer.parseInt(range.getText().toString());
-		currentStartDate = startDate.getText().toString();
 		int[] date = manager.getDateToken("start");
 		existing = db.getEventsByDay(date[0], date[1], date[2]);
 		if(existing.size() > 0){

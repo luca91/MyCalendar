@@ -517,7 +517,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return list;
 	}
 	
-	public String formatDate(int d, int m, int y){
+	public static String formatDate(int d, int m, int y){
 		String date;
 		int day;
 		int month;
@@ -540,7 +540,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return date;
 	}
 	
-	public String formatTime(int h, int m){
+	public static String formatTime(int h, int m){
 		String time;
 		int hours; 
 		int minutes;
@@ -595,5 +595,19 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put("setting_value", value);
 		return this.getWritableDatabase().update("settings", values, "setting_name = ?", new String[]{name});
+	}
+	
+	public boolean checkForEventDelay(Calendar s, Calendar e){
+		String[] values = {formatDate(s.get(Calendar.DAY_OF_MONTH), s.get(Calendar.MONTH)+1, s.get(Calendar.YEAR)), 
+				formatDate(e.get(Calendar.DAY_OF_MONTH), e.get(Calendar.MONTH)+1, e.get(Calendar.YEAR)),
+				formatTime(s.get(Calendar.HOUR_OF_DAY), s.get(Calendar.MINUTE)),
+				formatTime(e.get(Calendar.HOUR_OF_DAY), e.get(Calendar.MINUTE)),
+				formatTime(e.get(Calendar.HOUR_OF_DAY), e.get(Calendar.MINUTE)),
+				formatTime(s.get(Calendar.HOUR_OF_DAY), s.get(Calendar.MINUTE))};
+		String selection = "(event_start_date = ? AND event_end_date = ? AND event_start_date = event_end_date) AND ((event_start_time >= ? AND event_end_time <= ?) OR event_end_time > ? OR event_start_time > ?)";
+		Cursor result = this.getReadableDatabase().query("events", null, selection, values, null, null, "event_start_time");
+		if(result.getCount() > 0)
+			return true;
+		return false;
 	}
 }

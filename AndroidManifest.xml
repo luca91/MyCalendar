@@ -94,14 +94,26 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.accounts.AccountAuthenticatorActivity" />
-        </activity>
+        </activity>
         <activity
             android:name="com.mycalendar.activity.SettingsActivity"
             android:label="@string/settings_text" >
         </activity>
-        
-          <receiver android:name="com.mycalendar.calendar.MyBroadcastReceiver" >
+
+        <receiver android:name="com.mycalendar.calendar.MyBroadcastReceiver" >
         </receiver>
+
+        <activity
+            android:name="com.mycalendar.activity.ReminderActivity"
+            android:label="@string/title_activity_reminder"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name=".FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
     </application>
 
 </manifest>

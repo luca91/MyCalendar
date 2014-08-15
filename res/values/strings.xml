@@ -127,5 +127,11 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="text_default_calendar">Default calendar</string>
     <string name="text_default_view">Default view</string>
+    <string name="title_activity_reminder">ReminderActivity</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="text_delay">Delay</string>
+    <string name="text_dismiss">Got it</string>
 
 </resources>
