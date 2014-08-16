@@ -16,7 +16,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.CalendarContract;
-import android.widget.Toast;
 
 /**
  * This class manage the connections and the data retrieval/updates with the app database.
@@ -86,7 +85,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		CalendarContract.Calendars.CALENDAR_COLOR				 // 5
 	};
 	
-	private Context ctx;
 
 	/**
 	 * It calls the upper constructor to create or open the app database.
@@ -94,7 +92,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	 */
 	public MyCalendarDB(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
-		ctx = context;
 	}
 
 	/**
@@ -114,7 +111,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
 	}
 	
 	@Override
@@ -141,7 +137,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	 * @param db the database
 	 */
 	public long addEvent(Event anEvent){
-		Toast.makeText(ctx, "Calendar ID: " + getCalendarByName(anEvent.getCalendar()).getID(), Toast.LENGTH_SHORT).show();
 		ContentValues toInsert = new ContentValues();
 		toInsert.put("event_name", anEvent.getName());
 		toInsert.put("event_start_date", convertDateFromStringToDB(anEvent.getStartDate()));
@@ -186,7 +181,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	public ArrayList<AppCalendar> getCompleteCalendarList(){
 		Cursor result = this.getReadableDatabase().query("calendars", null, null, null, null, null, null);
 		ArrayList<AppCalendar> calendarList = new ArrayList<AppCalendar>();
-		Toast.makeText(ctx, "Calendar count: " + result.getCount(), Toast.LENGTH_SHORT).show();
 		result.moveToFirst();
 		int rows = result.getCount();
 		boolean count = result.moveToFirst();
@@ -439,7 +433,6 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 	
 	public Event getEventByID(int id){
 		Cursor result = getReadableDatabase().query("events", null, "ROWID=?", new String[] {String.valueOf(id)}, null, null, null);
-		Toast.makeText(ctx, "Result: " + result.moveToFirst(), Toast.LENGTH_SHORT).show();
 		if(result.moveToFirst()){
 			Event e = new Event(result.getString(1), 
 					convertDateFromDBToString(result.getString(2)), 
@@ -507,7 +500,11 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			int[] timeE = e.getTimeToken("end");
 			Calendar actualE = new GregorianCalendar(dateE[2], dateE[1]-1, dateE[0], timeE[0], timeE[1]);
 			Calendar end = new GregorianCalendar(year, month, day, hours+1, 0);
-			if((actualS.compareTo(c) >= 0 && actualS.compareTo(end) < 0) || (actualE.compareTo(c) > 0 && actualE.compareTo(end) <= 0))
+			if((actualS.compareTo(c) >= 0 && actualS.compareTo(end) < 0) || (actualE.compareTo(c) > 0 && actualE.compareTo(end) <= 0) 
+					|| (actualS.compareTo(c) < 0 && actualE.compareTo(end) >= 0)){
+				list.add(e);
+			}
+			if(timeE[0] == 23 && hours == 23)
 				list.add(e);
 			result.moveToNext();
 		}
@@ -605,6 +602,20 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		Cursor result = this.getReadableDatabase().query("events", null, selection, values, null, null, "event_start_time");
 		if(result.getCount() > 0)
 			return true;
+		return false;
+	}
+	
+	public boolean allDayInTimeInterval(int sDay, int sMonth, int sYear, int eDay, int eMonth, int eYear){
+		String[] values = {formatDate(sDay, sMonth, sYear), formatDate(eDay, eMonth, eYear)};
+		String selection = "(event_start_date >= ? OR event_end_date <= ?";
+		Cursor result = this.getReadableDatabase().query("events", null, selection, values, null, null, "event_start_time");
+		result.moveToFirst();
+		while(!result.isAfterLast()){
+			if(result.getInt(7) == 1)
+				return true;
+			else
+				result.moveToNext();
+		}
 		return false;
 	}
 }

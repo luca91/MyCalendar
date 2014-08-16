@@ -500,6 +500,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		ArrayList<String> items = new ArrayList<String>();
 		for(Event ev: viewDialogItems.toArray(new Event[]{})){
 			String s = ev.getName();
+			if(ev.getAllDay() == 1)
+				s += " (all day)";
 			items.add(s);
 		}
 		builder.setTitle("Events on " + actualTime.get(Calendar.DAY_OF_MONTH) + "/" + (actualTime.get(Calendar.MONTH)+1) + "/" + actualTime.get(Calendar.YEAR) + " at " + hour + ":00");
@@ -540,6 +542,8 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		ArrayList<String> items = new ArrayList<String>();
 		for(Event ev: viewDialogItems.toArray(new Event[]{})){
 			String s = ev.getName();
+			if(ev.getAllDay() == 1)
+				s += " (all day)";
 			items.add(s);
 		}
 		builder.setTitle("Events on " + c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH)+1) + "/" + c.get(Calendar.YEAR) + " at " + hourIdx + ":00");
@@ -646,6 +650,13 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 			startActivity(toEditor);
 			break;
 		}
+		return false;
+	}
+	
+	public boolean containAllDayEvents(){
+		for(Event e : list)
+			if(e.getAllDay() == 1)
+				return true;
 		return false;
 	}
 	
