@@ -150,9 +150,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		toInsert.put("event_end_time", anEvent.getEndTime());
 		toInsert.put("event_calendar_id", getCalendarByName(anEvent.getCalendar()).getID());
 		toInsert.put("event_all_day", anEvent.getAllDay());
-		toInsert.put("event_flexibility", anEvent.getFlexibility());
+		toInsert.put("event_flexibility", anEvent.getFlexPref());
 		toInsert.put("event_flexibility_range", anEvent.getFlexibilityRange());
-		toInsert.put("event_repetition_id", anEvent.getRepetition());
 		toInsert.put("event_notes", anEvent.getNotes());
 		return this.getWritableDatabase().insert("events", null, toInsert);
 	}
@@ -166,9 +165,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		toInsert.put("event_end_time", update.getEndTime());
 		toInsert.put("event_calendar_id", getCalendarByName(update.getCalendar()).getID());
 		toInsert.put("event_all_day", update.getAllDay());
-		toInsert.put("event_flexibility", update.getFlexibility());
+		toInsert.put("event_flexibility", update.getFlexPref());
 		toInsert.put("event_flexibility_range", update.getFlexibilityRange());
-		toInsert.put("event_repetition_id", update.getRepetition());
 		toInsert.put("event_notes", update.getNotes());
 		String[] whereArgs = {String.valueOf(update.getId())};
 		return this.getWritableDatabase().update("events", toInsert, "event_id=?", whereArgs);
@@ -451,9 +449,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 					getCalendarByID(result.getInt(6)).getName());
 			e.setId(Integer.parseInt(result.getString(0)));
 			e.setAllDay(result.getInt(7));
-			e.setFlexibility(result.getString(9));
+			e.setFlexPref(result.getString(9));
 			e.setFlexibilityRange(result.getInt(10));
-			e.setRepetition(result.getInt(11));
 			e.setNotes(result.getString(13));
 			return e;
 		}

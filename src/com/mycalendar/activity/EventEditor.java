@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is the class to create a new event and modify a already existing one.
@@ -47,18 +48,14 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private Button endTime;
 	private CheckBox allDay;
 	private Spinner flexibility;
-	private EditText flexibilityRange;
 	private Spinner reminder;
-	private Spinner repetition;
 	private EditText notesArea;
 	private MyCalendarDB db;
 	private String currentCalendar;
-	private int flexRange;
 	private String flexPref;
 	private Calendar current;
 	private ArrayAdapter<String> calendarAdapter;
 	private ArrayAdapter<CharSequence> reminderAdapter;
-	private ArrayAdapter<CharSequence> repetitionAdapter;
 	private ArrayAdapter<CharSequence> flexibilityAdapter;
 	private static boolean isModify;
 	private static boolean isFromFinder;
@@ -67,11 +64,9 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	private RelativeLayout elemsContainer;
 	private String timeChosen;
 	private Event anEvent;
-	private int repetitionChosen;
 	private int id;
 	private TextView flexText;
 	private TimeButtonManager manager;
-	private TextView rangeMinText;
 	
 	/**
 	 * It sets the layout of the activity used to add an event to the agenda
@@ -95,19 +90,15 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		endTime = (Button) findViewById(R.id.EndTime);
 		allDay = (CheckBox) findViewById(R.id.allDay);
 		flexibility = (Spinner) findViewById(R.id.flexible);
-		flexibilityRange = (EditText) findViewById(R.id.flexibility_range);
 		notesArea = (EditText) findViewById(R.id.notesArea);
 		reminder = (Spinner) findViewById(R.id.reminderSpinner);
-		repetition = (Spinner) findViewById(R.id.repeatSpinner);
 		allDay.setOnCheckedChangeListener(this);
 		calendarAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, db.getCalendarList());
 		calendarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		calendar.setOnItemSelectedListener(this);
 		calendar.setAdapter(calendarAdapter);
 		flexText = (TextView) findViewById(R.id.flexibility_text);
-		rangeMinText = (TextView) findViewById(R.id.flexibility_min);
 		setReminderOptionsAdapter();
-		setRepetitionOptionsAdapter();
 		setFlexibilityPreferenceAdapter();
 		
 		//checks if an event has to be create or modify
@@ -158,23 +149,22 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 //						manager.setStartCalendar(updatedStart);
 //						manager.setEndCalendar(updatedEnd);
 					}
-					anEvent.setFlexibility(flexPref);
 					if(!flexPref.equals("None"))
-						anEvent.setFlexibilityRange(Integer.valueOf(flexibilityRange.getText().toString()));
+						anEvent.setFlexibilityRange(parsedTime(flexPref));
 					else
 						anEvent.setFlexibilityRange(0);
+					anEvent.setFlexPref(flexPref);
 					Reminder rem = null;
-//					int reminderIDUri = -1;
 					int eventID = -1;
 					Calendar remCal = (Calendar) manager.getCalendar("start");
 					Calendar aux = Calendar.getInstance();
-					if(!timeChosen.equals("No reminder")){
+					if(!timeChosen.equals("None")){
 //						remCal.add(Calendar.MINUTE, -(parseReminderTime()));
 						aux.add(Calendar.SECOND, 10);
 //						if(remCal.compareTo(Calendar.getInstance()) >= 0){
 //							eventID = (int) insertEventToUri();
 //							reminderIDUri = (int) insertReminderToUri(eventID, parseReminderTime());
-							rem = new Reminder(eventID, parseReminderTime());
+							rem = new Reminder(eventID, parsedTime(timeChosen));
 							anEvent.setReminder(rem);
 //						}
 					}
@@ -200,7 +190,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 						rem.setEventID(id);
 						result = id; 
 						db.updateEvent(anEvent);
-						if(!timeChosen.equals("No reminder")){
+						if(!timeChosen.equals("None")){
 							db.updateReminder(rem);
 							setReminder(remCal);
 						}
@@ -304,10 +294,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		calendar.setSelection(getCalendarIndex(currentCalendar), false);
 		timeChosen = (String) reminder.getItemAtPosition(0);
 		reminder.setSelection(0, false);
-		repetitionChosen = 0;
 		flexPref = (String) flexibility.getItemAtPosition(0);
-		flexibilityRange.setVisibility(View.INVISIBLE);
-		flexRange = 30;
+		flexibility.setSelection(0, false);
+		Toast.makeText(this, "Reminder: " + timeChosen, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Flex: " + flexPref, Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
@@ -336,8 +326,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		currentCalendar = anEvent.getCalendar();
 		calendar.setSelection(getItemSelectedPosition(currentCalendar, db.getCalendarList().toArray(new String[] {})), false);
 		eventName.setText(anEvent.getName());
-		flexPref = anEvent.getFlexibility();
-		repetitionChosen = anEvent.getRepetition();
+		flexPref = anEvent.getFlexPref();
 //		timeChosen = db.getReminder(anEvent.getReminderID()).getTimeChosen();
 		manager.setDateButtonText("start");
 		manager.setDateButtonText("end");
@@ -346,15 +335,9 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		if(anEvent.getAllDay() == 1){
 			allDay.setChecked(true);
 			flexibility.setVisibility(View.INVISIBLE);
-			flexibilityRange.setVisibility(View.INVISIBLE);
 			flexText.setVisibility(View.INVISIBLE);
-			rangeMinText.setVisibility(View.INVISIBLE);
 		}
-		flexibility.setSelection(getItemSelectedPosition(flexPref, getResources().getStringArray(R.array.flexibility_option)), false);
-		flexRange = anEvent.getFlexibilityRange();
-		flexibilityRange.setText(String.valueOf(flexRange));
-		repetition.setSelection(repetitionChosen, false);
-//		reminder.setSelection(getItemSelectedPosition(timeChosen, getResources().getStringArray(R.array.reminder_options)), false);
+		flexibility.setSelection(getItemSelectedPosition(flexPref, getResources().getStringArray(R.array.time_options)), false);
 		Reminder aux = db.getReminderByEventID(id);
 		if(aux != null){
 			String time = aux.getReminderTextFromTimeChosen();
@@ -403,18 +386,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			currentCalendar = (String) arg0.getItemAtPosition(arg2);
 		else if(arg0.getId() == R.id.reminderSpinner)
 			timeChosen = (String) arg0.getItemAtPosition(arg2);
-		else if(arg0.getId() == R.id.repeatSpinner)
-			repetitionChosen = arg2;
 		else{
 			flexPref = (String) arg0.getItemAtPosition(arg2);
-			if(flexPref.equals("None")){
-				flexibilityRange.setVisibility(View.INVISIBLE);
-				rangeMinText.setVisibility(View.INVISIBLE);
-			}
-			else{
-				flexibilityRange.setVisibility(View.VISIBLE);
-				rangeMinText.setVisibility(View.VISIBLE);
-			}
 		}
 	}
 
@@ -439,9 +412,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			endTime.setText("All day");
 			startTime.setClickable(false);
 			endTime.setClickable(false);
-			rangeMinText.setVisibility(View.INVISIBLE);
 			flexibility.setVisibility(View.INVISIBLE);
-			flexibilityRange.setVisibility(View.INVISIBLE);
 			TextView flexText = (TextView) findViewById(R.id.flexibility_text);
 			flexText.setVisibility(View.INVISIBLE);
 			current = Calendar.getInstance();
@@ -485,8 +456,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			endTime.setClickable(true);
 			flexibility.setVisibility(View.VISIBLE);
 			flexibility.setSelection(0, false);
-			flexibilityRange.setVisibility(View.INVISIBLE);
-			flexibilityRange.setText("0");
 			flexText.setVisibility(View.VISIBLE);
 			current = Calendar.getInstance();
 			Calendar updatedStart = null;
@@ -593,21 +562,14 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	}
 	
 	public void setReminderOptionsAdapter(){
-		reminderAdapter = ArrayAdapter.createFromResource(this, R.array.reminder_options, android.R.layout.simple_spinner_item);
+		reminderAdapter = ArrayAdapter.createFromResource(this, R.array.time_options, android.R.layout.simple_spinner_item);
 		reminderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		reminder.setOnItemSelectedListener(this);
 		reminder.setAdapter(reminderAdapter);
 	}
 	
-	public void setRepetitionOptionsAdapter(){
-		repetitionAdapter = ArrayAdapter.createFromResource(this, R.array.repetition_options, android.R.layout.simple_spinner_item);
-		repetitionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		repetition.setOnItemSelectedListener(this);
-		repetition.setAdapter(repetitionAdapter);
-	}
-	
 	public void setFlexibilityPreferenceAdapter(){
-		flexibilityAdapter = ArrayAdapter.createFromResource(this, R.array.flexibility_option, android.R.layout.simple_spinner_item);
+		flexibilityAdapter = ArrayAdapter.createFromResource(this, R.array.time_options, android.R.layout.simple_spinner_item);
 		flexibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		flexibility.setOnItemSelectedListener(this);
 		flexibility.setAdapter(flexibilityAdapter);
@@ -625,8 +587,8 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	 * 
 	 * @return the amount of minutes corresponding to the chosen value
 	 */
-	public int parseReminderTime(){
-		switch(timeChosen){
+	public int parsedTime(String time){
+		switch(time){
 		case "15 min":
 			return 15;
 		case "30 min":
@@ -717,7 +679,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		reminder.putExtra(Event.S_TIME, anEvent.getStartTime());
 		reminder.putExtra(Event.E_TIME, anEvent.getEndTime());
 		reminder.putExtra(Event.NOTES, anEvent.getNotes());
-		if(!anEvent.getFlexibility().equals("None"))
+		if(!anEvent.getFlexPref().equals("None"))
 			reminder.putExtra(Event.FLEX, anEvent.getFlexibilityRange());
 		return reminder;
 	}

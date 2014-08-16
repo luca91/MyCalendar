@@ -41,12 +41,14 @@ public abstract class ItemList extends ListActivity implements AdapterView.OnIte
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 		currentItem = (AppItem) parent.getItemAtPosition(position);
 		AppDialogs aDialog = new AppDialogs(this, this);
+		aDialog.setEditItems();
+		aDialog.setTitle("Choose an action");
 		
 		//the dialog is shown and the action performed
 		aDialog.onCreateDialog(current);
 		int action = aDialog.getItemClicked();
 		Toast.makeText(this, "Action: "+action, Toast.LENGTH_LONG).show();
-		//performClickedAction(calendarName, action);
+		performClickedAction(action);
 		return true;
 	}
 	

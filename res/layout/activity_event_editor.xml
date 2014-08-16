@@ -178,24 +178,10 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="40dp"
 	            android:layout_alignParentLeft="true"
+	            android:layout_alignRight="@id/fakeView"
 	            android:layout_below="@+id/flexibility_text"
 	            android:layout_marginLeft="5dp"
-	            android:layout_marginTop="10dp"
-	            android:layout_toLeftOf="@+id/flexibility_range" />
-
-	        <EditText
-	            android:id="@+id/flexibility_range"
-	            android:layout_width="50dp"
-	            android:layout_height="wrap_content"
-	            android:layout_alignBottom="@id/flexible"
-	            android:layout_alignParentLeft="false"
-	            android:layout_alignRight="@id/fakeView"
-	            android:layout_below="@id/flexibility_text"
-	            android:layout_marginTop="10dp"
-	            android:ems="10"
-	            android:inputType="number"
-	            android:text="30"
-	            android:textAlignment="center" />
+	            android:layout_marginTop="10dp" />
 
 	        <TextView
 	            android:id="@+id/flexibility_text"
@@ -219,18 +205,6 @@
 	            android:text="@string/reminder_text"
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	        <TextView
-	            android:id="@+id/flexibility_min"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignTop="@id/flexibility_range"
-	            android:layout_below="@id/flexibility_text"
-	            android:layout_marginTop="10dp"
-	            android:layout_toRightOf="@+id/flexibility_range"
-	            android:text="min"
-	            android:textAppearance="?android:attr/textAppearanceMedium"
-	            android:visibility="invisible" />
-
 	        <Button
 	            android:id="@+id/StartDate"
 	            style="@style/mycalendarButton"
@@ -244,7 +218,6 @@
 	            android:onClick="startDatePicker"
 	            android:textAppearance="?android:attr/textAppearanceLarge"
 	            android:textStyle="bold" />
-
 	    </RelativeLayout>
 
 	</ScrollView>

@@ -84,21 +84,13 @@
     <string name="text_reminders">Reminders</string>
     <string name="text_event_notes">Notes</string>
     <string name="text_repeat">Repeat every</string>
-
-    <string-array name="repetition_options">
-        <item>No repetition</item>
-        <item>Every day</item>
-        <item>Every week</item>
-        <item>Every month</item>
-        <item>Every year</item>
-    </string-array>
-    <string-array name="reminder_options">
+    <string-array name="time_options">
         <item>15 min</item>
         <item>30 min</item>
         <item>1 hour</item>
         <item>1 day</item>
         <item>1 week</item>
-        <item>No reminder</item>
+        <item>None</item>
     </string-array>
 
     <string name="text_remove_button">Remove</string>
@@ -106,14 +98,6 @@
     <string name="text_import_calendar_button">Import</string>
     <string name="text_export_calendar_button">Export</string>
     <string name="text_flexible">Flexible</string>
-
-    <string-array name="flexibility_option">
-        <item>None</item>
-        <item>Morning</item>
-        <item>Afternoon</item>
-        <item>Evening</item>
-        <item>Night</item>
-    </string-array>
 
     <string name="text_flexibility">Flexible</string>
     <string name="title_activity_time_finder">TimeFinder</string>

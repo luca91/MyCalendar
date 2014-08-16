@@ -48,10 +48,9 @@ public class Event extends AppItem {
 	private int allDay;
 	private String notes;
 	private String calendar;
-	private String flexibility;
 	private int flexibilityRange;
+	private String flexPref;
 	private Reminder reminder;
-	private int repetition;
 	
 	/**
 	 * 
@@ -166,28 +165,12 @@ public class Event extends AppItem {
 		return reminder;
 	}
 	
-	public void setFlexibility(String f){
-		flexibility = f;
-	}
-	
-	public String getFlexibility(){
-		return flexibility;
-	}
-	
 	public void setFlexibilityRange(int fr){
 		flexibilityRange = fr;
 	}
 	
 	public int getFlexibilityRange(){
 		return flexibilityRange;
-	}
-	
-	public void setRepetition(int rep){
-		repetition = rep;
-	}
-	
-	public int getRepetition(){
-		return repetition;
 	}
 	
 	public void setStartDate(String date){
@@ -204,5 +187,13 @@ public class Event extends AppItem {
 	
 	public void setEndTime(String time){
 		endDate = time;
+	}
+	
+	public void setFlexPref(String pref){
+		flexPref = pref;
+	}
+	
+	public String getFlexPref(){
+		return flexPref;
 	}
 }
