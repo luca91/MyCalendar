@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.AppItem;
+import com.mycalendar.tools.AppDialogs;
 import com.mycalendar.tools.CalendarListAdapter;
 
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -34,7 +37,7 @@ public class AllCalendarList extends ItemList {
 		bar.setHomeButtonEnabled(true);
 		current = savedInstanceState;
 		itemList = (ListView) findViewById(android.R.id.list);
-		itemList.setOnItemLongClickListener(this);
+//		itemList.setOnItemLongClickListener(this);
 		itemList.setOnItemClickListener(this);
 //		ArrayAdapter<String> allCalendars = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, db.getCalendarList());
 		ArrayList<AppCalendar> calendars = db.getCompleteCalendarList();
@@ -42,14 +45,25 @@ public class AllCalendarList extends ItemList {
 		itemList.setAdapter(adapter);
 	}
 	
+
+	
 	@Override
 	public void performClickedAction(int action){
 		switch (action){
 		
 		//Delete
 		case 0:
-			int actionResutl = db.removeCalendar(0);
-			if(actionResutl != 0){
+			int actionResult = 0;
+			if(db.getCalendarList().size() > 1)
+				actionResult = db.removeCalendar(0);
+			else{
+				AppDialogs noRemove = new AppDialogs(this);
+				noRemove.setTitle("Warning! Only one calendar!");
+				noRemove.setMessage("The calendar cannot be removed since it is the only existing one.");
+				noRemove.setPositiveButton();
+				noRemove.createAndShowDialog();
+			}
+			if(actionResult != 0){
 				Toast.makeText(this, "Calendar removed successfully.", Toast.LENGTH_LONG).show();
 				ArrayAdapter<String> allCalendars = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, db.getCalendarList());
 				itemList.setAdapter(allCalendars);

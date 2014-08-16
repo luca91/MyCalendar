@@ -109,7 +109,7 @@ public class AllEventsList extends ItemList implements AdapterView.OnItemSelecte
 			final int eventID = clicked.getId();
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Warning!");
-			builder.setMessage("Are you sure you want to delete this calendar?");
+			builder.setMessage("Are you sure you want to delete this event?");
 //			setPositiveButton();
 			builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
 				

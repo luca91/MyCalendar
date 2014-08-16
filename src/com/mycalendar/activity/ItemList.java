@@ -45,7 +45,7 @@ public abstract class ItemList extends ListActivity implements AdapterView.OnIte
 		aDialog.setTitle("Choose an action");
 		
 		//the dialog is shown and the action performed
-		aDialog.onCreateDialog(current);
+//		aDialog.onCreateDialog(current);
 		int action = aDialog.getItemClicked();
 		Toast.makeText(this, "Action: "+action, Toast.LENGTH_LONG).show();
 		performClickedAction(action);

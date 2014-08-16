@@ -4,6 +4,7 @@ import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
+import com.mycalendar.tools.AppDialogs;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -28,6 +29,7 @@ public class CalendarShow extends Activity {
 	
 	private TextView calendar;
 	private Intent received;
+	private final MyCalendarDB db = MainActivity.getAppDB();
 
 	/**
 	 * Sets the layout environment.
@@ -79,32 +81,37 @@ public class CalendarShow extends Activity {
 	
 	public void removeCalendar(View v){
 		final Context ctx = this;
-		final int eventID = received.getIntExtra(Event.ID, -1);
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Warning!");
-		builder.setMessage("Are you sure you want to delete this calendar?");
-//		setPositiveButton();
-		builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				MyCalendarDB db = MainActivity.getAppDB();
-				db.removeEvent(eventID);
-				db.removeReminder(eventID);
-				Intent toHome = new Intent(ctx, MainActivity.class);
-				startActivity(toHome);
-			}
-		});
-//		setNegativeButton();
-		builder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		builder.create();
-		builder.show();
+		final int calendarID = received.getIntExtra(AppCalendar.CAL_ID, -1);
+		if(db.getCalendarList().size() > 1){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Warning!");
+			builder.setMessage("Are you sure you want to delete this calendar?");
+			builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					db.removeCalendar(calendarID);
+					Intent toHome = new Intent(ctx, MainActivity.class);
+					startActivity(toHome);
+				}
+			});
+			builder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.create();
+			builder.show();
+		}
+		else{
+			AppDialogs noRemove = new AppDialogs(this);
+			noRemove.setTitle("Warning! Only one calendar!");
+			noRemove.setMessage("The calendar cannot be removed since it is the only existing one.");
+			noRemove.setPositiveButton();
+			noRemove.createAndShowDialog();
+		}
 	}
 	
 	@Override
