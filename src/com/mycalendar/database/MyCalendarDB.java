@@ -391,9 +391,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		Cursor result = getReadableDatabase().query("reminders", null, "reminder_event_id = ?", values, null, null, null);
 		result.moveToFirst();
 		if(result.getCount() == 1){
-//			Reminder rem = new Reminder(result.getString(2), Integer.parseInt(result.getString(1)));
-//			rem.setRemTimeChosen(result.getInt(3));
-//			return rem;
+			Reminder rem = new Reminder(result.getInt(1), Integer.parseInt(result.getString(2)));
+			return rem;
 		}
 		return null;
 	}
@@ -540,7 +539,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		int minutes;
 		hours = h;
 		minutes = m;
-		if(hours<10 && minutes>=10){
+		if(hours < 10 && minutes >= 10){
 			time = "0"+hours+":"+minutes;
 		}
 		else if(hours >= 10 && minutes < 10){
@@ -559,7 +558,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			time = "0"+hours+":"+"00";
 		}
 		else if(hours >= 0 && minutes >= 10){
-			time = hours+":"+"00";
+			time = hours+":"+minutes;
 		}
 		else if(hours == 0 && minutes == 0){
 			time = "00"+":"+"00";

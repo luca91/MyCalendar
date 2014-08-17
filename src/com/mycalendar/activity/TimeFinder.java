@@ -56,6 +56,13 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 		manager.setDate("start");
 		manager.setDateButtonText("start");
 		potentialList = new ArrayList<Event>();
+		if(Event.S_DATE != null){
+			Intent received = getIntent();
+			startDate.setText(received.getStringExtra(Event.S_DATE));
+			range.setText(received.getIntExtra(Event.FLEX, -1));
+			Button aButton = (Button) findViewById(R.id.find_time);
+			findTime(aButton);
+		}
 	}
 	
 	public void findTime(View v){

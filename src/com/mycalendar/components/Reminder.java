@@ -10,12 +10,6 @@ public class Reminder {
 	private int eventIDUri;
 	private int remTimeChosen;
 	
-//	public Reminder(int uriID, int eventIDUri, int timeChosen){
-//		this.uriID = uriID;
-//		this.eventIDUri = eventIDUri;
-//		remTimeChosen = timeChosen;
-//	}
-	
 	public Reminder(int eventID, int timeChosen){
 		this.eventID = eventID;
 		remTimeChosen = timeChosen;

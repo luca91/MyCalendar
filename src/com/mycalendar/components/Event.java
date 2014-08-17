@@ -186,7 +186,7 @@ public class Event extends AppItem {
 	}
 	
 	public void setEndTime(String time){
-		endDate = time;
+		endTime = time;
 	}
 	
 	public void setFlexPref(String pref){

@@ -156,16 +156,11 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					anEvent.setFlexPref(flexPref);
 					Reminder rem = null;
 					int eventID = -1;
-					boolean putRem = false;
 					Calendar remCal = (Calendar) manager.getCalendar("start");
 					if(!timeChosen.equals("None")){
-						remCal.add(Calendar.MINUTE, -(parsedTime(timeChosen)));
-						
-						if(remCal.compareTo(Calendar.getInstance()) >= 0){
-							rem = new Reminder(eventID, parsedTime(timeChosen));
-							anEvent.setReminder(rem);
-							putRem = true;
-						}
+						remCal.add(Calendar.SECOND, -(parsedTime(timeChosen)));
+						rem = new Reminder(eventID, parsedTime(timeChosen));
+						anEvent.setReminder(rem);
 					}
 					else
 						checkForReminder(id);	
@@ -179,22 +174,17 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					if(!isModify){
 						result = db.addEvent(anEvent);
 						anEvent.setId((int) result);
-						if(putRem){
-							rem.setEventID((int) result);
-							db.addReminder(rem);
-							setReminder(remCal);
-						}
+						rem.setEventID((int) result);
+						db.addReminder(rem);
+						setReminder(remCal);
 					}
 					else{
 						anEvent.setId(id);
 						rem.setEventID(id);
 						result = id; 
 						db.updateEvent(anEvent);
-						
-						if(putRem){
-							db.updateReminder(rem);
-							setReminder(remCal);
-						}
+						db.updateReminder(rem);
+						setReminder(remCal);
 					}
 						
 					if (result != -1){
@@ -646,22 +636,15 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	
 	public Intent getReminderIntent(){
 		Intent reminder = new Intent(this, MyBroadcastReceiver.class);
-		reminder.putExtra(Event.NAME, anEvent.getName());
 		reminder.putExtra(Event.ID, anEvent.getId());
-		reminder.putExtra(Event.S_DATE, anEvent.getStartDate());
-		reminder.putExtra(Event.E_DATE, anEvent.getEndDate());
-		reminder.putExtra(Event.S_TIME, anEvent.getStartTime());
-		reminder.putExtra(Event.E_TIME, anEvent.getEndTime());
-		reminder.putExtra(Event.NOTES, anEvent.getNotes());
-		if(!anEvent.getFlexPref().equals("None"))
-			reminder.putExtra(Event.FLEX, anEvent.getFlexibilityRange());
 		return reminder;
 	}
+
 	public void setReminder(Calendar cal){
 		Intent reminder = getReminderIntent();
-		PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(), 0, reminder, 0);
+		PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(), 0, reminder, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pi);
+		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
 	}
 	
 	public int getCalendarIndex(String calendar){
