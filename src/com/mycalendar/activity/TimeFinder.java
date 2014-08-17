@@ -56,37 +56,57 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 		manager.setDate("start");
 		manager.setDateButtonText("start");
 		potentialList = new ArrayList<Event>();
-		if(Event.S_DATE != null){
-			Intent received = getIntent();
-			startDate.setText(received.getStringExtra(Event.S_DATE));
-			range.setText(received.getIntExtra(Event.FLEX, -1));
-			Button aButton = (Button) findViewById(R.id.find_time);
-			findTime(aButton);
-		}
 	}
 	
 	public void findTime(View v){
 		rangeValue = Integer.parseInt(range.getText().toString());
 		int[] date = manager.getDateToken("start");
-		existing = db.getEventsByDay(date[0], date[1], date[2]);
+		existing = db.getEventsByDayFinder(date[0], date[1], date[2]);
+		Event e1 = null;
+		Event e2 = null;
+		int[] d1e, d2s, t1e, t2s = null;
+		Calendar c1, c2 = null;
+		long freeTime = -1;
 		if(existing.size() > 0){
-			for(int i = 0; i < existing.size()-1; i++){
-				Event e1 = existing.get(i);
-				Event e2 = existing.get(i+1);
-				
-				int[] d1e = e1.getDateToken("end");
-				int[] d2s = e2.getDateToken("start");
-				int[] t1e = e1.getTimeToken("end");
-				int[] t2s = e2.getTimeToken("start");
-				Calendar c1 = new GregorianCalendar(d1e[2], d1e[1], d1e[0], t1e[0], t1e[1]);
-				Calendar c2 = new GregorianCalendar(d2s[2], d2s[1], d2s[0], t2s[0], t2s[1]);
+			
+			e1 = existing.get(0);
+			d1e = e1.getDateToken("start");
+			t1e = e1.getTimeToken("start");
+			c1 = new GregorianCalendar(d1e[2], d1e[1]-1, d1e[0], 0, 0);
+			c2 = new GregorianCalendar(d1e[2], d1e[1]-1, d1e[0], t1e[0], t1e[1]);
+			if(!e1.getStartTime().equals("00:00") && 
+					(c2.getTimeInMillis() - c1.getTimeInMillis() >= (rangeValue*1000)) && 
+					(e1.getStartDate().equals(startDate.getText().toString())))
+				potentialList.add(new Event("No name 0", startDate.getText().toString(), e1.getEndDate(), MyCalendarDB.formatTime(0, 0), e1.getStartTime(), e1.getCalendar()));
+			
+			for(int i = 0; i+1 < existing.size(); i++){
+				e1 = existing.get(i);
+				e2 = existing.get(i+1);
+				d1e = e1.getDateToken("end");
+				d2s = e2.getDateToken("start");
+				t1e = e1.getTimeToken("end");
+				t2s = e2.getTimeToken("start");
+				c1 = new GregorianCalendar(d1e[2], d1e[1], d1e[0], t1e[0], t1e[1]);
+				c2 = new GregorianCalendar(d2s[2], d2s[1], d2s[0], t2s[0], t2s[1]);
 				long l1 = c1.getTimeInMillis();
 				long l2 = c2.getTimeInMillis();
-				if((l2-l1) <= (rangeValue*1000) && l2 > l1){
-					Event pot = new Event("No name", e1.getEndDate(), e2.getStartDate(), e1.getEndTime(), e2.getStartTime(), e1.getCalendar());
+				freeTime = l2-l1;
+				long rangeInMill = rangeValue*1000;
+				if(freeTime >= rangeInMill && l2 > l1){
+					Event pot = new Event("No name " + (i+1), e1.getEndDate(), e2.getStartDate(), e1.getEndTime(), e2.getStartTime(), e1.getCalendar());
 					potentialList.add(pot);
-				}				
+				}
 			}
+			e2 = existing.get(existing.size()-1);
+			d2s = e2.getDateToken("end");
+			t2s = e2.getTimeToken("end");
+			c1 = new GregorianCalendar(d2s[2], d2s[1]-1, d2s[0], t2s[0], t2s[1]);
+			c2 = new GregorianCalendar(d2s[2], d2s[1]-1, d2s[0], 0, 0);
+			c2.add(Calendar.DAY_OF_MONTH, +1);
+			if(!e2.getEndTime().equals("00:00") && 
+					(c2.getTimeInMillis() - c1.getTimeInMillis() >= (rangeValue*1000)) &&
+					e2.getEndDate().equals(startDate.getText().toString()))
+				potentialList.add(new Event("No name " + existing.size(), startDate.getText().toString(), e2.getEndDate(),e2.getEndTime(), MyCalendarDB.formatTime(23, 0), e2.getCalendar()));
 			if(potentialList.size() > 0){
 				CalendarAdapter adapter = new CalendarAdapter(this, potentialList, false);
 				list.setAdapter(adapter);

@@ -409,9 +409,34 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return result.moveToFirst();
 	}
 	
+	public ArrayList<Event> getEventsByDayFinder(int day, int month, int year){
+		String date = convertDateFromStringToDB(formatDate(day, month, year));
+		String[] values = {date, date, date, date, date, date};
+		String selection = "(event_start_date <= ? AND event_end_date = ?) OR (event_start_date = ? AND event_end_date >= ?) OR (event_start_date = ? AND event_end_date = ?)";
+		Cursor result = this.getReadableDatabase().query("events", null, selection, values, null, null, "event_start_time");
+		ArrayList<Event> list = new ArrayList<Event>();
+		boolean check = result.moveToFirst();
+		int rows = result.getCount();
+		for(int i = 0; check && (i < rows); i++){
+			Event e = new Event(result.getString(1), 
+				convertDateFromDBToString(result.getString(2)), 
+				convertDateFromDBToString(result.getString(4)), 
+				result.getString(3), 
+				result.getString(5), 
+				getCalendarByID(result.getInt(6)).getName());
+			e.setId(Integer.parseInt(result.getString(0)));
+			e.setAllDay(result.getInt(7));
+			list.add(e);
+			result.moveToNext();
+		}
+		return list;
+	}
+	
 	public ArrayList<Event> getEventsByDay(int day, int month, int year){
-		String[] values = {convertDateFromStringToDB(formatDate(day, month, year)), convertDateFromStringToDB(formatDate(day, month, year))};
-		Cursor result = this.getReadableDatabase().query("events", null, "event_start_date = ? OR event_end_date = ?", values, null, null, "event_start_time");
+		String date = convertDateFromStringToDB(formatDate(day, month, year));
+		String[] values = {date, date};
+		String selection = "event_start_date = ? OR event_end_date = ?";
+		Cursor result = this.getReadableDatabase().query("events", null, selection, values, null, null, "event_start_time");
 		ArrayList<Event> list = new ArrayList<Event>();
 		boolean check = result.moveToFirst();
 		int rows = result.getCount();

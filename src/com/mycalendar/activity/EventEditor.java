@@ -174,17 +174,21 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					if(!isModify){
 						result = db.addEvent(anEvent);
 						anEvent.setId((int) result);
-						rem.setEventID((int) result);
-						db.addReminder(rem);
-						setReminder(remCal);
+						if(rem != null){
+							rem.setEventID((int) result);
+							db.addReminder(rem);
+							setReminder(remCal);
+						}
 					}
 					else{
 						anEvent.setId(id);
-						rem.setEventID(id);
-						result = id; 
-						db.updateEvent(anEvent);
-						db.updateReminder(rem);
-						setReminder(remCal);
+						result = id;
+						if(rem != null){
+							rem.setEventID(id); 
+							db.updateEvent(anEvent);
+							db.updateReminder(rem);
+							setReminder(remCal);
+						}
 					}
 						
 					if (result != -1){
