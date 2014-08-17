@@ -158,7 +158,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 					int eventID = -1;
 					Calendar remCal = (Calendar) manager.getCalendar("start");
 					if(!timeChosen.equals("None")){
-						remCal.add(Calendar.SECOND, -(parsedTime(timeChosen)));
+						remCal.add(Calendar.MINUTE, -(parsedTime(timeChosen)));
 						rem = new Reminder(eventID, parsedTime(timeChosen));
 						anEvent.setReminder(rem);
 					}
@@ -642,8 +642,13 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 
 	public void setReminder(Calendar cal){
 		Intent reminder = getReminderIntent();
-		PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(), 0, reminder, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pi = PendingIntent.getBroadcast(this.getApplicationContext(), 0, reminder, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Calendar now = Calendar.getInstance();
+		if(cal.compareTo(now) <= 0){
+			cal = now;
+			cal.add(Calendar.SECOND, 5);
+		}
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
 	}
 	

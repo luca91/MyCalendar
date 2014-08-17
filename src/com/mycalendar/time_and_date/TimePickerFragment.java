@@ -77,7 +77,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 //			set = new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), hourOfDay, minute);
 			manager.setStartCalendar(new GregorianCalendar(manager.getYear("start"), manager.getMonth("start")-1, manager.getDay("start"), hourOfDay, minute));
 			manager.setTimeButtonText("start");
-//			manager.updateTimeAndDate("start");
 //			result = manager.checkDateStartValidity();
 		}
 		

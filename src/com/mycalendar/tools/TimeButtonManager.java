@@ -362,7 +362,7 @@ public class TimeButtonManager {
 			time = "0"+hours+":"+"00";
 		}
 		else if(hours >= 0 && minutes >= 10){
-			time = hours+":"+"00";
+			time = hours+":"+minutes;
 		}
 		else if(hours == 0 && minutes == 0){
 			time = "00"+":"+"00";
