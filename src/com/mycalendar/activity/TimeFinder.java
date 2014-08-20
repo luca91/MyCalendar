@@ -128,9 +128,8 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 				
 				@Override
 				public void onClick(View v) {
-					 Intent toEditor = new Intent(getApplicationContext(), EventEditor.class);
-					 EventEditor.setIsFromFinder(true);
-					 startActivity(toEditor);
+					EventEditor.setIsFromFinder(true);
+					goToEventEditor(v);
 				}
 			});
 			list.setVisibility(View.INVISIBLE);
@@ -162,11 +161,14 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 	}
 	
 	public void goToEventEditor(View v){
+		Calendar c = Calendar.getInstance();
+		String startTime = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
 		Intent toEventEditor = new Intent(this, EventEditor.class);
-		toEventEditor.putExtra(Event.S_DATE, manager.getCurrentStartDate());
-		toEventEditor.putExtra(Event.S_TIME, manager.getCurrentStartTime());
-		toEventEditor.putExtra(Event.E_DATE, manager.getCurrentEndDate());
-		toEventEditor.putExtra(Event.E_TIME, manager.getCurrentEndTime());
+		toEventEditor.putExtra(Event.S_DATE, startDate.getText().toString());
+		toEventEditor.putExtra(Event.S_TIME, startTime);
+		toEventEditor.putExtra(Event.E_DATE, startDate.getText().toString());
+		startTime = (c.get(Calendar.HOUR_OF_DAY)+1) + ":" + c.get(Calendar.MINUTE);
+		toEventEditor.putExtra(Event.E_TIME, startTime);
 		startActivity(toEventEditor);
 	}
 	
