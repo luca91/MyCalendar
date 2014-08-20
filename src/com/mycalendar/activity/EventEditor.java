@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is the class to create a new event and modify a already existing one.
@@ -286,7 +287,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			currentCalendar = db.getSettingByName("def_calendar");
 		else
 			currentCalendar = calendars.get(0);
-		calendar.setSelection(getCalendarIndex(currentCalendar), false);
+		if(received.getStringExtra(Event.CALENDAR) != null)
+			calendar.setSelection(getItemSelectedPosition(received.getStringExtra(Event.CALENDAR), db.getCalendarList().toArray(new String[] {})), false);
+		else
+			calendar.setSelection(getCalendarIndex(currentCalendar), false);
 		timeChosen = (String) reminder.getItemAtPosition(0);
 		reminder.setSelection(0, false);
 		flexPref = (String) flexibility.getItemAtPosition(0);
@@ -298,6 +302,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	 */
 	public void setModifyEnvironment(){
 		Intent received = getIntent();
+		
 		id = received.getIntExtra(Event.ID, -1);
 		Event anEvent = db.getEventByID(id);
 		this.anEvent = anEvent;

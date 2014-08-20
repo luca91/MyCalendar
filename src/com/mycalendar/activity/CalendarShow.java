@@ -127,4 +127,10 @@ public class CalendarShow extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
+	public void onNewEventClick(View v){
+		Intent toEditor = new Intent(this, EventEditor.class);
+		toEditor.putExtra(Event.CALENDAR, calendar.getText().toString());
+		startActivity(toEditor);
+	}
 }

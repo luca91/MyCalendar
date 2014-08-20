@@ -84,6 +84,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
         android:background="@drawable/button_state"
+        android:onClick="onNewEventClick"
         android:text="@string/add_event"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
