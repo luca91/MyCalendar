@@ -28,7 +28,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TimeFinder extends ListActivity implements AdapterView.OnItemSelectedListener{
+public class TimeFinder extends ListActivity implements AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener{
 	
 	private MyCalendarDB db;
 	private TimeButtonManager manager;
@@ -39,6 +39,7 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 	private ArrayList<Event> existing;
 	private int rangeValue;
 	private RelativeLayout container;
+	private Event clicked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +56,10 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 		manager.setStartCalendar(c);
 		manager.setDate("start");
 		manager.setDateButtonText("start");
-		potentialList = new ArrayList<Event>();
 	}
 	
 	public void findTime(View v){
+		potentialList = new ArrayList<Event>();
 		rangeValue = Integer.parseInt(range.getText().toString());
 		int[] date = manager.getDateToken("start");
 		existing = db.getEventsByDayFinder(date[0], date[1], date[2]);
@@ -109,6 +110,7 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 				potentialList.add(new Event("No name " + existing.size(), startDate.getText().toString(), e2.getEndDate(),e2.getEndTime(), MyCalendarDB.formatTime(23, 0), e2.getCalendar()));
 			if(potentialList.size() > 0){
 				CalendarAdapter adapter = new CalendarAdapter(this, potentialList, false);
+				list.setOnItemClickListener(this);
 				list.setAdapter(adapter);
 			}
 			else
@@ -273,6 +275,18 @@ public class TimeFinder extends ListActivity implements AdapterView.OnItemSelect
 	public void onBackPressed(){
 		Intent toHome = new Intent(this, MainActivity.class);
 		startActivity(toHome);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		clicked = potentialList.get(arg2);
+		EventEditor.setIsFromFinder(true);
+		Intent toEditor = new Intent(this, EventEditor.class);
+		toEditor.putExtra(Event.S_DATE, clicked.getStartDate());
+		toEditor.putExtra(Event.S_TIME, clicked.getStartTime());
+		toEditor.putExtra(Event.E_DATE, clicked.getEndDate());
+		toEditor.putExtra(Event.E_TIME, clicked.getEndTime());
+		startActivity(toEditor);
 	} 
 }
 

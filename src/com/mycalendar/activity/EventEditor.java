@@ -100,9 +100,10 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		flexText = (TextView) findViewById(R.id.flexibility_text);
 		setReminderOptionsAdapter();
 		setFlexibilityPreferenceAdapter();
+		manager = new TimeButtonManager(getFragmentManager(), this);
 		
 		//checks if an event has to be create or modify
-		if(!getIsModify()){
+		if(!getIsModify() && !isFromFinder){
 			setCreateEnvironment();
 		}
 		else if(isFromFinder){
@@ -258,7 +259,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	public void setCreateEnvironment(){
 		//A instance of the current time is stored in the local Calendar object
 		current = Calendar.getInstance();
-		manager = new TimeButtonManager(getFragmentManager(), this);
 		
 		//setting calendar
 		Intent received = getIntent();
@@ -307,7 +307,6 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		Event anEvent = db.getEventByID(id);
 		this.anEvent = anEvent;
 		current = Calendar.getInstance();
-		manager = new TimeButtonManager(getFragmentManager(), this);
 		manager.setCurrentCalendar((Calendar) current.clone());
 		manager.setButtons(startDate, endDate, startTime, endTime);
 		manager.setDate(anEvent.getStartDate(), "start");
@@ -353,6 +352,13 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		manager.setTime(received.getStringExtra(Event.S_TIME), "start");
 		manager.setDate(received.getStringExtra(Event.E_DATE), "end");
 		manager.setTime(received.getStringExtra(Event.E_TIME), "end");
+		int[] startDate = manager.getDateToken("start");
+		int[] endDate = manager.getDateToken("end");
+		int[] startTime = manager.getTimeToken("start");
+		int[] endTime = manager.getTimeToken("end");
+		manager.setStartCalendar(new GregorianCalendar(startDate[2],startDate[1]-1, startDate[0], startTime[0], startTime[1]));
+		manager.setEndCalendar(new GregorianCalendar(endDate[2],startDate[1]-1, endDate[0], endTime[0], endTime[1]));
+		manager.setButtonState();
 		
 	}
  
