@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import com.mycalendar.components.AppCalendar;
@@ -66,9 +67,8 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			"CREATE TABLE IF NOT EXISTS reminders " +
 					"(reminder_id INTEGER PRIMARY KEY,"
 					+ "reminder_event_id INTEGER, "
-//					+ "reminder_event_id_uri INTEGER DEFAULT 0,"
-					+ "reminder_time_chosen INTEGER);";
-//					+ "reminder_id_uri INTEGER DEFAULT 0);";
+					+ "reminder_time_chosen INTEGER,"
+					+ "reminder_milliseconds INTEGER DEFAULT 0);";
 	
 	public static final String SETTINGS_TABLE_CREATE = 
 			"CREATE TABLE IF NOT EXISTS settings "
@@ -346,7 +346,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return toReturn;
 	}
 	
-	public String convertDateFromDBToString(String inputDate){
+	public static String convertDateFromDBToString(String inputDate){
 		String outputDate = "";
 		StringTokenizer tz = new StringTokenizer(inputDate, "-");
 		String year = tz.nextToken();
@@ -356,7 +356,7 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return outputDate;
 	}
 	
-	public String convertDateFromStringToDB(String inputDate){
+	public static String convertDateFromStringToDB(String inputDate){
 		String outputDate = "";
 		StringTokenizer tz = new StringTokenizer(inputDate, "/");
 		String day = tz.nextToken();
@@ -366,11 +366,16 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return outputDate;
 	}
 	
-	public long addReminder(Reminder aReminder){
+	public long addReminder(Reminder aReminder, long milliseconds){
 		ContentValues values = new ContentValues();
 		values.put("reminder_event_id", aReminder.getEventID());
 		values.put("reminder_time_chosen", aReminder.getRemTimChosen());
+		values.put("reminder_milliseconds", milliseconds);
 		return this.getWritableDatabase().insert("reminders", null, values);
+	}
+	
+	public long addReminder(ContentValues v){
+		return this.getWritableDatabase().insert("reminders", null, v);
 	}
 	
 	public long removeReminder(int eventID){
@@ -378,12 +383,17 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 		return this.getWritableDatabase().delete("reminders", "reminder_event_id=?", selArgs); 
 	}
 	
-	public long updateReminder(Reminder update){
+	public long updateReminder(Reminder update, long milliseconds){
 		ContentValues values = new ContentValues();
-//		values.put("reminder_date_time", update.getDateTime());
 		values.put("reminder_time_chosen", update.getRemTimChosen());
+		values.put("reminder_milliseconds", milliseconds);
 		String[] whereArgs = {String.valueOf(update.getEventID())};
 		return this.getWritableDatabase().update("reminders", values, "reminder_event_id=?", whereArgs);
+	}
+	
+	public long updateReminder(ContentValues v, String eventID){
+		String[] whereArgs = {eventID};
+		return this.getWritableDatabase().update("reminders", v, "reminder_event_id=?", whereArgs);
 	}
 	
 	public Reminder getReminderByEventID(int id){
@@ -395,6 +405,20 @@ public class MyCalendarDB extends SQLiteOpenHelper {
 			return rem;
 		}
 		return null;
+	}
+	
+	public List<Reminder> getAllReminders(){
+		Cursor result = getReadableDatabase().query("reminders", null, null, null, null, null, null);
+		List<Reminder> l = null;
+		if (result.moveToFirst()){
+			l = new ArrayList<Reminder>();
+			while(!result.isAfterLast()){
+				Reminder r = new Reminder(result.getInt(1), result.getInt(2));
+				r.setMilliseconds(result.getLong(3));
+				l.add(r);
+			}
+		}
+		return l;
 	}
 	
 	public boolean checkEventUnique(String name, String date, String time, int calendar){

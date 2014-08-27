@@ -5,10 +5,9 @@ public class Reminder {
 	public final static String REMINDER_INTENT = "com.mycalendar.components.REMINDER_INTENT";
 	
 	private int id;
-	private int uriID;
 	private int eventID;
-	private int eventIDUri;
 	private int remTimeChosen;
+	private long milliseconds;
 	
 	public Reminder(int eventID, int timeChosen){
 		this.eventID = eventID;
@@ -21,22 +20,6 @@ public class Reminder {
 	
 	public int getEventID(){
 		return eventID;
-	}
-	
-	public void setUriID(int id){
-		uriID = id;
-	}
-	
-	public int getUriID(){
-		return uriID;
-	}
-	
-	public void setEventIDUri(int id){
-		eventIDUri = id;
-	}
-	
-	public int getEventIDUri(){
-		return eventIDUri;
 	}
 	
 	public void setRemTimeChosen(int time){
@@ -53,6 +36,14 @@ public class Reminder {
 	
 	public int getId(){
 		return this.id;
+	}
+	
+	public void setMilliseconds(long milliseconds){
+		this.milliseconds = milliseconds;
+	}
+	
+	public long getMilliseconds(){
+		return milliseconds;
 	}
 	
 	public String getReminderTextFromTimeChosen(){

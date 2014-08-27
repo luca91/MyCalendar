@@ -3,14 +3,23 @@ package com.mycalendar.activity;
 import java.util.Calendar;
 
 import com.example.mycalendar.R;
+import com.mycalendar.calendar.MyBroadcastReceiver;
+import com.mycalendar.components.Event;
+import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
+import com.mycalendar.database.ReminderProvider;
 import com.mycalendar.tools.AppDialogs;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 
 /**
@@ -37,6 +46,7 @@ public class MainActivity extends Activity {
 	 * Variable that maintain the actual calendar for events view
 	 */
 	public static Calendar actualCalendar;
+	
 	private AppDialogs d;
 	
 	/**
@@ -152,6 +162,11 @@ public class MainActivity extends Activity {
     
     public static MyCalendarDB getAppDB(){
     	return applicationDB;
+    }
+    
+    public static void setAppDB(Context c){
+    	if(applicationDB == null)
+    		applicationDB = new MyCalendarDB(c);
     }
     
     public void settings(View v){

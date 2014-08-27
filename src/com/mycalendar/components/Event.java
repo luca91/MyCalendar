@@ -196,4 +196,8 @@ public class Event extends AppItem {
 	public String getFlexPref(){
 		return flexPref;
 	}
+	
+	public void setCalendar(String c){
+		calendar = c;
+	}
 }

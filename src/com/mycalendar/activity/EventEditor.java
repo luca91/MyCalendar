@@ -31,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * This is the class to create a new event and modify a already existing one.
@@ -76,6 +75,9 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_editor);
 		db = MainActivity.getAppDB();
+		if(db == null){
+			db = new MyCalendarDB(this);
+		}
 		ActionBar bar = getActionBar();
 		bar.setHomeButtonEnabled(true);
 		
@@ -178,8 +180,9 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 						anEvent.setId((int) result);
 						if(rem != null){
 							rem.setEventID((int) result);
-							db.addReminder(rem);
+							db.addReminder(rem, remCal.getTimeInMillis());
 							setReminder(remCal);
+//							setReminder(parsedTime(timeChosen));
 						}
 					}
 					else{
@@ -188,7 +191,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 						if(rem != null){
 							rem.setEventID(id); 
 							db.updateEvent(anEvent);
-							db.updateReminder(rem);
+							db.updateReminder(rem, remCal.getTimeInMillis());
 							setReminder(remCal);
 						}
 					}
@@ -674,6 +677,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 		}
 		return -1;
 	}
+
 }
 
 
