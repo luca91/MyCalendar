@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.example.mycalendar.R;
-import com.mycalendar.calendar.Utility;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
+import com.mycalendar.tools.Utility;
 
 import android.app.ActionBar;
 import android.app.Activity;

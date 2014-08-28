@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <permission android:name="com.mycalendar.READ" android:protectionLevel="normal"></permission>
 
     <application
@@ -93,21 +94,14 @@
                 android:value="android.accounts.AccountAuthenticatorActivity" />
         </activity>
         <activity
-            android:name="com.mycalendar.activity.ReminderList"
-            android:label="@string/title_activity_reminder_list" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.accounts.AccountAuthenticatorActivity" />
-        </activity>
-        <activity
             android:name="com.mycalendar.activity.SettingsActivity"
             android:label="@string/settings_text" >
         </activity>
 
-        <receiver android:name="com.mycalendar.calendar.MyBroadcastReceiver" >
+        <receiver android:name="com.mycalendar.tools.MyBroadcastReceiver" >
         </receiver>
-        <receiver android:name="com.mycalendar.calendar.SetupReminderReceiver"
-            android:enabled="true"
+        <receiver android:name="comcom.mycalendar.tools.SetupReminderReceiver" 
+                android:enabled="true"
     		android:exported="true" >
              <intent-filter>
         		<action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -122,12 +116,6 @@
         <activity
             android:name="com.mycalendar.activity.ReminderActivity"
             android:label="@string/title_activity_reminder"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
-        <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme" >
         </activity>
         

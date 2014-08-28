@@ -5,11 +5,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.example.mycalendar.R;
-import com.mycalendar.calendar.MyBroadcastReceiver;
 import com.mycalendar.components.Event;
 import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
+import com.mycalendar.tools.MyBroadcastReceiver;
 import com.mycalendar.tools.TimeButtonManager;
 
 import android.app.ActionBar;

@@ -3,12 +3,12 @@ package com.mycalendar.activity;
 import java.util.Calendar;
 
 import com.example.mycalendar.R;
-import com.mycalendar.calendar.MyBroadcastReceiver;
 import com.mycalendar.components.Event;
 import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.database.ReminderProvider;
 import com.mycalendar.tools.AppDialogs;
+import com.mycalendar.tools.MyBroadcastReceiver;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -145,11 +145,6 @@ public class MainActivity extends Activity {
     public void timeFinder(View v){
     	Intent toFinder = new Intent(this, TimeFinder.class);
     	startActivity(toFinder);
-    }
-    
-    public void allReminders(View v){
-    	Intent allReminders = new Intent(this, ReminderList.class);
-    	startActivity(allReminders);
     }
     
     public static void setActualView(String view){

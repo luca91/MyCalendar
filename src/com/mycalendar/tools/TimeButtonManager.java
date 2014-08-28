@@ -424,7 +424,7 @@ public class TimeButtonManager {
 	}
 	
 	public boolean checkDateEndValidity(){
-		if(current.compareTo(endCalendar) <= 0)
+		if(current.compareTo(endCalendar) <= 0 && endCalendar.compareTo(startCalendar) > 0)
 			return true;
 		return false;
 	}
@@ -432,54 +432,6 @@ public class TimeButtonManager {
 	public int checkCalendarPrecedence(){
 		return startCalendar.compareTo(endCalendar);
 	}
-	
-//	public void updateTimeAndDate(String tag){
-//		 if(tag.equals("start")){
-//			 if(sHours == 0){
-//				 if(sDay == endDays[sMonth])
-//					 if(sMonth == 12){
-//						 sDay = 1;
-//						 sMonth = 1;
-//						 sYear++;
-//					 }
-//					 else{
-//						 sDay = 1;
-//						 sMonth += 1;
-//					 }
-//				 else 
-//					 sDay += 1;
-//			 } 
-//			 startCalendar = new GregorianCalendar(sYear, sMonth-1, sDay, sHours, sMinutes);
-//			 setStartDateValues();
-//			 setDateButtonText("start");
-//			 if(checkCalendarPrecedence() > 0){
-//				 eDay = sDay;
-//				 eMonth = sMonth;
-//				 eYear = sYear;
-//				 eHours = sHours +1;
-//				 eMinutes = sMinutes;
-//				 endCalendar = new GregorianCalendar(eYear, eMonth-1, eDay, eHours, eMinutes);
-//				 setEndDateValues();
-//				 setDateButtonText("end");
-//			 }
-//		 }
-//		 else{
-//			 if(sHours == 0){
-//				 if(eDay == endDays[eMonth])
-//					 if(eMonth == 12){
-//						 eDay = 1;
-//						 eMonth = 1;
-//						 eYear++;
-//					 }
-//					 else{
-//						 eDay = 1;
-//						 eMonth++;
-//					 }
-//				 else 
-//					 eDay++;
-//			 }
-//		 }
-//	}
 	
 	public boolean validateSelectedDate(){
 		current = Calendar.getInstance();

@@ -1,4 +1,4 @@
-package com.mycalendar.calendar;
+package com.mycalendar.tools;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

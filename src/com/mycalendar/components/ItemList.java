@@ -1,4 +1,4 @@
-package com.mycalendar.activity;
+package com.mycalendar.components;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -8,8 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.mycalendar.components.AppCalendar;
-import com.mycalendar.components.AppItem;
+import com.mycalendar.activity.CalendarShow;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
 
