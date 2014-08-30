@@ -35,7 +35,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 		current = Calendar.getInstance();
 		
 		//Checks if the initial value has been already change, according to a flag previously set.
-		if(!manager.getTimeAlreadySet() && !(EventEditor.getIsModify())){
+		if(!manager.getTimeAlreadySet() && !(EventEditor.getIsModify()) && !EventEditor.getIsFromFinder()){
 			if(this.getTag().equals("startTimePicker")){
 				return new TimePickerDialog(getActivity(), this, 
 						current.get(Calendar.HOUR_OF_DAY)+1, 0, true);

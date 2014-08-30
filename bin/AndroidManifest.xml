@@ -103,9 +103,9 @@
         <receiver android:name="comcom.mycalendar.tools.SetupReminderReceiver" 
                 android:enabled="true"
     		android:exported="true" >
-             <intent-filter>
+          <!--    <intent-filter>
         		<action android:name="android.intent.action.BOOT_COMPLETED" />
-    		</intent-filter>
+    		</intent-filter>  -->
         </receiver>
         <provider android:name="com.mycalendar.database.ReminderProvider"
             android:authorities="com.mycalendar.ReminderProvider"

@@ -57,7 +57,7 @@ public class EventsView extends Activity implements OnItemSelectedListener, OnCl
 		db = MainActivity.getAppDB();
 		ActionBar bar = getActionBar();
 		bar.setHomeButtonEnabled(true);
-		actualView = MainActivity.actualView;
+		actualView = MainActivity.defaultView;
 //		actualTime.setFirstDayOfWeek(Calendar.MONDAY);
 		setInitialState(actualView);
 	}

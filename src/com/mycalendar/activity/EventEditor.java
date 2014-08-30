@@ -10,6 +10,7 @@ import com.mycalendar.components.Reminder;
 import com.mycalendar.database.MyCalendarDB;
 import com.mycalendar.tools.AppDialogs;
 import com.mycalendar.tools.MyBroadcastReceiver;
+import com.mycalendar.tools.SetupReminderReceiver;
 import com.mycalendar.tools.TimeButtonManager;
 
 import android.app.ActionBar;
@@ -441,12 +442,12 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			
 			if(endDateSet.equals(dateCurrent))
 //				if(getIsModify())
-					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 0);
+					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 59);
 //				else
 //					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
 			else
 //				if(getIsModify())
-					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 0);
+					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 23, 59);
 //				else
 //					updatedEnd = new GregorianCalendar(manager.getYear("end"), manager.getMonth("end")-1, manager.getDay("end"), 21, 0);
 			manager.setStartCalendar(updatedStart);

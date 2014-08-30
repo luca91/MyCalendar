@@ -35,7 +35,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 		current = Calendar.getInstance();
 		
 		//Checks if the initial value has been already change, according to a flag previously set.
-		if(!manager.getDateAlreadySet() && !EventEditor.getIsModify()){
+		if(!manager.getDateAlreadySet() && !EventEditor.getIsModify() && !EventEditor.getIsFromFinder()){
 			return new DatePickerDialog(getActivity(), (OnDateSetListener) this, 
 					current.get(Calendar.YEAR), 
 					current.get(Calendar.MONTH), 

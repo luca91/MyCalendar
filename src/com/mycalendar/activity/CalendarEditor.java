@@ -146,8 +146,8 @@ public class CalendarEditor extends Activity implements AdapterView.OnItemSelect
 	public void createCalendar(){
 		currentName = name.getText().toString();
 		AppCalendar aCalendar = new AppCalendar(currentName, currentColor);
-		if(db.getSettingByName("def_calendar").equals("No default"))
-			db.updateSetting("def_calendar", currentName);
+//		if(db.getSettingByName("def_calendar").equals("No default"))
+//			db.updateSetting("def_calendar", currentName);
 		long result = db.addCalendar(aCalendar);
 		if(result != -1){
 			Toast.makeText(this, "Calendar added.", Toast.LENGTH_LONG).show();
