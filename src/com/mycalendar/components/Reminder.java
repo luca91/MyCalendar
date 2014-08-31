@@ -59,7 +59,7 @@ public class Reminder {
 		case 10080:
 			return "1 week";
 		case 0:
-			return "No reminder";
+			return "None";
 		}
 		return null;
 	}

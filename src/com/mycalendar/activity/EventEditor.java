@@ -74,49 +74,55 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_event_editor);
 		db = MainActivity.getAppDB();
-		if(db == null){
-			db = new MyCalendarDB(this);
+		if(db.getCalendarList().size() < 1){
+			Intent toCalendarEditor = new Intent(this, CalendarEditor.class);
+			new AppDialogs(this).noCalendarDialog("No calendar exists. Create one before adding events.", toCalendarEditor, this);
 		}
-		ActionBar bar = getActionBar();
-		bar.setHomeButtonEnabled(true);
-		
-		
-		//The button of the layout are connected to an object in the class
-		elemsContainer = (RelativeLayout) findViewById(R.id.Editor);
-		calendar = (Spinner) findViewById(R.id.Calendar);
-		eventName = (EditText) findViewById(R.id.EventName);
-		startDate = (Button) findViewById(R.id.StartDate);
-		startTime = (Button) findViewById(R.id.StartTime);
-		endDate = (Button) findViewById(R.id.EndDate);
-		endTime = (Button) findViewById(R.id.EndTime);
-		allDay = (CheckBox) findViewById(R.id.allDay);
-		flexibility = (Spinner) findViewById(R.id.flexible);
-		notesArea = (EditText) findViewById(R.id.notesArea);
-		reminder = (Spinner) findViewById(R.id.reminderSpinner);
-		allDay.setOnCheckedChangeListener(this);
-		calendarAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, db.getCalendarList());
-		calendarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		calendar.setOnItemSelectedListener(this);
-		calendar.setAdapter(calendarAdapter);
-		flexText = (TextView) findViewById(R.id.flexibility_text);
-		setReminderOptionsAdapter();
-		setFlexibilityPreferenceAdapter();
-		manager = new TimeButtonManager(getFragmentManager(), this);
-		
-		//checks if an event has to be create or modify
-		if(!getIsModify() && !isFromFinder){
-			setCreateEnvironment();
-		}
-		else if(isFromFinder){
-			Intent received = getIntent();
-			setEventFromFinderEnvironment(received);
-		}
-		else {
-			Intent received = getIntent();
-			anEvent = db.getEventByID(received.getIntExtra(Event.ID, -1));
-			setModifyEnvironment();
+		else{
+			setContentView(R.layout.activity_event_editor);
+			if(db == null){
+				db = new MyCalendarDB(this);
+			}
+			ActionBar bar = getActionBar();
+			bar.setHomeButtonEnabled(true);
+			
+			
+			//The button of the layout are connected to an object in the class
+			elemsContainer = (RelativeLayout) findViewById(R.id.Editor);
+			calendar = (Spinner) findViewById(R.id.Calendar);
+			eventName = (EditText) findViewById(R.id.EventName);
+			startDate = (Button) findViewById(R.id.StartDate);
+			startTime = (Button) findViewById(R.id.StartTime);
+			endDate = (Button) findViewById(R.id.EndDate);
+			endTime = (Button) findViewById(R.id.EndTime);
+			allDay = (CheckBox) findViewById(R.id.allDay);
+			flexibility = (Spinner) findViewById(R.id.flexible);
+			notesArea = (EditText) findViewById(R.id.notesArea);
+			reminder = (Spinner) findViewById(R.id.reminderSpinner);
+			allDay.setOnCheckedChangeListener(this);
+			calendarAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, db.getCalendarList());
+			calendarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			calendar.setOnItemSelectedListener(this);
+			calendar.setAdapter(calendarAdapter);
+			flexText = (TextView) findViewById(R.id.flexibility_text);
+			setReminderOptionsAdapter();
+			setFlexibilityPreferenceAdapter();
+			manager = new TimeButtonManager(getFragmentManager(), this);
+			
+			//checks if an event has to be create or modify
+			if(!getIsModify() && !isFromFinder){
+				setCreateEnvironment();
+			}
+			else if(isFromFinder){
+				Intent received = getIntent();
+				setEventFromFinderEnvironment(received);
+			}
+			else {
+				Intent received = getIntent();
+				anEvent = db.getEventByID(received.getIntExtra(Event.ID, -1));
+				setModifyEnvironment();
+			}
 		}
 	}
 	
@@ -277,6 +283,7 @@ public class EventEditor extends Activity implements AdapterView.OnItemSelectedL
 			int[] sDate = received.getIntArrayExtra(Event.S_DATE);
 			start = new GregorianCalendar(sDate[2], sDate[1], sDate[0], Integer.parseInt(received.getStringExtra(Event.S_TIME))-1, 0);
 			end = (Calendar) start.clone();
+			manager.setDateAlreadySetFlag(true);
 		}
 		manager.setStartCalendar(start);
 		manager.setEndCalendar(end);

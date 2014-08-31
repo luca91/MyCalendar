@@ -4,10 +4,13 @@ import com.example.mycalendar.R;
 import com.mycalendar.components.AppCalendar;
 import com.mycalendar.components.Event;
 import com.mycalendar.database.MyCalendarDB;
+import com.mycalendar.tools.MyBroadcastReceiver;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -132,8 +135,14 @@ public class EventShow extends Activity {
 				int res2 = -1;
 				if(db.getReminderByEventID(eventID) != null)
 					res2 = (int) db.removeReminder(eventID);
-				if(res1 > 0 && res2 > 0)
+				if(res1 > 0 && res2 > 0){
+					Intent i = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+					i.putExtra(Event.ID, eventID);
+					PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+					AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+					am.cancel(pi);
 					Toast.makeText(ctx, "Event removed correctly", Toast.LENGTH_SHORT).show();
+				}
 				Intent toHome = new Intent(ctx, MainActivity.class);
 				startActivity(toHome);
 			}
@@ -162,15 +171,7 @@ public class EventShow extends Activity {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	        case android.R.id.home:
-	            // app icon in action bar clicked; go home
-	            Intent intent = new Intent(this, MainActivity.class);
-	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	            startActivity(intent);
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		//TODO 
+	    return super.onOptionsItemSelected(item);
 	}
 }
